@@ -688,7 +688,7 @@ static const OpData kSpirvOpData[] =
 	{1, 1, 0, 1}, // ExtInst
 	{1, 1, 0, 0}, // #13
 	{0, 0, 0, 1}, // MemoryModel
-	{0, 0, 0, 0}, // EntryPoint
+	{0, 0, 0, 1}, // EntryPoint
 	{0, 0, 0, 1}, // ExecutionMode
 	{0, 0, 0, 1}, // Capability
 	{1, 1, 0, 0}, // #18
@@ -730,7 +730,7 @@ static const OpData kSpirvOpData[] =
 	{1, 1, 0, 1}, // Function
 	{1, 1, 0, 0}, // FunctionParameter
 	{0, 0, 0, 0}, // FunctionEnd
-	{1, 1, 0, 0}, // FunctionCall
+	{1, 1, 9, 0}, // FunctionCall
 	{1, 1, 0, 0}, // #58
 	{1, 1, 0, 1}, // Variable
 	{1, 1, 0, 0}, // ImageTexelPointer
@@ -897,8 +897,8 @@ static const OpData kSpirvOpData[] =
 	{0, 0, 0, 0}, // EndStreamPrimitive
 	{1, 1, 0, 0}, // #222
 	{1, 1, 0, 0}, // #223
-	{0, 0, 0, 0}, // ControlBarrier
-	{0, 0, 0, 0}, // MemoryBarrier
+	{0, 0,-3, 0}, // ControlBarrier
+	{0, 0,-2, 0}, // MemoryBarrier
 	{1, 1, 0, 0}, // #226
 	{1, 1, 0, 0}, // AtomicLoad
 	{0, 0, 0, 0}, // AtomicStore
@@ -1001,8 +1001,8 @@ static const OpData kSpirvOpData[] =
 	{1, 1, 0, 0}, // GetKernelLocalSizeForSubgroupCount
 	{1, 1, 0, 0}, // GetKernelMaxNumSubgroups
 	{1, 1, 0, 0}, // TypeNamedBarrier
-	{1, 1, 0, 0}, // NamedBarrierInitialize
-	{1, 1, 0, 0}, // MemoryNamedBarrier
+	{1, 1, 0, 1}, // NamedBarrierInitialize
+	{0, 0,-2, 1}, // MemoryNamedBarrier
 	{1, 1, 0, 0}, // ModuleProcessed
 };
 static_assert(ARRAY_SIZE(kSpirvOpData) == kKnownOpsCount, "kSpirvOpData table mismatch with known SpvOps");
