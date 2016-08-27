@@ -359,342 +359,344 @@ static const char* smolv_GetOpName(SpvOp op)
 
 struct OpData
 {
-	uint8_t hasResult;
-	uint8_t hasType;
+	uint8_t hasResult;	// does it have result ID?
+	uint8_t hasType;	// does it have type ID?
+	uint8_t deltaFromResult; // how many words after (optional) type+result to write out as deltas from result?
+	uint8_t varrest;	// should the rest of words be written in varint encoding?
 };
 static const OpData kSpirvOpData[] =
 {
-	{0,0}, // Nop
-	{1,1}, // Undef
-	{0,0}, // SourceContinued
-	{0,0}, // Source
-	{0,0}, // SourceExtension
-	{0,0}, // Name
-	{0,0}, // MemberName
-	{0,0}, // String
-	{0,0}, // Line
-	{1,1}, // #9
-	{0,0}, // Extension
-	{1,0}, // ExtInstImport
-	{1,1}, // ExtInst
-	{1,1}, // #13
-	{0,0}, // MemoryModel
-	{0,0}, // EntryPoint
-	{0,0}, // ExecutionMode
-	{0,0}, // Capability
-	{1,1}, // #18
-	{1,0}, // TypeVoid
-	{1,0}, // TypeBool
-	{1,0}, // TypeInt
-	{1,0}, // TypeFloat
-	{1,0}, // TypeVector
-	{1,0}, // TypeMatrix
-	{1,0}, // TypeImage
-	{1,0}, // TypeSampler
-	{1,0}, // TypeSampledImage
-	{1,0}, // TypeArray
-	{1,0}, // TypeRuntimeArray
-	{1,0}, // TypeStruct
-	{1,0}, // TypeOpaque
-	{1,0}, // TypePointer
-	{1,0}, // TypeFunction
-	{1,0}, // TypeEvent
-	{1,0}, // TypeDeviceEvent
-	{1,0}, // TypeReserveId
-	{1,0}, // TypeQueue
-	{1,0}, // TypePipe
-	{0,0}, // TypeForwardPointer
-	{1,1}, // #40
-	{1,1}, // ConstantTrue
-	{1,1}, // ConstantFalse
-	{1,1}, // Constant
-	{1,1}, // ConstantComposite
-	{1,1}, // ConstantSampler
-	{1,1}, // ConstantNull
-	{1,1}, // #47
-	{1,1}, // SpecConstantTrue
-	{1,1}, // SpecConstantFalse
-	{1,1}, // SpecConstant
-	{1,1}, // SpecConstantComposite
-	{1,1}, // SpecConstantOp
-	{1,1}, // #53
-	{1,1}, // Function
-	{1,1}, // FunctionParameter
-	{0,0}, // FunctionEnd
-	{1,1}, // FunctionCall
-	{1,1}, // #58
-	{1,1}, // Variable
-	{1,1}, // ImageTexelPointer
-	{1,1}, // Load
-	{0,0}, // Store
-	{0,0}, // CopyMemory
-	{0,0}, // CopyMemorySized
-	{1,1}, // AccessChain
-	{1,1}, // InBoundsAccessChain
-	{1,1}, // PtrAccessChain
-	{1,1}, // ArrayLength
-	{1,1}, // GenericPtrMemSemantics
-	{1,1}, // InBoundsPtrAccessChain
-	{0,0}, // Decorate
-	{0,0}, // MemberDecorate
-	{1,0}, // DecorationGroup
-	{0,0}, // GroupDecorate
-	{0,0}, // GroupMemberDecorate
-	{1,1}, // #76
-	{1,1}, // VectorExtractDynamic
-	{1,1}, // VectorInsertDynamic
-	{1,1}, // VectorShuffle
-	{1,1}, // CompositeConstruct
-	{1,1}, // CompositeExtract
-	{1,1}, // CompositeInsert
-	{1,1}, // CopyObject
-	{1,1}, // Transpose
-	{1,1}, // #85
-	{1,1}, // SampledImage
-	{1,1}, // ImageSampleImplicitLod
-	{1,1}, // ImageSampleExplicitLod
-	{1,1}, // ImageSampleDrefImplicitLod
-	{1,1}, // ImageSampleDrefExplicitLod
-	{1,1}, // ImageSampleProjImplicitLod
-	{1,1}, // ImageSampleProjExplicitLod
-	{1,1}, // ImageSampleProjDrefImplicitLod
-	{1,1}, // ImageSampleProjDrefExplicitLod
-	{1,1}, // ImageFetch
-	{1,1}, // ImageGather
-	{1,1}, // ImageDrefGather
-	{1,1}, // ImageRead
-	{0,0}, // ImageWrite
-	{1,1}, // Image
-	{1,1}, // ImageQueryFormat
-	{1,1}, // ImageQueryOrder
-	{1,1}, // ImageQuerySizeLod
-	{1,1}, // ImageQuerySize
-	{1,1}, // ImageQueryLod
-	{1,1}, // ImageQueryLevels
-	{1,1}, // ImageQuerySamples
-	{1,1}, // #108
-	{1,1}, // ConvertFToU
-	{1,1}, // ConvertFToS
-	{1,1}, // ConvertSToF
-	{1,1}, // ConvertUToF
-	{1,1}, // UConvert
-	{1,1}, // SConvert
-	{1,1}, // FConvert
-	{1,1}, // QuantizeToF16
-	{1,1}, // ConvertPtrToU
-	{1,1}, // SatConvertSToU
-	{1,1}, // SatConvertUToS
-	{1,1}, // ConvertUToPtr
-	{1,1}, // PtrCastToGeneric
-	{1,1}, // GenericCastToPtr
-	{1,1}, // GenericCastToPtrExplicit
-	{1,1}, // Bitcast
-	{1,1}, // #125
-	{1,1}, // SNegate
-	{1,1}, // FNegate
-	{1,1}, // IAdd
-	{1,1}, // FAdd
-	{1,1}, // ISub
-	{1,1}, // FSub
-	{1,1}, // IMul
-	{1,1}, // FMul
-	{1,1}, // UDiv
-	{1,1}, // SDiv
-	{1,1}, // FDiv
-	{1,1}, // UMod
-	{1,1}, // SRem
-	{1,1}, // SMod
-	{1,1}, // FRem
-	{1,1}, // FMod
-	{1,1}, // VectorTimesScalar
-	{1,1}, // MatrixTimesScalar
-	{1,1}, // VectorTimesMatrix
-	{1,1}, // MatrixTimesVector
-	{1,1}, // MatrixTimesMatrix
-	{1,1}, // OuterProduct
-	{1,1}, // Dot
-	{1,1}, // IAddCarry
-	{1,1}, // ISubBorrow
-	{1,1}, // UMulExtended
-	{1,1}, // SMulExtended
-	{1,1}, // #153
-	{1,1}, // Any
-	{1,1}, // All
-	{1,1}, // IsNan
-	{1,1}, // IsInf
-	{1,1}, // IsFinite
-	{1,1}, // IsNormal
-	{1,1}, // SignBitSet
-	{1,1}, // LessOrGreater
-	{1,1}, // Ordered
-	{1,1}, // Unordered
-	{1,1}, // LogicalEqual
-	{1,1}, // LogicalNotEqual
-	{1,1}, // LogicalOr
-	{1,1}, // LogicalAnd
-	{1,1}, // LogicalNot
-	{1,1}, // Select
-	{1,1}, // IEqual
-	{1,1}, // INotEqual
-	{1,1}, // UGreaterThan
-	{1,1}, // SGreaterThan
-	{1,1}, // UGreaterThanEqual
-	{1,1}, // SGreaterThanEqual
-	{1,1}, // ULessThan
-	{1,1}, // SLessThan
-	{1,1}, // ULessThanEqual
-	{1,1}, // SLessThanEqual
-	{1,1}, // FOrdEqual
-	{1,1}, // FUnordEqual
-	{1,1}, // FOrdNotEqual
-	{1,1}, // FUnordNotEqual
-	{1,1}, // FOrdLessThan
-	{1,1}, // FUnordLessThan
-	{1,1}, // FOrdGreaterThan
-	{1,1}, // FUnordGreaterThan
-	{1,1}, // FOrdLessThanEqual
-	{1,1}, // FUnordLessThanEqual
-	{1,1}, // FOrdGreaterThanEqual
-	{1,1}, // FUnordGreaterThanEqual
-	{1,1}, // #192
-	{1,1}, // #193
-	{1,1}, // ShiftRightLogical
-	{1,1}, // ShiftRightArithmetic
-	{1,1}, // ShiftLeftLogical
-	{1,1}, // BitwiseOr
-	{1,1}, // BitwiseXor
-	{1,1}, // BitwiseAnd
-	{1,1}, // Not
-	{1,1}, // BitFieldInsert
-	{1,1}, // BitFieldSExtract
-	{1,1}, // BitFieldUExtract
-	{1,1}, // BitReverse
-	{1,1}, // BitCount
-	{1,1}, // #206
-	{1,1}, // DPdx
-	{1,1}, // DPdy
-	{1,1}, // Fwidth
-	{1,1}, // DPdxFine
-	{1,1}, // DPdyFine
-	{1,1}, // FwidthFine
-	{1,1}, // DPdxCoarse
-	{1,1}, // DPdyCoarse
-	{1,1}, // FwidthCoarse
-	{1,1}, // #216
-	{1,1}, // #217
-	{0,0}, // EmitVertex
-	{0,0}, // EndPrimitive
-	{0,0}, // EmitStreamVertex
-	{0,0}, // EndStreamPrimitive
-	{1,1}, // #222
-	{1,1}, // #223
-	{0,0}, // ControlBarrier
-	{0,0}, // MemoryBarrier
-	{1,1}, // #226
-	{1,1}, // AtomicLoad
-	{0,0}, // AtomicStore
-	{1,1}, // AtomicExchange
-	{1,1}, // AtomicCompareExchange
-	{1,1}, // AtomicCompareExchangeWeak
-	{1,1}, // AtomicIIncrement
-	{1,1}, // AtomicIDecrement
-	{1,1}, // AtomicIAdd
-	{1,1}, // AtomicISub
-	{1,1}, // AtomicSMin
-	{1,1}, // AtomicUMin
-	{1,1}, // AtomicSMax
-	{1,1}, // AtomicUMax
-	{1,1}, // AtomicAnd
-	{1,1}, // AtomicOr
-	{1,1}, // AtomicXor
-	{1,1}, // #243
-	{1,1}, // #244
-	{1,1}, // Phi
-	{0,0}, // LoopMerge
-	{0,0}, // SelectionMerge
-	{1,0}, // Label
-	{0,0}, // Branch
-	{0,0}, // BranchConditional
-	{0,0}, // Switch
-	{0,0}, // Kill
-	{0,0}, // Return
-	{0,0}, // ReturnValue
-	{0,0}, // Unreachable
-	{0,0}, // LifetimeStart
-	{0,0}, // LifetimeStop
-	{1,1}, // #258
-	{1,1}, // GroupAsyncCopy
-	{0,0}, // GroupWaitEvents
-	{1,1}, // GroupAll
-	{1,1}, // GroupAny
-	{1,1}, // GroupBroadcast
-	{1,1}, // GroupIAdd
-	{1,1}, // GroupFAdd
-	{1,1}, // GroupFMin
-	{1,1}, // GroupUMin
-	{1,1}, // GroupSMin
-	{1,1}, // GroupFMax
-	{1,1}, // GroupUMax
-	{1,1}, // GroupSMax
-	{1,1}, // #272
-	{1,1}, // #273
-	{1,1}, // ReadPipe
-	{1,1}, // WritePipe
-	{1,1}, // ReservedReadPipe
-	{1,1}, // ReservedWritePipe
-	{1,1}, // ReserveReadPipePackets
-	{1,1}, // ReserveWritePipePackets
-	{0,0}, // CommitReadPipe
-	{0,0}, // CommitWritePipe
-	{1,1}, // IsValidReserveId
-	{1,1}, // GetNumPipePackets
-	{1,1}, // GetMaxPipePackets
-	{1,1}, // GroupReserveReadPipePackets
-	{1,1}, // GroupReserveWritePipePackets
-	{0,0}, // GroupCommitReadPipe
-	{0,0}, // GroupCommitWritePipe
-	{1,1}, // #289
-	{1,1}, // #290
-	{1,1}, // EnqueueMarker
-	{1,1}, // EnqueueKernel
-	{1,1}, // GetKernelNDrangeSubGroupCount
-	{1,1}, // GetKernelNDrangeMaxSubGroupSize
-	{1,1}, // GetKernelWorkGroupSize
-	{1,1}, // GetKernelPreferredWorkGroupSizeMultiple
-	{0,0}, // RetainEvent
-	{0,0}, // ReleaseEvent
-	{1,1}, // CreateUserEvent
-	{1,1}, // IsValidEvent
-	{0,0}, // SetUserEventStatus
-	{0,0}, // CaptureEventProfilingInfo
-	{1,1}, // GetDefaultQueue
-	{1,1}, // BuildNDRange
-	{1,1}, // ImageSparseSampleImplicitLod
-	{1,1}, // ImageSparseSampleExplicitLod
-	{1,1}, // ImageSparseSampleDrefImplicitLod
-	{1,1}, // ImageSparseSampleDrefExplicitLod
-	{1,1}, // ImageSparseSampleProjImplicitLod
-	{1,1}, // ImageSparseSampleProjExplicitLod
-	{1,1}, // ImageSparseSampleProjDrefImplicitLod
-	{1,1}, // ImageSparseSampleProjDrefExplicitLod
-	{1,1}, // ImageSparseFetch
-	{1,1}, // ImageSparseGather
-	{1,1}, // ImageSparseDrefGather
-	{1,1}, // ImageSparseTexelsResident
-	{0,0}, // NoLine
-	{1,1}, // AtomicFlagTestAndSet
-	{0,0}, // AtomicFlagClear
-	{1,1}, // ImageSparseRead
-	{1,1}, // SizeOf
-	{1,1}, // TypePipeStorage
-	{1,1}, // ConstantPipeStorage
-	{1,1}, // CreatePipeFromPipeStorage
-	{1,1}, // GetKernelLocalSizeForSubgroupCount
-	{1,1}, // GetKernelMaxNumSubgroups
-	{1,1}, // TypeNamedBarrier
-	{1,1}, // NamedBarrierInitialize
-	{1,1}, // MemoryNamedBarrier
-	{1,1}, // ModuleProcessed
+	{0, 0, 0, 0}, // Nop
+	{1, 1, 0, 0}, // Undef
+	{0, 0, 0, 0}, // SourceContinued
+	{0, 0, 0, 0}, // Source
+	{0, 0, 0, 0}, // SourceExtension
+	{0, 0, 0, 0}, // Name
+	{0, 0, 0, 0}, // MemberName
+	{0, 0, 0, 0}, // String
+	{0, 0, 0, 0}, // Line
+	{1, 1, 0, 0}, // #9
+	{0, 0, 0, 0}, // Extension
+	{1, 0, 0, 0}, // ExtInstImport
+	{1, 1, 0, 0}, // ExtInst
+	{1, 1, 0, 0}, // #13
+	{0, 0, 0, 0}, // MemoryModel
+	{0, 0, 0, 0}, // EntryPoint
+	{0, 0, 0, 0}, // ExecutionMode
+	{0, 0, 0, 0}, // Capability
+	{1, 1, 0, 0}, // #18
+	{1, 0, 0, 0}, // TypeVoid
+	{1, 0, 0, 0}, // TypeBool
+	{1, 0, 0, 0}, // TypeInt
+	{1, 0, 0, 0}, // TypeFloat
+	{1, 0, 0, 0}, // TypeVector
+	{1, 0, 0, 0}, // TypeMatrix
+	{1, 0, 0, 0}, // TypeImage
+	{1, 0, 0, 0}, // TypeSampler
+	{1, 0, 0, 0}, // TypeSampledImage
+	{1, 0, 0, 0}, // TypeArray
+	{1, 0, 0, 0}, // TypeRuntimeArray
+	{1, 0, 0, 0}, // TypeStruct
+	{1, 0, 0, 0}, // TypeOpaque
+	{1, 0, 0, 0}, // TypePointer
+	{1, 0, 0, 0}, // TypeFunction
+	{1, 0, 0, 0}, // TypeEvent
+	{1, 0, 0, 0}, // TypeDeviceEvent
+	{1, 0, 0, 0}, // TypeReserveId
+	{1, 0, 0, 0}, // TypeQueue
+	{1, 0, 0, 0}, // TypePipe
+	{0, 0, 0, 0}, // TypeForwardPointer
+	{1, 1, 0, 0}, // #40
+	{1, 1, 0, 0}, // ConstantTrue
+	{1, 1, 0, 0}, // ConstantFalse
+	{1, 1, 0, 0}, // Constant
+	{1, 1, 0, 0}, // ConstantComposite
+	{1, 1, 0, 0}, // ConstantSampler
+	{1, 1, 0, 0}, // ConstantNull
+	{1, 1, 0, 0}, // #47
+	{1, 1, 0, 0}, // SpecConstantTrue
+	{1, 1, 0, 0}, // SpecConstantFalse
+	{1, 1, 0, 0}, // SpecConstant
+	{1, 1, 0, 0}, // SpecConstantComposite
+	{1, 1, 0, 0}, // SpecConstantOp
+	{1, 1, 0, 0}, // #53
+	{1, 1, 0, 0}, // Function
+	{1, 1, 0, 0}, // FunctionParameter
+	{0, 0, 0, 0}, // FunctionEnd
+	{1, 1, 0, 0}, // FunctionCall
+	{1, 1, 0, 0}, // #58
+	{1, 1, 0, 0}, // Variable
+	{1, 1, 0, 0}, // ImageTexelPointer
+	{1, 1, 1, 1}, // Load
+	{0, 0, 0, 0}, // Store
+	{0, 0, 0, 0}, // CopyMemory
+	{0, 0, 0, 0}, // CopyMemorySized
+	{1, 1, 0, 0}, // AccessChain
+	{1, 1, 0, 0}, // InBoundsAccessChain
+	{1, 1, 0, 0}, // PtrAccessChain
+	{1, 1, 0, 0}, // ArrayLength
+	{1, 1, 0, 0}, // GenericPtrMemSemantics
+	{1, 1, 0, 0}, // InBoundsPtrAccessChain
+	{0, 0, 0, 1}, // Decorate
+	{0, 0, 0, 1}, // MemberDecorate
+	{1, 0, 0, 0}, // DecorationGroup
+	{0, 0, 0, 0}, // GroupDecorate
+	{0, 0, 0, 0}, // GroupMemberDecorate
+	{1, 1, 0, 0}, // #76
+	{1, 1, 0, 0}, // VectorExtractDynamic
+	{1, 1, 0, 0}, // VectorInsertDynamic
+	{1, 1, 2, 1}, // VectorShuffle
+	{1, 1, 0, 0}, // CompositeConstruct
+	{1, 1, 0, 0}, // CompositeExtract
+	{1, 1, 0, 0}, // CompositeInsert
+	{1, 1, 0, 0}, // CopyObject
+	{1, 1, 0, 0}, // Transpose
+	{1, 1, 0, 0}, // #85
+	{1, 1, 0, 0}, // SampledImage
+	{1, 1, 0, 0}, // ImageSampleImplicitLod
+	{1, 1, 0, 0}, // ImageSampleExplicitLod
+	{1, 1, 0, 0}, // ImageSampleDrefImplicitLod
+	{1, 1, 0, 0}, // ImageSampleDrefExplicitLod
+	{1, 1, 0, 0}, // ImageSampleProjImplicitLod
+	{1, 1, 0, 0}, // ImageSampleProjExplicitLod
+	{1, 1, 0, 0}, // ImageSampleProjDrefImplicitLod
+	{1, 1, 0, 0}, // ImageSampleProjDrefExplicitLod
+	{1, 1, 0, 0}, // ImageFetch
+	{1, 1, 0, 0}, // ImageGather
+	{1, 1, 0, 0}, // ImageDrefGather
+	{1, 1, 0, 0}, // ImageRead
+	{0, 0, 0, 0}, // ImageWrite
+	{1, 1, 0, 0}, // Image
+	{1, 1, 0, 0}, // ImageQueryFormat
+	{1, 1, 0, 0}, // ImageQueryOrder
+	{1, 1, 0, 0}, // ImageQuerySizeLod
+	{1, 1, 0, 0}, // ImageQuerySize
+	{1, 1, 0, 0}, // ImageQueryLod
+	{1, 1, 0, 0}, // ImageQueryLevels
+	{1, 1, 0, 0}, // ImageQuerySamples
+	{1, 1, 0, 0}, // #108
+	{1, 1, 0, 0}, // ConvertFToU
+	{1, 1, 0, 0}, // ConvertFToS
+	{1, 1, 0, 0}, // ConvertSToF
+	{1, 1, 0, 0}, // ConvertUToF
+	{1, 1, 0, 0}, // UConvert
+	{1, 1, 0, 0}, // SConvert
+	{1, 1, 0, 0}, // FConvert
+	{1, 1, 0, 0}, // QuantizeToF16
+	{1, 1, 0, 0}, // ConvertPtrToU
+	{1, 1, 0, 0}, // SatConvertSToU
+	{1, 1, 0, 0}, // SatConvertUToS
+	{1, 1, 0, 0}, // ConvertUToPtr
+	{1, 1, 0, 0}, // PtrCastToGeneric
+	{1, 1, 0, 0}, // GenericCastToPtr
+	{1, 1, 0, 0}, // GenericCastToPtrExplicit
+	{1, 1, 0, 0}, // Bitcast
+	{1, 1, 0, 0}, // #125
+	{1, 1, 0, 0}, // SNegate
+	{1, 1, 0, 0}, // FNegate
+	{1, 1, 0, 0}, // IAdd
+	{1, 1, 0, 0}, // FAdd
+	{1, 1, 0, 0}, // ISub
+	{1, 1, 0, 0}, // FSub
+	{1, 1, 0, 0}, // IMul
+	{1, 1, 0, 0}, // FMul
+	{1, 1, 0, 0}, // UDiv
+	{1, 1, 0, 0}, // SDiv
+	{1, 1, 0, 0}, // FDiv
+	{1, 1, 0, 0}, // UMod
+	{1, 1, 0, 0}, // SRem
+	{1, 1, 0, 0}, // SMod
+	{1, 1, 0, 0}, // FRem
+	{1, 1, 0, 0}, // FMod
+	{1, 1, 0, 0}, // VectorTimesScalar
+	{1, 1, 0, 0}, // MatrixTimesScalar
+	{1, 1, 0, 0}, // VectorTimesMatrix
+	{1, 1, 0, 0}, // MatrixTimesVector
+	{1, 1, 0, 0}, // MatrixTimesMatrix
+	{1, 1, 0, 0}, // OuterProduct
+	{1, 1, 0, 0}, // Dot
+	{1, 1, 0, 0}, // IAddCarry
+	{1, 1, 0, 0}, // ISubBorrow
+	{1, 1, 0, 0}, // UMulExtended
+	{1, 1, 0, 0}, // SMulExtended
+	{1, 1, 0, 0}, // #153
+	{1, 1, 0, 0}, // Any
+	{1, 1, 0, 0}, // All
+	{1, 1, 0, 0}, // IsNan
+	{1, 1, 0, 0}, // IsInf
+	{1, 1, 0, 0}, // IsFinite
+	{1, 1, 0, 0}, // IsNormal
+	{1, 1, 0, 0}, // SignBitSet
+	{1, 1, 0, 0}, // LessOrGreater
+	{1, 1, 0, 0}, // Ordered
+	{1, 1, 0, 0}, // Unordered
+	{1, 1, 0, 0}, // LogicalEqual
+	{1, 1, 0, 0}, // LogicalNotEqual
+	{1, 1, 0, 0}, // LogicalOr
+	{1, 1, 0, 0}, // LogicalAnd
+	{1, 1, 0, 0}, // LogicalNot
+	{1, 1, 0, 0}, // Select
+	{1, 1, 0, 0}, // IEqual
+	{1, 1, 0, 0}, // INotEqual
+	{1, 1, 0, 0}, // UGreaterThan
+	{1, 1, 0, 0}, // SGreaterThan
+	{1, 1, 0, 0}, // UGreaterThanEqual
+	{1, 1, 0, 0}, // SGreaterThanEqual
+	{1, 1, 0, 0}, // ULessThan
+	{1, 1, 0, 0}, // SLessThan
+	{1, 1, 0, 0}, // ULessThanEqual
+	{1, 1, 0, 0}, // SLessThanEqual
+	{1, 1, 0, 0}, // FOrdEqual
+	{1, 1, 0, 0}, // FUnordEqual
+	{1, 1, 0, 0}, // FOrdNotEqual
+	{1, 1, 0, 0}, // FUnordNotEqual
+	{1, 1, 0, 0}, // FOrdLessThan
+	{1, 1, 0, 0}, // FUnordLessThan
+	{1, 1, 0, 0}, // FOrdGreaterThan
+	{1, 1, 0, 0}, // FUnordGreaterThan
+	{1, 1, 0, 0}, // FOrdLessThanEqual
+	{1, 1, 0, 0}, // FUnordLessThanEqual
+	{1, 1, 0, 0}, // FOrdGreaterThanEqual
+	{1, 1, 0, 0}, // FUnordGreaterThanEqual
+	{1, 1, 0, 0}, // #192
+	{1, 1, 0, 0}, // #193
+	{1, 1, 0, 0}, // ShiftRightLogical
+	{1, 1, 0, 0}, // ShiftRightArithmetic
+	{1, 1, 0, 0}, // ShiftLeftLogical
+	{1, 1, 0, 0}, // BitwiseOr
+	{1, 1, 0, 0}, // BitwiseXor
+	{1, 1, 0, 0}, // BitwiseAnd
+	{1, 1, 0, 0}, // Not
+	{1, 1, 0, 0}, // BitFieldInsert
+	{1, 1, 0, 0}, // BitFieldSExtract
+	{1, 1, 0, 0}, // BitFieldUExtract
+	{1, 1, 0, 0}, // BitReverse
+	{1, 1, 0, 0}, // BitCount
+	{1, 1, 0, 0}, // #206
+	{1, 1, 0, 0}, // DPdx
+	{1, 1, 0, 0}, // DPdy
+	{1, 1, 0, 0}, // Fwidth
+	{1, 1, 0, 0}, // DPdxFine
+	{1, 1, 0, 0}, // DPdyFine
+	{1, 1, 0, 0}, // FwidthFine
+	{1, 1, 0, 0}, // DPdxCoarse
+	{1, 1, 0, 0}, // DPdyCoarse
+	{1, 1, 0, 0}, // FwidthCoarse
+	{1, 1, 0, 0}, // #216
+	{1, 1, 0, 0}, // #217
+	{0, 0, 0, 0}, // EmitVertex
+	{0, 0, 0, 0}, // EndPrimitive
+	{0, 0, 0, 0}, // EmitStreamVertex
+	{0, 0, 0, 0}, // EndStreamPrimitive
+	{1, 1, 0, 0}, // #222
+	{1, 1, 0, 0}, // #223
+	{0, 0, 0, 0}, // ControlBarrier
+	{0, 0, 0, 0}, // MemoryBarrier
+	{1, 1, 0, 0}, // #226
+	{1, 1, 0, 0}, // AtomicLoad
+	{0, 0, 0, 0}, // AtomicStore
+	{1, 1, 0, 0}, // AtomicExchange
+	{1, 1, 0, 0}, // AtomicCompareExchange
+	{1, 1, 0, 0}, // AtomicCompareExchangeWeak
+	{1, 1, 0, 0}, // AtomicIIncrement
+	{1, 1, 0, 0}, // AtomicIDecrement
+	{1, 1, 0, 0}, // AtomicIAdd
+	{1, 1, 0, 0}, // AtomicISub
+	{1, 1, 0, 0}, // AtomicSMin
+	{1, 1, 0, 0}, // AtomicUMin
+	{1, 1, 0, 0}, // AtomicSMax
+	{1, 1, 0, 0}, // AtomicUMax
+	{1, 1, 0, 0}, // AtomicAnd
+	{1, 1, 0, 0}, // AtomicOr
+	{1, 1, 0, 0}, // AtomicXor
+	{1, 1, 0, 0}, // #243
+	{1, 1, 0, 0}, // #244
+	{1, 1, 0, 0}, // Phi
+	{0, 0, 0, 0}, // LoopMerge
+	{0, 0, 0, 0}, // SelectionMerge
+	{1, 0, 0, 0}, // Label
+	{0, 0, 0, 0}, // Branch
+	{0, 0, 0, 0}, // BranchConditional
+	{0, 0, 0, 0}, // Switch
+	{0, 0, 0, 0}, // Kill
+	{0, 0, 0, 0}, // Return
+	{0, 0, 0, 0}, // ReturnValue
+	{0, 0, 0, 0}, // Unreachable
+	{0, 0, 0, 0}, // LifetimeStart
+	{0, 0, 0, 0}, // LifetimeStop
+	{1, 1, 0, 0}, // #258
+	{1, 1, 0, 0}, // GroupAsyncCopy
+	{0, 0, 0, 0}, // GroupWaitEvents
+	{1, 1, 0, 0}, // GroupAll
+	{1, 1, 0, 0}, // GroupAny
+	{1, 1, 0, 0}, // GroupBroadcast
+	{1, 1, 0, 0}, // GroupIAdd
+	{1, 1, 0, 0}, // GroupFAdd
+	{1, 1, 0, 0}, // GroupFMin
+	{1, 1, 0, 0}, // GroupUMin
+	{1, 1, 0, 0}, // GroupSMin
+	{1, 1, 0, 0}, // GroupFMax
+	{1, 1, 0, 0}, // GroupUMax
+	{1, 1, 0, 0}, // GroupSMax
+	{1, 1, 0, 0}, // #272
+	{1, 1, 0, 0}, // #273
+	{1, 1, 0, 0}, // ReadPipe
+	{1, 1, 0, 0}, // WritePipe
+	{1, 1, 0, 0}, // ReservedReadPipe
+	{1, 1, 0, 0}, // ReservedWritePipe
+	{1, 1, 0, 0}, // ReserveReadPipePackets
+	{1, 1, 0, 0}, // ReserveWritePipePackets
+	{0, 0, 0, 0}, // CommitReadPipe
+	{0, 0, 0, 0}, // CommitWritePipe
+	{1, 1, 0, 0}, // IsValidReserveId
+	{1, 1, 0, 0}, // GetNumPipePackets
+	{1, 1, 0, 0}, // GetMaxPipePackets
+	{1, 1, 0, 0}, // GroupReserveReadPipePackets
+	{1, 1, 0, 0}, // GroupReserveWritePipePackets
+	{0, 0, 0, 0}, // GroupCommitReadPipe
+	{0, 0, 0, 0}, // GroupCommitWritePipe
+	{1, 1, 0, 0}, // #289
+	{1, 1, 0, 0}, // #290
+	{1, 1, 0, 0}, // EnqueueMarker
+	{1, 1, 0, 0}, // EnqueueKernel
+	{1, 1, 0, 0}, // GetKernelNDrangeSubGroupCount
+	{1, 1, 0, 0}, // GetKernelNDrangeMaxSubGroupSize
+	{1, 1, 0, 0}, // GetKernelWorkGroupSize
+	{1, 1, 0, 0}, // GetKernelPreferredWorkGroupSizeMultiple
+	{0, 0, 0, 0}, // RetainEvent
+	{0, 0, 0, 0}, // ReleaseEvent
+	{1, 1, 0, 0}, // CreateUserEvent
+	{1, 1, 0, 0}, // IsValidEvent
+	{0, 0, 0, 0}, // SetUserEventStatus
+	{0, 0, 0, 0}, // CaptureEventProfilingInfo
+	{1, 1, 0, 0}, // GetDefaultQueue
+	{1, 1, 0, 0}, // BuildNDRange
+	{1, 1, 0, 0}, // ImageSparseSampleImplicitLod
+	{1, 1, 0, 0}, // ImageSparseSampleExplicitLod
+	{1, 1, 0, 0}, // ImageSparseSampleDrefImplicitLod
+	{1, 1, 0, 0}, // ImageSparseSampleDrefExplicitLod
+	{1, 1, 0, 0}, // ImageSparseSampleProjImplicitLod
+	{1, 1, 0, 0}, // ImageSparseSampleProjExplicitLod
+	{1, 1, 0, 0}, // ImageSparseSampleProjDrefImplicitLod
+	{1, 1, 0, 0}, // ImageSparseSampleProjDrefExplicitLod
+	{1, 1, 0, 0}, // ImageSparseFetch
+	{1, 1, 0, 0}, // ImageSparseGather
+	{1, 1, 0, 0}, // ImageSparseDrefGather
+	{1, 1, 0, 0}, // ImageSparseTexelsResident
+	{0, 0, 0, 0}, // NoLine
+	{1, 1, 0, 0}, // AtomicFlagTestAndSet
+	{0, 0, 0, 0}, // AtomicFlagClear
+	{1, 1, 0, 0}, // ImageSparseRead
+	{1, 1, 0, 0}, // SizeOf
+	{1, 1, 0, 0}, // TypePipeStorage
+	{1, 1, 0, 0}, // ConstantPipeStorage
+	{1, 1, 0, 0}, // CreatePipeFromPipeStorage
+	{1, 1, 0, 0}, // GetKernelLocalSizeForSubgroupCount
+	{1, 1, 0, 0}, // GetKernelMaxNumSubgroups
+	{1, 1, 0, 0}, // TypeNamedBarrier
+	{1, 1, 0, 0}, // NamedBarrierInitialize
+	{1, 1, 0, 0}, // MemoryNamedBarrier
+	{1, 1, 0, 0}, // ModuleProcessed
 };
 static_assert(ARRAY_SIZE(kSpirvOpData) == kKnownOpsCount, "kSpirvOpData table mismatch with known SpvOps");
 
@@ -711,6 +713,20 @@ static bool smolv_OpHasType(SpvOp op)
 	if (op < 0 || op >= kKnownOpsCount)
 		return false;
 	return kSpirvOpData[op].hasType;
+}
+
+static int smolv_OpDeltaFromResult(SpvOp op)
+{
+	if (op < 0 || op >= kKnownOpsCount)
+		return 0;
+	return kSpirvOpData[op].deltaFromResult;
+}
+
+static bool smolv_OpVarRest(SpvOp op)
+{
+	if (op < 0 || op >= kKnownOpsCount)
+		return false;
+	return kSpirvOpData[op].varrest;
 }
 
 
@@ -920,35 +936,30 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv)
 			ioffs++;
 		}
 
-		// write the rest of the instruction words
+		// Decorate & MemberDecorate: IDs relative to previous decorate
 		if (op == SpvOpDecorate || op == SpvOpMemberDecorate)
 		{
-			// Decorate & MemberDecorate (20.4% space in test data): delta+varint from previous, varint on rest
 			uint32_t v = words[ioffs];
 			smolv_WriteVarint(outSmolv, v - prevDecorate);
 			prevDecorate = v;
 			ioffs++;
-			for (; ioffs < instrLen; ++ioffs)
-				smolv_WriteVarint(outSmolv, words[ioffs]);
 		}
-		else if (op == SpvOpVectorShuffle)
+
+		// Write out this many IDs, encoding them relative to result ID
+		int relativeCount = smolv_OpDeltaFromResult(op);
+		for (int i = 0; i < relativeCount; ++i)
 		{
-			// VectorShuffle (9.8% space in test data): vector IDs as deltas from result + varint, varint on rest
 			smolv_WriteVarint(outSmolv, prevResult - words[ioffs]); ioffs++;
-			smolv_WriteVarint(outSmolv, prevResult - words[ioffs]); ioffs++;
-			for (; ioffs < instrLen; ++ioffs)
-				smolv_WriteVarint(outSmolv, words[ioffs]);
 		}
-		else if (op == SpvOpLoad)
+		if (smolv_OpVarRest(op))
 		{
-			// Load (15.7% space in test data): ID as deltas from result + varint, varint on rest
-			smolv_WriteVarint(outSmolv, prevResult - words[ioffs]); ioffs++;
+			// write out rest of words with variable encoding (expected to be small integers)
 			for (; ioffs < instrLen; ++ioffs)
 				smolv_WriteVarint(outSmolv, words[ioffs]);
 		}
 		else
 		{
-			// regular op with no special handling
+			// write out rest of words without any encoding
 			for (; ioffs < instrLen; ++ioffs)
 				smolv_Write4(outSmolv, words[ioffs]);
 		}
@@ -1007,42 +1018,27 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 			ioffs++;
 		}
 		
-		// read the rest of the instruction words
+		// Decorate: IDs relative to previous decorate
 		if (op == SpvOpDecorate || op == SpvOpMemberDecorate)
 		{
-			// Decorate: delta+varint from previous, varint on rest
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
 			val = prevDecorate + val;
 			smolv_Write4(outSpirv, val);
 			prevDecorate = val;
 			ioffs++;
-			for (; ioffs < instrLen; ++ioffs)
-			{
-				if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
-				smolv_Write4(outSpirv, val);
-			}
 		}
-		else if (op == SpvOpVectorShuffle)
+
+		// Read this many IDs, that are relative to result ID
+		int relativeCount = smolv_OpDeltaFromResult(op);
+		for (int i = 0; i < relativeCount; ++i)
 		{
-			// VectorShuffle: vector IDs as deltas from result + varint, varint on rest
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
 			smolv_Write4(outSpirv, prevResult - val);
 			ioffs++;
-			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
-			smolv_Write4(outSpirv, prevResult - val);
-			ioffs++;
-			for (; ioffs < instrLen; ++ioffs)
-			{
-				if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
-				smolv_Write4(outSpirv, val);
-			}
 		}
-		else if (op == SpvOpLoad)
+		if (smolv_OpVarRest(op))
 		{
-			// Load: ID as delta from result + varint, varint on rest
-			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
-			smolv_Write4(outSpirv, prevResult - val);
-			ioffs++;
+			// read rest of words with variable encoding
 			for (; ioffs < instrLen; ++ioffs)
 			{
 				if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
@@ -1051,15 +1047,13 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 		}
 		else
 		{
-			// regular op with no special handling
+			// read rest of words without any encoding
 			for (; ioffs < instrLen; ++ioffs)
 			{
 				if (!smolv_Read4(bytes, bytesEnd, val)) return false;
 				smolv_Write4(outSpirv, val);
 			}
 		}
-		
-
 	}
 	
 	return true;
@@ -1195,8 +1189,19 @@ bool smolv::InputStatsCalculateSmol(smolv::InputStats* stats, const void* smolvD
 			ioffs++;
 		}
 		
-		// read the rest of the instruction words
-		if (op == SpvOpDecorate || op == SpvOpMemberDecorate || op == SpvOpVectorShuffle || op == SpvOpLoad)
+		if (op == SpvOpDecorate || op == SpvOpMemberDecorate)
+		{
+			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
+			ioffs++;
+		}
+		
+		int relativeCount = smolv_OpDeltaFromResult(op);
+		for (int i = 0; i < relativeCount; ++i)
+		{
+			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
+			ioffs++;
+		}
+		if (smolv_OpVarRest(op))
 		{
 			for (; ioffs < instrLen; ++ioffs)
 			{
