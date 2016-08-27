@@ -82,13 +82,55 @@ int main()
 		"tests/spirv-dumps/s0-0045-f2078956.spirv",
 		"tests/spirv-dumps/s0-0046-0b926d9c.spirv",
 
+		"tests/spirv-dumps/s1-0000-5ca04fe4.spirv",
+		"tests/spirv-dumps/s1-0000-cf9fe2e0.spirv",
 		"tests/spirv-dumps/s1-0001-04d9d27b.spirv",
+		"tests/spirv-dumps/s1-0001-aa1ecaf0.spirv",
+		"tests/spirv-dumps/s1-0002-8d2ed6da.spirv",
+		"tests/spirv-dumps/s1-0003-c54216ae.spirv",
+		"tests/spirv-dumps/s1-0004-ac0f5549.spirv",
+		"tests/spirv-dumps/s1-0005-93ebd823.spirv",
+		"tests/spirv-dumps/s1-0006-85d79507.spirv",
+		"tests/spirv-dumps/s1-0007-aff64c99.spirv",
+		"tests/spirv-dumps/s1-0008-6e421249.spirv",
 		"tests/spirv-dumps/s1-0009-0c858280.spirv",
+		"tests/spirv-dumps/s1-0010-1b50ab90.spirv",
+		"tests/spirv-dumps/s1-0011-2fed16ab.spirv",
 		"tests/spirv-dumps/s1-0012-5428b42d.spirv",
+		"tests/spirv-dumps/s1-0013-241e9fc8.spirv",
+		"tests/spirv-dumps/s1-0014-2ea8dc83.spirv",
+		"tests/spirv-dumps/s1-0016-3c30e5e7.spirv",
+		"tests/spirv-dumps/s1-0017-884cc79d.spirv",
+		"tests/spirv-dumps/s1-0021-e914f581.spirv",
+		"tests/spirv-dumps/s1-0025-3c7f4035.spirv",
+		"tests/spirv-dumps/s1-0028-84042ffc.spirv",
+		"tests/spirv-dumps/s1-0030-b919e80f.spirv",
+		"tests/spirv-dumps/s1-0033-0b804090.spirv",
+		"tests/spirv-dumps/s1-0036-6bbcc1ac.spirv",
+		"tests/spirv-dumps/s1-0039-09bb7e61.spirv",
+		"tests/spirv-dumps/s1-0043-026e1b4a.spirv",
+		"tests/spirv-dumps/s1-0045-f49f5967.spirv",
+		"tests/spirv-dumps/s1-0047-9c22101b.spirv",
+		"tests/spirv-dumps/s1-0049-6dd06f97.spirv",
 		"tests/spirv-dumps/s1-0052-d2e4133a.spirv",
+		"tests/spirv-dumps/s1-0056-89c781a9.spirv",
+		"tests/spirv-dumps/s1-0062-e52c10e6.spirv",
+		"tests/spirv-dumps/s1-0070-7595e017.spirv",
+		"tests/spirv-dumps/s1-0074-e4935128.spirv",
 		"tests/spirv-dumps/s1-0084-ffb8278d.spirv",
+
+		"tests/spirv-dumps/s2-0004-76b9ef38.spirv",
+		"tests/spirv-dumps/s2-0006-655ac983.spirv",
 		"tests/spirv-dumps/s2-0019-3ddaf08d.spirv",
+		"tests/spirv-dumps/s2-0031-412ed89d.spirv",
+		
+		"tests/spirv-dumps/s3-0008-09cef3e4.spirv",
+		"tests/spirv-dumps/s3-0019-4c006911.spirv",
 		"tests/spirv-dumps/s3-0022-f40e2e1e.spirv",
+		"tests/spirv-dumps/s3-0028-e081a509.spirv",
+		"tests/spirv-dumps/s3-0037-18f71ada.spirv",
+
+		"tests/spirv-dumps/s4-0004-6ec33743.spirv",
 		"tests/spirv-dumps/s4-0006-a5e06270.spirv",
 	};
 
@@ -145,13 +187,13 @@ int main()
 			break;
 		}
 
+		// Append original and SMOLV code to the whole blob
 		spirvAll.insert(spirvAll.end(), spirv.begin(), spirv.end());
 		smolvAll.insert(smolvAll.end(), smolv.begin(), smolv.end());
-		
-		printf("\n");
 	}
 
 	// Compress various ways (as a whole blob) and record sizes
+	printf("Compressing...\n");
 	smolv::InputStatsRecordCompressedSize(stats, "0 SMOL", smolvAll.size());
 
 	smolv::InputStatsRecordCompressedSize(stats, "1 LZ4HC", CompressLZ4HC(spirvAll.data(), spirvAll.size()));
