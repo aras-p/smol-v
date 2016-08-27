@@ -89,7 +89,6 @@ namespace smolv
 
 	bool InputStatsCalculate(InputStats* stats, const void* spirvData, size_t spirvSize);
 	bool InputStatsCalculateSmol(InputStats* stats, const void* smolvData, size_t smolvSize);
-	bool InputStatsRecordCompressedSize(InputStats* stats, const char* compressor, size_t compressedSize);
 	void InputStatsPrint(const InputStats* stats);
 
 } // namespace smolv

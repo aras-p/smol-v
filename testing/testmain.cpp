@@ -7,7 +7,7 @@
 #include "external/lz4/lz4hc.h"
 #include "external/zstd/zstd.h"
 #include "external/glslang/SPIRV/SPVRemapper.h"
-
+#include <map>
 
 typedef std::vector<uint8_t> ByteArray;
 
@@ -218,26 +218,34 @@ int main()
 		RemapSPIRV(spirv.data(), spirv.size(), spirvRemapAll);
 	}
 
-	// Compress various ways (as a whole blob) and record sizes
+	// Compress various ways (as a whole blob) and print sizes
 	printf("Compressing...\n");
-	;;smolv::InputStatsRecordCompressedSize(stats, "0 Remap", spirvRemapAll.size());
-	smolv::InputStatsRecordCompressedSize(stats, "0 SMOL", smolvAll.size());
+	std::map<std::string, size_t> sizes;
 
-	;;smolv::InputStatsRecordCompressedSize(stats, "1    LZ4HC", CompressLZ4HC(spirvAll.data(), spirvAll.size()));
-	;;smolv::InputStatsRecordCompressedSize(stats, "1 re+LZ4HC", CompressLZ4HC(spirvRemapAll.data(), spirvRemapAll.size()));
-	smolv::InputStatsRecordCompressedSize(stats, "1 sm+LZ4HC", CompressLZ4HC(smolvAll.data(), smolvAll.size()));
+	;;sizes["0 Remap"] = spirvRemapAll.size();
+	sizes["0 SMOL"] = smolvAll.size();
 
-	;;smolv::InputStatsRecordCompressedSize(stats, "2    Zstd", CompressZstd(spirvAll.data(), spirvAll.size()));
-	;;smolv::InputStatsRecordCompressedSize(stats, "2 re+Zstd", CompressZstd(spirvRemapAll.data(), spirvRemapAll.size()));
-	smolv::InputStatsRecordCompressedSize(stats, "2 sm+Zstd", CompressZstd(smolvAll.data(), smolvAll.size()));
+	;;sizes["1    LZ4HC"] = CompressLZ4HC(spirvAll.data(), spirvAll.size());
+	;;sizes["1 re+LZ4HC"] = CompressLZ4HC(spirvRemapAll.data(), spirvRemapAll.size());
+	sizes["1 sm+LZ4HC"] = CompressLZ4HC(smolvAll.data(), smolvAll.size());
 
-	;;smolv::InputStatsRecordCompressedSize(stats, "3    Zstd20", CompressZstd(spirvAll.data(), spirvAll.size(), 20));
-	;;smolv::InputStatsRecordCompressedSize(stats, "3 re+Zstd20", CompressZstd(spirvRemapAll.data(), spirvRemapAll.size(), 20));
-	smolv::InputStatsRecordCompressedSize(stats, "3 sm+Zstd20", CompressZstd(smolvAll.data(), smolvAll.size(), 20));
+	;;sizes["2    Zstd"] = CompressZstd(spirvAll.data(), spirvAll.size());
+	;;sizes["2 re+Zstd"] = CompressZstd(spirvRemapAll.data(), spirvRemapAll.size());
+	sizes["2 sm+Zstd"] = CompressZstd(smolvAll.data(), smolvAll.size());
+
+	;;sizes["3    Zstd20"] = CompressZstd(spirvAll.data(), spirvAll.size(), 20);
+	;;sizes["3 re+Zstd20"] = CompressZstd(spirvRemapAll.data(), spirvRemapAll.size(), 20);
+	sizes["3 sm+Zstd20"] = CompressZstd(smolvAll.data(), smolvAll.size(), 20);
 	
 	smolv::InputStatsPrint(stats);
-	
 	smolv::InputStatsDelete(stats);
+	
+	printf("Compression: original size %.1fKB\n", spirvAll.size()/1024.0f);
+	for (auto&& kv : sizes)
+	{
+		printf("%-15s: %5.1fKB (%5.1f%%)\n", kv.first.c_str(), kv.second/1024.0f, (float)kv.second/(float)(spirvAll.size())*100.0f);
+	}
+	
 
 	if (errorCount != 0)
 	{

@@ -5,8 +5,6 @@
 #include "smolv.h"
 #include <stdint.h>
 #include <vector>
-#include <map>
-#include <string>
 
 #define ARRAY_SIZE(a) (sizeof(a)/sizeof((a)[0]))
 
@@ -1086,7 +1084,6 @@ struct smolv::InputStats
 	size_t totalSize = 0;
 	size_t totalSizeSmol = 0;
 	size_t inputCount = 0;
-	std::map<std::string, size_t> compressedSizes;
 };
 
 
@@ -1529,14 +1526,6 @@ bool smolv::InputStatsCalculateSmol(smolv::InputStats* stats, const void* smolvD
 }
 
 
-bool smolv::InputStatsRecordCompressedSize(InputStats* stats, const char* compressor, size_t compressedSize)
-{
-	if (!stats)
-		return false;
-	stats->compressedSizes[std::string(compressor)] += compressedSize;
-	return true;
-}
-
 
 void smolv::InputStatsPrint(const InputStats* stats)
 {
@@ -1590,12 +1579,6 @@ void smolv::InputStatsPrint(const InputStats* stats)
 			   (float)sizesSmol[i].second / (float)stats->totalSizeSmol * 100.0f,
 			   (float)sizesSmol[i].second / (float)stats->opCounts[op]
 			   );
-	}
-	
-	printf("Compression: original size %.1fKB\n", stats->totalSize*4.0f/1024.0f);
-	for (auto&& kv : stats->compressedSizes)
-	{
-		printf("%-15s: %5.1fKB (%5.1f%%)\n", kv.first.c_str(), kv.second/1024.0f, (float)kv.second/(stats->totalSize*4.0f)*100.0f);
-	}
+	}	
 }
 
