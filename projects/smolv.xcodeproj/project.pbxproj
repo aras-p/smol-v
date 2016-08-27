@@ -19,6 +19,8 @@
 		2BC466321D71879200DFFF3B /* zstd_compress.c in Sources */ = {isa = PBXBuildFile; fileRef = 2BC4662D1D71879200DFFF3B /* zstd_compress.c */; };
 		2BC466391D7188E300DFFF3B /* fse_compress.c in Sources */ = {isa = PBXBuildFile; fileRef = 2BC4662A1D71879200DFFF3B /* fse_compress.c */; };
 		2BC4663A1D7188EE00DFFF3B /* xxhash.c in Sources */ = {isa = PBXBuildFile; fileRef = 2BC4661F1D71877900DFFF3B /* xxhash.c */; };
+		2BC4663F1D71D6FE00DFFF3B /* SPVRemapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BC4663D1D71D6FE00DFFF3B /* SPVRemapper.cpp */; };
+		2BC466441D71D80200DFFF3B /* doc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BC466401D71D80200DFFF3B /* doc.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -62,6 +64,12 @@
 		2BC4662C1D71879200DFFF3B /* zbuff_compress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zbuff_compress.c; path = external/zstd/compress/zbuff_compress.c; sourceTree = "<group>"; };
 		2BC4662D1D71879200DFFF3B /* zstd_compress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zstd_compress.c; path = external/zstd/compress/zstd_compress.c; sourceTree = "<group>"; };
 		2BC4662E1D71879200DFFF3B /* zstd_opt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = zstd_opt.h; path = external/zstd/compress/zstd_opt.h; sourceTree = "<group>"; };
+		2BC4663D1D71D6FE00DFFF3B /* SPVRemapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SPVRemapper.cpp; path = external/glslang/SPIRV/SPVRemapper.cpp; sourceTree = "<group>"; };
+		2BC4663E1D71D6FE00DFFF3B /* SPVRemapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SPVRemapper.h; path = external/glslang/SPIRV/SPVRemapper.h; sourceTree = "<group>"; };
+		2BC466401D71D80200DFFF3B /* doc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = doc.cpp; path = external/glslang/SPIRV/doc.cpp; sourceTree = "<group>"; };
+		2BC466411D71D80200DFFF3B /* doc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = doc.h; path = external/glslang/SPIRV/doc.h; sourceTree = "<group>"; };
+		2BC466421D71D80200DFFF3B /* spirv.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = spirv.hpp; path = external/glslang/SPIRV/spirv.hpp; sourceTree = "<group>"; };
+		2BC466431D71D80200DFFF3B /* spvIR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = spvIR.h; path = external/glslang/SPIRV/spvIR.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +124,7 @@
 		2BC466031D70DC6100DFFF3B /* external */ = {
 			isa = PBXGroup;
 			children = (
+				2BC4663B1D71D6E800DFFF3B /* glslang */,
 				2BC466111D71854000DFFF3B /* zstd */,
 				2BC4660A1D71849200DFFF3B /* lz4 */,
 			);
@@ -175,6 +184,27 @@
 			name = compress;
 			sourceTree = "<group>";
 		};
+		2BC4663B1D71D6E800DFFF3B /* glslang */ = {
+			isa = PBXGroup;
+			children = (
+				2BC4663C1D71D6EE00DFFF3B /* spirv */,
+			);
+			name = glslang;
+			sourceTree = "<group>";
+		};
+		2BC4663C1D71D6EE00DFFF3B /* spirv */ = {
+			isa = PBXGroup;
+			children = (
+				2BC466401D71D80200DFFF3B /* doc.cpp */,
+				2BC466411D71D80200DFFF3B /* doc.h */,
+				2BC466421D71D80200DFFF3B /* spirv.hpp */,
+				2BC466431D71D80200DFFF3B /* spvIR.h */,
+				2BC4663D1D71D6FE00DFFF3B /* SPVRemapper.cpp */,
+				2BC4663E1D71D6FE00DFFF3B /* SPVRemapper.h */,
+			);
+			name = spirv;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -231,6 +261,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2BC4663F1D71D6FE00DFFF3B /* SPVRemapper.cpp in Sources */,
 				2BC466241D71877900DFFF3B /* entropy_common.c in Sources */,
 				2BC4663A1D7188EE00DFFF3B /* xxhash.c in Sources */,
 				2BC466301D71879200DFFF3B /* huf_compress.c in Sources */,
@@ -240,6 +271,7 @@
 				2BC466271D71877900DFFF3B /* zstd_common.c in Sources */,
 				2BC466251D71877900DFFF3B /* fse_decompress.c in Sources */,
 				2BC466391D7188E300DFFF3B /* fse_compress.c in Sources */,
+				2BC466441D71D80200DFFF3B /* doc.cpp in Sources */,
 				2BC466311D71879200DFFF3B /* zbuff_compress.c in Sources */,
 				2BC453B91D70B22400DFFF3B /* testmain.cpp in Sources */,
 				2BC453B61D70B20D00DFFF3B /* smolv.cpp in Sources */,
