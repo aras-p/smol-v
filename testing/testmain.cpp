@@ -25,6 +25,8 @@ void ReadFile(const char* fileName, ByteArray& output)
 
 static size_t CompressLZ4HC(const void* data, size_t size, int level = 0)
 {
+	if (size == 0)
+		return 0;
 	int bufferSize = LZ4_compressBound((int)size);
 	char* buffer = new char[bufferSize];
 	size_t resSize = LZ4_compress_HC ((const char*)data, buffer, (int)size, bufferSize, level);
@@ -34,6 +36,8 @@ static size_t CompressLZ4HC(const void* data, size_t size, int level = 0)
 
 static size_t CompressZstd(const void* data, size_t size, int level = 0)
 {
+	if (size == 0)
+		return 0;
 	size_t bufferSize = ZSTD_compressBound(size);
 	char* buffer = new char[bufferSize];
 	size_t resSize = ZSTD_compress(buffer, bufferSize, data, size, level);
@@ -46,6 +50,7 @@ int main()
 {
 	smolv::InputStats* stats = smolv::InputStatsCreate();
 
+	// files we're testing on
 	const char* kFiles[] =
 	{
 		"tests/spirv-dumps/s0-0016-cc22f312.spirv",
@@ -61,41 +66,86 @@ int main()
 		"tests/spirv-dumps/s3-0022-f40e2e1e.spirv",
 		"tests/spirv-dumps/s4-0006-a5e06270.spirv",
 	};
+
+	// all test data lumped together, to check how well it compresses as a whole block
 	ByteArray spirvAll;
+	ByteArray smolvAll;
+
+	// go over all test files
+	int errorCount = 0;
 	for (size_t i = 0; i < sizeof(kFiles)/sizeof(kFiles[0]); ++i)
 	{
+		// Read
 		printf("Reading %s\n", kFiles[i]);
 		ByteArray spirv;
 		ReadFile(kFiles[i], spirv);
 		if (spirv.empty())
 		{
 			printf("ERROR: failed to read %s\n", kFiles[i]);
+			++errorCount;
 			break;
 		}
+
+		// Basic SPIR-V input stats
 		if (!smolv::InputStatsCalculate(stats, spirv.data(), spirv.size()))
 		{
-			printf("ERROR: invalid SPIR-V %s\n", kFiles[i]);
+			printf("ERROR: failed to calc instruction stats (invalid SPIR-V?) %s\n", kFiles[i]);
+			++errorCount;
+			break;
+		}
+
+		// Encode to SMOL-V
+		ByteArray smolv;
+		if (!smolv::Encode(spirv.data(), spirv.size(), smolv))
+		{
+			printf("ERROR: failed to encode (invalid invalid SPIR-V?) %s\n", kFiles[i]);
+			++errorCount;
+			break;
+		}
+
+		// Decode back to SPIR-V
+		ByteArray spirvDecoded;
+		if (!smolv::Decode(smolv.data(), smolv.size(), spirvDecoded))
+		{
+			printf("ERROR: failed to decode back (bug?) %s\n", kFiles[i]);
+			++errorCount;
+			break;
+		}
+
+		// Check that it decoded 100% the same
+		if (spirv != spirvDecoded)
+		{
+			printf("ERROR: did not encode+decode properly (bug?) %s\n", kFiles[i]);
+			++errorCount;
 			break;
 		}
 
 		spirvAll.insert(spirvAll.end(), spirv.begin(), spirv.end());
+		smolvAll.insert(smolvAll.end(), smolv.begin(), smolv.end());
 		
-		smolv::InputStatsRecordCompressedSize(stats, "LZ4HC", CompressLZ4HC(spirv.data(), spirv.size()));
-		smolv::InputStatsRecordCompressedSize(stats, "LZ4HC15", CompressLZ4HC(spirv.data(), spirv.size(), 16));
-		smolv::InputStatsRecordCompressedSize(stats, "Zstd", CompressZstd(spirv.data(), spirv.size()));
-		smolv::InputStatsRecordCompressedSize(stats, "Zstd12", CompressZstd(spirv.data(), spirv.size(), 12));
-		smolv::InputStatsRecordCompressedSize(stats, "Zstd20", CompressZstd(spirv.data(), spirv.size(), 20));
 		printf("\n");
 	}
 
-	smolv::InputStatsRecordCompressedSize(stats, "__LZ4HC", CompressLZ4HC(spirvAll.data(), spirvAll.size()));
-	smolv::InputStatsRecordCompressedSize(stats, "__LZ4HC15", CompressLZ4HC(spirvAll.data(), spirvAll.size(), 16));
-	smolv::InputStatsRecordCompressedSize(stats, "__Zstd", CompressZstd(spirvAll.data(), spirvAll.size()));
-	smolv::InputStatsRecordCompressedSize(stats, "__Zstd12", CompressZstd(spirvAll.data(), spirvAll.size(), 12));
-	smolv::InputStatsRecordCompressedSize(stats, "__Zstd20", CompressZstd(spirvAll.data(), spirvAll.size(), 20));
+	// Compress various ways (as a whole blob) and record sizes
+	smolv::InputStatsRecordCompressedSize(stats, "0 SMOL", smolvAll.size());
+
+	smolv::InputStatsRecordCompressedSize(stats, "1 LZ4HC", CompressLZ4HC(spirvAll.data(), spirvAll.size()));
+	smolv::InputStatsRecordCompressedSize(stats, "2 smLZ4HC", CompressLZ4HC(smolvAll.data(), smolvAll.size()));
+
+	smolv::InputStatsRecordCompressedSize(stats, "3 Zstd", CompressZstd(spirvAll.data(), spirvAll.size()));
+	smolv::InputStatsRecordCompressedSize(stats, "4 smZstd", CompressZstd(smolvAll.data(), smolvAll.size()));
+
+	smolv::InputStatsRecordCompressedSize(stats, "5 Zstd20", CompressZstd(spirvAll.data(), spirvAll.size(), 20));
+	smolv::InputStatsRecordCompressedSize(stats, "6 smZstd20", CompressZstd(smolvAll.data(), smolvAll.size(), 20));
 	
 	smolv::InputStatsPrint(stats);
 	
 	smolv::InputStatsDelete(stats);
+
+	if (errorCount != 0)
+	{
+		printf("Got ERRORS: %i\n", errorCount);
+		return 1;
+	}
 	return 0;
 }
