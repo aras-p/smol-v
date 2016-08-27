@@ -891,6 +891,8 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv)
 	smolv_Write4(outSmolv, words[3]); // bound
 	smolv_Write4(outSmolv, words[4]); // schema
 
+	uint32_t prevResult = 0;
+
 	words += 5;
 	while (words < wordsEnd)
 	{
@@ -904,6 +906,14 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv)
 		if (smolv_OpHasType(op))
 		{
 			smolv_WriteVarint(outSmolv, words[ioffs]);
+			ioffs++;
+		}
+		// write result as delta+varint, if we have it
+		if (smolv_OpHasResult(op))
+		{
+			uint32_t v = words[ioffs];
+			smolv_WriteVarint(outSmolv, v - prevResult);
+			prevResult = v;
 			ioffs++;
 		}
 		
@@ -933,6 +943,8 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 	smolv_Read4(bytes, bytesEnd, val); smolv_Write4(outSpirv, val); // bound
 	smolv_Read4(bytes, bytesEnd, val); smolv_Write4(outSpirv, val); // schema
 
+	uint32_t prevResult = 0;
+
 	while (bytes < bytesEnd)
 	{
 		// read length + opcode
@@ -950,6 +962,16 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 			if (!smolv_ReadVarint(bytes, bytesEnd, val))
 				return false;
 			smolv_Write4(outSpirv, val);
+			ioffs++;
+		}
+		// read result as delta+varint, if we have it
+		if (smolv_OpHasResult(op))
+		{
+			if (!smolv_ReadVarint(bytes, bytesEnd, val))
+				return false;
+			val += prevResult;
+			smolv_Write4(outSpirv, val);
+			prevResult = val;
 			ioffs++;
 		}
 
