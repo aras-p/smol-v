@@ -385,27 +385,27 @@ static const OpData kSpirvOpData[] =
 	{0, 0, 0, 0}, // ExecutionMode
 	{0, 0, 0, 0}, // Capability
 	{1, 1, 0, 0}, // #18
-	{1, 0, 0, 0}, // TypeVoid
-	{1, 0, 0, 0}, // TypeBool
-	{1, 0, 0, 0}, // TypeInt
-	{1, 0, 0, 0}, // TypeFloat
-	{1, 0, 0, 0}, // TypeVector
-	{1, 0, 0, 0}, // TypeMatrix
-	{1, 0, 0, 0}, // TypeImage
-	{1, 0, 0, 0}, // TypeSampler
-	{1, 0, 0, 0}, // TypeSampledImage
-	{1, 0, 0, 0}, // TypeArray
-	{1, 0, 0, 0}, // TypeRuntimeArray
-	{1, 0, 0, 0}, // TypeStruct
-	{1, 0, 0, 0}, // TypeOpaque
-	{1, 0, 0, 0}, // TypePointer
-	{1, 0, 0, 0}, // TypeFunction
-	{1, 0, 0, 0}, // TypeEvent
-	{1, 0, 0, 0}, // TypeDeviceEvent
-	{1, 0, 0, 0}, // TypeReserveId
-	{1, 0, 0, 0}, // TypeQueue
-	{1, 0, 0, 0}, // TypePipe
-	{0, 0, 0, 0}, // TypeForwardPointer
+	{1, 0, 0, 1}, // TypeVoid
+	{1, 0, 0, 1}, // TypeBool
+	{1, 0, 0, 1}, // TypeInt
+	{1, 0, 0, 1}, // TypeFloat
+	{1, 0, 0, 1}, // TypeVector
+	{1, 0, 0, 1}, // TypeMatrix
+	{1, 0, 0, 1}, // TypeImage
+	{1, 0, 0, 1}, // TypeSampler
+	{1, 0, 0, 1}, // TypeSampledImage
+	{1, 0, 0, 1}, // TypeArray
+	{1, 0, 0, 1}, // TypeRuntimeArray
+	{1, 0, 0, 1}, // TypeStruct
+	{1, 0, 0, 1}, // TypeOpaque
+	{1, 0, 0, 1}, // TypePointer
+	{1, 0, 0, 1}, // TypeFunction
+	{1, 0, 0, 1}, // TypeEvent
+	{1, 0, 0, 1}, // TypeDeviceEvent
+	{1, 0, 0, 1}, // TypeReserveId
+	{1, 0, 0, 1}, // TypeQueue
+	{1, 0, 0, 1}, // TypePipe
+	{0, 0, 0, 1}, // TypeForwardPointer
 	{1, 1, 0, 0}, // #40
 	{1, 1, 0, 0}, // ConstantTrue
 	{1, 1, 0, 0}, // ConstantFalse
@@ -425,7 +425,7 @@ static const OpData kSpirvOpData[] =
 	{0, 0, 0, 0}, // FunctionEnd
 	{1, 1, 0, 0}, // FunctionCall
 	{1, 1, 0, 0}, // #58
-	{1, 1, 0, 0}, // Variable
+	{1, 1, 0, 1}, // Variable
 	{1, 1, 0, 0}, // ImageTexelPointer
 	{1, 1, 1, 1}, // Load
 	{0, 0, 2, 1}, // Store
