@@ -196,13 +196,13 @@ int main()
 	printf("Compressing...\n");
 	smolv::InputStatsRecordCompressedSize(stats, "0 SMOL", smolvAll.size());
 
-	smolv::InputStatsRecordCompressedSize(stats, "1 LZ4HC", CompressLZ4HC(spirvAll.data(), spirvAll.size()));
+	//smolv::InputStatsRecordCompressedSize(stats, "1 LZ4HC", CompressLZ4HC(spirvAll.data(), spirvAll.size()));
 	smolv::InputStatsRecordCompressedSize(stats, "2 smLZ4HC", CompressLZ4HC(smolvAll.data(), smolvAll.size()));
 
-	smolv::InputStatsRecordCompressedSize(stats, "3 Zstd", CompressZstd(spirvAll.data(), spirvAll.size()));
+	//smolv::InputStatsRecordCompressedSize(stats, "3 Zstd", CompressZstd(spirvAll.data(), spirvAll.size()));
 	smolv::InputStatsRecordCompressedSize(stats, "4 smZstd", CompressZstd(smolvAll.data(), smolvAll.size()));
 
-	smolv::InputStatsRecordCompressedSize(stats, "5 Zstd20", CompressZstd(spirvAll.data(), spirvAll.size(), 20));
+	//smolv::InputStatsRecordCompressedSize(stats, "5 Zstd20", CompressZstd(spirvAll.data(), spirvAll.size(), 20));
 	smolv::InputStatsRecordCompressedSize(stats, "6 smZstd20", CompressZstd(smolvAll.data(), smolvAll.size(), 20));
 	
 	smolv::InputStatsPrint(stats);

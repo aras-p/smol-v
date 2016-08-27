@@ -892,6 +892,7 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv)
 	smolv_Write4(outSmolv, words[4]); // schema
 
 	uint32_t prevResult = 0;
+	uint32_t prevDecorate = 0;
 
 	words += 5;
 	while (words < wordsEnd)
@@ -916,9 +917,24 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv)
 			prevResult = v;
 			ioffs++;
 		}
-		
-		for (; ioffs < instrLen; ++ioffs)
-			smolv_Write4(outSmolv, words[ioffs]);
+
+		// write the rest of the instruction words
+		if (op == SpvOpDecorate || op == SpvOpMemberDecorate)
+		{
+			// Decorate & MemberDecorate (20.5% total space in test data): delta+varint from previous, varint on rest
+			uint32_t v = words[ioffs];
+			smolv_WriteVarint(outSmolv, v - prevDecorate);
+			prevDecorate = v;
+			ioffs++;
+			for (; ioffs < instrLen; ++ioffs)
+				smolv_WriteVarint(outSmolv, words[ioffs]);
+		}
+		else
+		{
+			// regular op with no special handling
+			for (; ioffs < instrLen; ++ioffs)
+				smolv_Write4(outSmolv, words[ioffs]);
+		}
 		
 		words += instrLen;
 	}
@@ -944,6 +960,7 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 	smolv_Read4(bytes, bytesEnd, val); smolv_Write4(outSpirv, val); // schema
 
 	uint32_t prevResult = 0;
+	uint32_t prevDecorate = 0;
 
 	while (bytes < bytesEnd)
 	{
@@ -974,13 +991,36 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 			prevResult = val;
 			ioffs++;
 		}
-
-		for (; ioffs < instrLen; ++ioffs)
+		
+		// read the rest of the instruction words
+		if (op == SpvOpDecorate || op == SpvOpMemberDecorate)
 		{
-			if (!smolv_Read4(bytes, bytesEnd, val))
+			// Decorate: delta+varint from previous, varint on rest
+			if (!smolv_ReadVarint(bytes, bytesEnd, val))
 				return false;
+			val = prevDecorate + val;
 			smolv_Write4(outSpirv, val);
+			prevDecorate = val;
+			ioffs++;
+			for (; ioffs < instrLen; ++ioffs)
+			{
+				if (!smolv_ReadVarint(bytes, bytesEnd, val))
+					return false;
+				smolv_Write4(outSpirv, val);
+			}
 		}
+		else
+		{
+			// regular op with no special handling
+			for (; ioffs < instrLen; ++ioffs)
+			{
+				if (!smolv_Read4(bytes, bytesEnd, val))
+					return false;
+				smolv_Write4(outSpirv, val);
+			}
+		}
+		
+
 	}
 	
 	return true;
@@ -1020,42 +1060,51 @@ bool smolv::InputStatsCalculate(smolv::InputStats* stats, const void* spirvData,
 			//printf("%04i Op#%i %2i  ", (int)offset, op, instrLen);
 		}
 
-		/*
 		switch(op)
 		{
 			case SpvOpDecorate:
+				/*
 				if (instrLen < 3)
 					return false;
-				printf("id %3i dec %3i ", words[1], words[2]);
+				printf("OpDecor id %3i dec %3i ", words[1], words[2]);
 				for (int i = 3; i < instrLen; ++i)
 					printf("%i ", words[i]);
+				printf("\n");
+				 */
 				break;
 			case SpvOpLoad:
+				/*
 				if (instrLen < 4)
 					return false;
 				printf("t %3i res %3i ptr %3i ", words[1], words[2], words[3]);
 				for (int i = 4; i < instrLen; ++i)
 					printf("%i ", words[i]);
+				 printf("\n");
+				 */
 				break;
 			case SpvOpAccessChain:
+				/*
 				if (instrLen < 4)
 					return false;
 				printf("t %3i res %3i bas %3i ", words[1], words[2], words[3]);
 				for (int i = 4; i < instrLen; ++i)
 					printf("%i ", words[i]);
+				 printf("\n");
+				 */
 				break;
 			case SpvOpVectorShuffle:
+				/*
 				if (instrLen < 5)
 					return false;
 				printf("t %3i res %3i v1 %3i v2 %3i ", words[1], words[2], words[3], words[4]);
 				for (int i = 5; i < instrLen; ++i)
 					printf("%i ", words[i]);
+				 printf("\n");
+				*/
 				break;
 			default:
 				break;
 		}
-		printf("\n");
-		 */
 		
 		words += instrLen;
 		offset += instrLen;
