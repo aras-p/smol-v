@@ -428,10 +428,10 @@ static const OpData kSpirvOpData[] =
 	{1, 1, 0, 0}, // Variable
 	{1, 1, 0, 0}, // ImageTexelPointer
 	{1, 1, 1, 1}, // Load
-	{0, 0, 0, 0}, // Store
+	{0, 0, 2, 1}, // Store
 	{0, 0, 0, 0}, // CopyMemory
 	{0, 0, 0, 0}, // CopyMemorySized
-	{1, 1, 0, 0}, // AccessChain
+	{1, 1, 0, 1}, // AccessChain
 	{1, 1, 0, 0}, // InBoundsAccessChain
 	{1, 1, 0, 0}, // PtrAccessChain
 	{1, 1, 0, 0}, // ArrayLength
@@ -492,33 +492,33 @@ static const OpData kSpirvOpData[] =
 	{1, 1, 0, 0}, // GenericCastToPtrExplicit
 	{1, 1, 0, 0}, // Bitcast
 	{1, 1, 0, 0}, // #125
-	{1, 1, 0, 0}, // SNegate
-	{1, 1, 0, 0}, // FNegate
-	{1, 1, 0, 0}, // IAdd
-	{1, 1, 0, 0}, // FAdd
-	{1, 1, 0, 0}, // ISub
-	{1, 1, 0, 0}, // FSub
-	{1, 1, 0, 0}, // IMul
-	{1, 1, 0, 0}, // FMul
-	{1, 1, 0, 0}, // UDiv
-	{1, 1, 0, 0}, // SDiv
-	{1, 1, 0, 0}, // FDiv
-	{1, 1, 0, 0}, // UMod
-	{1, 1, 0, 0}, // SRem
-	{1, 1, 0, 0}, // SMod
-	{1, 1, 0, 0}, // FRem
-	{1, 1, 0, 0}, // FMod
-	{1, 1, 0, 0}, // VectorTimesScalar
-	{1, 1, 0, 0}, // MatrixTimesScalar
-	{1, 1, 0, 0}, // VectorTimesMatrix
-	{1, 1, 0, 0}, // MatrixTimesVector
-	{1, 1, 0, 0}, // MatrixTimesMatrix
-	{1, 1, 0, 0}, // OuterProduct
-	{1, 1, 0, 0}, // Dot
-	{1, 1, 0, 0}, // IAddCarry
-	{1, 1, 0, 0}, // ISubBorrow
-	{1, 1, 0, 0}, // UMulExtended
-	{1, 1, 0, 0}, // SMulExtended
+	{1, 1, 1, 0}, // SNegate
+	{1, 1, 1, 0}, // FNegate
+	{1, 1, 2, 0}, // IAdd
+	{1, 1, 2, 0}, // FAdd
+	{1, 1, 2, 0}, // ISub
+	{1, 1, 2, 0}, // FSub
+	{1, 1, 2, 0}, // IMul
+	{1, 1, 2, 0}, // FMul
+	{1, 1, 2, 0}, // UDiv
+	{1, 1, 2, 0}, // SDiv
+	{1, 1, 2, 0}, // FDiv
+	{1, 1, 2, 0}, // UMod
+	{1, 1, 2, 0}, // SRem
+	{1, 1, 2, 0}, // SMod
+	{1, 1, 2, 0}, // FRem
+	{1, 1, 2, 0}, // FMod
+	{1, 1, 2, 0}, // VectorTimesScalar
+	{1, 1, 2, 0}, // MatrixTimesScalar
+	{1, 1, 2, 0}, // VectorTimesMatrix
+	{1, 1, 2, 0}, // MatrixTimesVector
+	{1, 1, 2, 0}, // MatrixTimesMatrix
+	{1, 1, 2, 0}, // OuterProduct
+	{1, 1, 2, 0}, // Dot
+	{1, 1, 2, 0}, // IAddCarry
+	{1, 1, 2, 0}, // ISubBorrow
+	{1, 1, 2, 0}, // UMulExtended
+	{1, 1, 2, 0}, // SMulExtended
 	{1, 1, 0, 0}, // #153
 	{1, 1, 0, 0}, // Any
 	{1, 1, 0, 0}, // All
