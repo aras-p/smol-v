@@ -220,19 +220,19 @@ int main()
 
 	// Compress various ways (as a whole blob) and record sizes
 	printf("Compressing...\n");
-	smolv::InputStatsRecordCompressedSize(stats, "0 Remap", spirvRemapAll.size());
+	;;smolv::InputStatsRecordCompressedSize(stats, "0 Remap", spirvRemapAll.size());
 	smolv::InputStatsRecordCompressedSize(stats, "0 SMOL", smolvAll.size());
 
-	smolv::InputStatsRecordCompressedSize(stats, "1    LZ4HC", CompressLZ4HC(spirvAll.data(), spirvAll.size()));
-	smolv::InputStatsRecordCompressedSize(stats, "1 re+LZ4HC", CompressLZ4HC(spirvRemapAll.data(), spirvRemapAll.size()));
+	;;smolv::InputStatsRecordCompressedSize(stats, "1    LZ4HC", CompressLZ4HC(spirvAll.data(), spirvAll.size()));
+	;;smolv::InputStatsRecordCompressedSize(stats, "1 re+LZ4HC", CompressLZ4HC(spirvRemapAll.data(), spirvRemapAll.size()));
 	smolv::InputStatsRecordCompressedSize(stats, "1 sm+LZ4HC", CompressLZ4HC(smolvAll.data(), smolvAll.size()));
 
-	smolv::InputStatsRecordCompressedSize(stats, "2    Zstd", CompressZstd(spirvAll.data(), spirvAll.size()));
-	smolv::InputStatsRecordCompressedSize(stats, "2 re+Zstd", CompressZstd(spirvRemapAll.data(), spirvRemapAll.size()));
+	;;smolv::InputStatsRecordCompressedSize(stats, "2    Zstd", CompressZstd(spirvAll.data(), spirvAll.size()));
+	;;smolv::InputStatsRecordCompressedSize(stats, "2 re+Zstd", CompressZstd(spirvRemapAll.data(), spirvRemapAll.size()));
 	smolv::InputStatsRecordCompressedSize(stats, "2 sm+Zstd", CompressZstd(smolvAll.data(), smolvAll.size()));
 
-	smolv::InputStatsRecordCompressedSize(stats, "3    Zstd20", CompressZstd(spirvAll.data(), spirvAll.size(), 20));
-	smolv::InputStatsRecordCompressedSize(stats, "3 re+Zstd20", CompressZstd(spirvRemapAll.data(), spirvRemapAll.size(), 20));
+	;;smolv::InputStatsRecordCompressedSize(stats, "3    Zstd20", CompressZstd(spirvAll.data(), spirvAll.size(), 20));
+	;;smolv::InputStatsRecordCompressedSize(stats, "3 re+Zstd20", CompressZstd(spirvRemapAll.data(), spirvRemapAll.size(), 20));
 	smolv::InputStatsRecordCompressedSize(stats, "3 sm+Zstd20", CompressZstd(smolvAll.data(), smolvAll.size(), 20));
 	
 	smolv::InputStatsPrint(stats);
