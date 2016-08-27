@@ -923,11 +923,19 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv)
 		// write the rest of the instruction words
 		if (op == SpvOpDecorate || op == SpvOpMemberDecorate)
 		{
-			// Decorate & MemberDecorate (20.5% total space in test data): delta+varint from previous, varint on rest
+			// Decorate & MemberDecorate (20.4% space in test data): delta+varint from previous, varint on rest
 			uint32_t v = words[ioffs];
 			smolv_WriteVarint(outSmolv, v - prevDecorate);
 			prevDecorate = v;
 			ioffs++;
+			for (; ioffs < instrLen; ++ioffs)
+				smolv_WriteVarint(outSmolv, words[ioffs]);
+		}
+		else if (op == SpvOpVectorShuffle)
+		{
+			// VectorShuffle (9.8% space in test data): vector IDs as deltas from result + varint, varint on rest
+			smolv_WriteVarint(outSmolv, prevResult - words[ioffs]); ioffs++;
+			smolv_WriteVarint(outSmolv, prevResult - words[ioffs]); ioffs++;
 			for (; ioffs < instrLen; ++ioffs)
 				smolv_WriteVarint(outSmolv, words[ioffs]);
 		}
@@ -978,16 +986,14 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 		// read type as varint, if we have it
 		if (smolv_OpHasType(op))
 		{
-			if (!smolv_ReadVarint(bytes, bytesEnd, val))
-				return false;
+			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
 			smolv_Write4(outSpirv, val);
 			ioffs++;
 		}
 		// read result as delta+varint, if we have it
 		if (smolv_OpHasResult(op))
 		{
-			if (!smolv_ReadVarint(bytes, bytesEnd, val))
-				return false;
+			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
 			val = prevResult + smolv_ZigDecode(val);
 			smolv_Write4(outSpirv, val);
 			prevResult = val;
@@ -998,16 +1004,29 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 		if (op == SpvOpDecorate || op == SpvOpMemberDecorate)
 		{
 			// Decorate: delta+varint from previous, varint on rest
-			if (!smolv_ReadVarint(bytes, bytesEnd, val))
-				return false;
+			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
 			val = prevDecorate + val;
 			smolv_Write4(outSpirv, val);
 			prevDecorate = val;
 			ioffs++;
 			for (; ioffs < instrLen; ++ioffs)
 			{
-				if (!smolv_ReadVarint(bytes, bytesEnd, val))
-					return false;
+				if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
+				smolv_Write4(outSpirv, val);
+			}
+		}
+		else if (op == SpvOpVectorShuffle)
+		{
+			// VectorShuffle: vector IDs as deltas from result + varint, varint on rest
+			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
+			smolv_Write4(outSpirv, prevResult - val);
+			ioffs++;
+			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
+			smolv_Write4(outSpirv, prevResult - val);
+			ioffs++;
+			for (; ioffs < instrLen; ++ioffs)
+			{
+				if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
 				smolv_Write4(outSpirv, val);
 			}
 		}
@@ -1016,8 +1035,7 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 			// regular op with no special handling
 			for (; ioffs < instrLen; ++ioffs)
 			{
-				if (!smolv_Read4(bytes, bytesEnd, val))
-					return false;
+				if (!smolv_Read4(bytes, bytesEnd, val)) return false;
 				smolv_Write4(outSpirv, val);
 			}
 		}
@@ -1027,6 +1045,11 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 	
 	return true;
 }
+
+
+
+// --------------------------------------------------------------------------------------------
+// Calculating instruction count / space stats on SPIR-V and SMOL-V
 
 
 bool smolv::InputStatsCalculate(smolv::InputStats* stats, const void* spirvData, size_t spirvSize)
@@ -1154,10 +1177,8 @@ bool smolv::InputStatsCalculateSmol(smolv::InputStats* stats, const void* smolvD
 		}
 		
 		// read the rest of the instruction words
-		if (op == SpvOpDecorate || op == SpvOpMemberDecorate)
+		if (op == SpvOpDecorate || op == SpvOpMemberDecorate || op == SpvOpVectorShuffle)
 		{
-			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
-			ioffs++;
 			for (; ioffs < instrLen; ++ioffs)
 			{
 				if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
