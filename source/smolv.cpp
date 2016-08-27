@@ -26,6 +26,7 @@ enum SpvOp
 	SpvOpExtension = 10,
 	SpvOpExtInstImport = 11,
 	SpvOpExtInst = 12,
+	SpvOpVectorShuffleCompact = 13, // not in SPIR-V, added for SMOL-V!
 	SpvOpMemoryModel = 14,
 	SpvOpEntryPoint = 15,
 	SpvOpExecutionMode = 16,
@@ -337,7 +338,7 @@ static const char* kSpirvOpNames[] =
 	"Extension",
 	"ExtInstImport",
 	"ExtInst",
-	"#13",
+	"VectorShuffleCompact",
 	"MemoryModel",
 	"EntryPoint",
 	"ExecutionMode",
@@ -684,7 +685,7 @@ static const OpData kSpirvOpData[] =
 	{0, 0, 0, 0}, // Extension
 	{1, 0, 0, 0}, // ExtInstImport
 	{1, 1, 0, 1}, // ExtInst
-	{1, 1, 0, 0}, // #13
+	{1, 1, 2, 1}, // VectorShuffleCompact - new in SMOLV
 	{0, 0, 0, 1}, // MemoryModel
 	{0, 0, 0, 1}, // EntryPoint
 	{0, 0, 0, 1}, // ExecutionMode
@@ -1194,20 +1195,22 @@ static SpvOp smolv_RemapOp(SpvOp op)
 static uint32_t smolv_EncodeLen(SpvOp op, uint32_t len)
 {
 	len--;
-	if (op == SpvOpVectorShuffle)	len -= 4;
-	if (op == SpvOpDecorate)		len -= 2;
-	if (op == SpvOpLoad)			len -= 3;
-	if (op == SpvOpAccessChain)		len -= 3;
+	if (op == SpvOpVectorShuffle)			len -= 4;
+	if (op == SpvOpVectorShuffleCompact)	len -= 4;
+	if (op == SpvOpDecorate)				len -= 2;
+	if (op == SpvOpLoad)					len -= 3;
+	if (op == SpvOpAccessChain)				len -= 3;
 	return len;
 }
 
 static uint32_t smolv_DecodeLen(SpvOp op, uint32_t len)
 {
 	len++;
-	if (op == SpvOpVectorShuffle)	len += 4;
-	if (op == SpvOpDecorate)		len += 2;
-	if (op == SpvOpLoad)			len += 3;
-	if (op == SpvOpAccessChain)		len += 3;
+	if (op == SpvOpVectorShuffle)			len += 4;
+	if (op == SpvOpVectorShuffleCompact)	len += 4;
+	if (op == SpvOpDecorate)				len += 2;
+	if (op == SpvOpLoad)					len += 3;
+	if (op == SpvOpAccessChain)				len += 3;
 	return len;
 }
 
@@ -1270,6 +1273,23 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv)
 	{
 		_SMOLV_READ_OP();
 
+		// A usual case of vector shuffle, with less than 4 components, each with a value
+		// in [0..3] range: encode it in a more compact form, with the swizzle pattern in one byte.
+		// Turn this into a VectorShuffleCompact instruction, that takes up unused slot in Ops.
+		uint32_t swizzle = 0;
+		if (op == SpvOpVectorShuffle && instrLen <= 9)
+		{
+			uint32_t swz0 = instrLen > 5 ? words[5] : 0;
+			uint32_t swz1 = instrLen > 6 ? words[6] : 0;
+			uint32_t swz2 = instrLen > 7 ? words[7] : 0;
+			uint32_t swz3 = instrLen > 8 ? words[8] : 0;
+			if (swz0 < 4 && swz1 < 4 && swz2 < 4 && swz3 < 4)
+			{
+				op = SpvOpVectorShuffleCompact;
+				swizzle = (swz0 << 6) | (swz1 << 4) | (swz2 << 2) | (swz3);
+			}
+		}
+
 		// length + opcode
 		smolv_WriteLengthOp(outSmolv, instrLen, op);
 
@@ -1306,7 +1326,14 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv)
 			uint32_t delta = prevResult - words[ioffs];
 			smolv_WriteVarint(outSmolv, zigzag ? smolv_ZigEncode(delta) : delta);
 		}
-		if (smolv_OpVarRest(op))
+
+		if (op == SpvOpVectorShuffleCompact)
+		{
+			// compact vector shuffle, just write out single swizzle byte
+			outSmolv.push_back(swizzle);
+			ioffs = instrLen;
+		}
+		else if (smolv_OpVarRest(op))
 		{
 			// write out rest of words with variable encoding (expected to be small integers)
 			for (; ioffs < instrLen; ++ioffs)
@@ -1352,6 +1379,9 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 		SpvOp op;
 		if (!smolv_ReadLengthOp(bytes, bytesEnd, instrLen, op))
 			return false;
+		const bool wasSwizzle = (op == SpvOpVectorShuffleCompact);
+		if (wasSwizzle)
+			op = SpvOpVectorShuffle;
 		smolv_Write4(outSpirv, (instrLen << 16) | op);
 
 		size_t ioffs = 1;
@@ -1392,7 +1422,16 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 			if (zigzag) val = smolv_ZigDecode(val);
 			smolv_Write4(outSpirv, prevResult - val);
 		}
-		if (smolv_OpVarRest(op))
+
+		if (wasSwizzle && instrLen <= 9)
+		{
+			uint32_t swizzle = *bytes++;
+			if (instrLen > 5) smolv_Write4(outSpirv, (swizzle >> 6) & 3);
+			if (instrLen > 6) smolv_Write4(outSpirv, (swizzle >> 4) & 3);
+			if (instrLen > 7) smolv_Write4(outSpirv, (swizzle >> 2) & 3);
+			if (instrLen > 8) smolv_Write4(outSpirv, swizzle & 3);
+		}
+		else if (smolv_OpVarRest(op))
 		{
 			// read rest of words with variable encoding
 			for (; ioffs < instrLen; ++ioffs)
@@ -1536,6 +1575,9 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 		varBegin = bytes;
 		if (!smolv_ReadLengthOp(bytes, bytesEnd, instrLen, op))
 			return false;
+		const bool wasSwizzle = (op == SpvOpVectorShuffleCompact);
+		if (wasSwizzle)
+			op = SpvOpVectorShuffle;
 		stats->varintCountsOp[bytes-varBegin]++;
 		
 		size_t ioffs = 1;
@@ -1568,7 +1610,12 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
 			stats->varintCountsRes[bytes-varBegin]++;
 		}
-		if (smolv_OpVarRest(op))
+
+		if (wasSwizzle && instrLen <= 9)
+		{
+			bytes++;
+		}
+		else if (smolv_OpVarRest(op))
 		{
 			for (; ioffs < instrLen; ++ioffs)
 			{
