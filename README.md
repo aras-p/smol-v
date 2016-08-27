@@ -38,7 +38,7 @@ other files under testing/external to the build too (3rd party code: glslang rem
 
 ## Limitations / TODO
 
-- Big-endian SPIR-V are not supported yet.
+- SPIR-V where the words got stored in big-endian layout is not supported yet.
 - The whole thing might not work on Big-Endian CPUs. It might, but I'm not 100% sure.
 - Not much prevention is done against malformed/corrupted inputs, TODO.
 - Out of memory cases are not handled. The code will either throw exception
