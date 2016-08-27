@@ -676,16 +676,16 @@ static const OpData kSpirvOpData[] =
 	{0, 0, 0, 0}, // Nop
 	{1, 1, 0, 0}, // Undef
 	{0, 0, 0, 0}, // SourceContinued
-	{0, 0, 0, 0}, // Source
+	{0, 0, 0, 1}, // Source
 	{0, 0, 0, 0}, // SourceExtension
 	{0, 0, 0, 0}, // Name
 	{0, 0, 0, 0}, // MemberName
 	{0, 0, 0, 0}, // String
-	{0, 0, 0, 0}, // Line
+	{0, 0, 0, 1}, // Line
 	{1, 1, 0, 0}, // #9
 	{0, 0, 0, 0}, // Extension
 	{1, 0, 0, 0}, // ExtInstImport
-	{1, 1, 0, 0}, // ExtInst
+	{1, 1, 0, 1}, // ExtInst
 	{1, 1, 0, 0}, // #13
 	{0, 0, 0, 1}, // MemoryModel
 	{0, 0, 0, 0}, // EntryPoint
@@ -782,22 +782,22 @@ static const OpData kSpirvOpData[] =
 	{1, 1, 1, 0}, // ImageQueryLevels
 	{1, 1, 1, 0}, // ImageQuerySamples
 	{1, 1, 0, 0}, // #108
-	{1, 1, 0, 0}, // ConvertFToU
-	{1, 1, 0, 0}, // ConvertFToS
-	{1, 1, 0, 0}, // ConvertSToF
-	{1, 1, 0, 0}, // ConvertUToF
-	{1, 1, 0, 0}, // UConvert
-	{1, 1, 0, 0}, // SConvert
-	{1, 1, 0, 0}, // FConvert
-	{1, 1, 0, 0}, // QuantizeToF16
-	{1, 1, 0, 0}, // ConvertPtrToU
-	{1, 1, 0, 0}, // SatConvertSToU
-	{1, 1, 0, 0}, // SatConvertUToS
-	{1, 1, 0, 0}, // ConvertUToPtr
-	{1, 1, 0, 0}, // PtrCastToGeneric
-	{1, 1, 0, 0}, // GenericCastToPtr
-	{1, 1, 0, 0}, // GenericCastToPtrExplicit
-	{1, 1, 0, 0}, // Bitcast
+	{1, 1, 1, 0}, // ConvertFToU
+	{1, 1, 1, 0}, // ConvertFToS
+	{1, 1, 1, 0}, // ConvertSToF
+	{1, 1, 1, 0}, // ConvertUToF
+	{1, 1, 1, 0}, // UConvert
+	{1, 1, 1, 0}, // SConvert
+	{1, 1, 1, 0}, // FConvert
+	{1, 1, 1, 0}, // QuantizeToF16
+	{1, 1, 1, 0}, // ConvertPtrToU
+	{1, 1, 1, 0}, // SatConvertSToU
+	{1, 1, 1, 0}, // SatConvertUToS
+	{1, 1, 1, 0}, // ConvertUToPtr
+	{1, 1, 1, 0}, // PtrCastToGeneric
+	{1, 1, 1, 0}, // GenericCastToPtr
+	{1, 1, 1, 1}, // GenericCastToPtrExplicit
+	{1, 1, 1, 0}, // Bitcast
 	{1, 1, 0, 0}, // #125
 	{1, 1, 1, 0}, // SNegate
 	{1, 1, 1, 0}, // FNegate
