@@ -15,15 +15,12 @@ to improve this:
 - Many words, especially ones that most often have small values, are encoded using
   ["varint" scheme](https://developers.google.com/protocol-buffers/docs/encoding) (1-5 bytes per
   word, with just one byte for values in 0..127 range).
-
 - Some IDs used in the program are delta-encoded, relative to previously seen IDs (e.g. Result
   IDs). Often instructions reference things that were computed just before, so this results in
   small deltas. These values are also encoded using "varint" scheme.
-
 - Reordering instruction opcodes so that the most common ones are the smallest values, for smaller
   varint encoding.
-
-- Encoding several instructions in a more compact form, e.g. the "typical <4 component swizzle"
+- Encoding several instructions in a more compact form, e.g. the "typical <=4 component swizzle"
   shape of a VectorShuffle instruction.
 
 A somewhat similar utility is [spirv-remap from glslang](https://github.com/KhronosGroup/glslang/blob/master/README-spirv-remap.txt).
