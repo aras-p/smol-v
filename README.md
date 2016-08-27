@@ -61,16 +61,16 @@ As of 2016 August 27, results on 75 shaders (under `tests/spirv-dumps`) are:
 ```
 Compression: original size 807.0KB
 0 Remap        : 806.7KB (100.0%)
-0 SMOL         : 321.2KB ( 39.8%)
+0 SMOL         : 277.8KB ( 34.4%)
 1    LZ4HC     : 217.3KB ( 26.9%)
 1 re+LZ4HC     : 157.8KB ( 19.6%)
-1 sm+LZ4HC     :  88.2KB ( 10.9%)
+1 sm+LZ4HC     :  85.5KB ( 10.6%)
 2    Zstd      : 182.8KB ( 22.7%)
 2 re+Zstd      : 128.4KB ( 15.9%)
-2 sm+Zstd      :  82.9KB ( 10.3%)
+2 sm+Zstd      :  77.9KB (  9.7%)
 3    Zstd20    : 125.7KB ( 15.6%)
 3 re+Zstd20    :  91.5KB ( 11.3%)
-3 sm+Zstd20    :  63.1KB (  7.8%)
+3 sm+Zstd20    :  62.4KB (  7.7%)
 ```
 
 * "Remap" is spirv-remap from glslang, without debug info stripping (SMOL-V does not strip debug info either).
