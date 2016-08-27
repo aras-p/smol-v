@@ -1076,32 +1076,6 @@ static bool smolv_CheckSmolHeader(const uint8_t* bytes, size_t byteCount)
 }
 
 
-struct smolv::Stats
-{
-	size_t opCounts[kKnownOpsCount] = {};
-	size_t opSizes[kKnownOpsCount] = {};
-	size_t smolOpSizes[kKnownOpsCount] = {};
-	size_t varintCountsOp[6] = {};
-	size_t varintCountsType[6] = {};
-	size_t varintCountsRes[6] = {};
-	size_t varintCountsOther[6] = {};
-	size_t totalOps = 0;
-	size_t totalSize = 0;
-	size_t totalSizeSmol = 0;
-	size_t inputCount = 0;
-};
-
-
-smolv::Stats* smolv::StatsCreate()
-{
-	return new Stats();
-}
-
-void smolv::StatsDelete(smolv::Stats *s)
-{
-	delete s;
-}
-
 static void smolv_Write4(smolv::ByteArray& arr, uint32_t v)
 {
 	arr.push_back(v & 0xFF);
@@ -1190,7 +1164,7 @@ static SpvOp smolv_RemapOp(SpvOp op)
 // For most compact varint encoding of common instructions, the instruction length should come out
 // into 3 bits (be <8). SPIR-V instruction lengths are always at least 1, and for some other
 // instructions they are guaranteed to be some other minimum length. Adjust the length before encoding,
-// and after encoding accordingly.
+// and after decoding accordingly.
 
 static uint32_t smolv_EncodeLen(SpvOp op, uint32_t len)
 {
@@ -1460,6 +1434,33 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 // Calculating instruction count / space stats on SPIR-V and SMOL-V
 
 
+struct smolv::Stats
+{
+	size_t opCounts[kKnownOpsCount] = {};
+	size_t opSizes[kKnownOpsCount] = {};
+	size_t smolOpSizes[kKnownOpsCount] = {};
+	size_t varintCountsOp[6] = {};
+	size_t varintCountsType[6] = {};
+	size_t varintCountsRes[6] = {};
+	size_t varintCountsOther[6] = {};
+	size_t totalOps = 0;
+	size_t totalSize = 0;
+	size_t totalSizeSmol = 0;
+	size_t inputCount = 0;
+};
+
+
+smolv::Stats* smolv::StatsCreate()
+{
+	return new Stats();
+}
+
+void smolv::StatsDelete(smolv::Stats *s)
+{
+	delete s;
+}
+
+
 bool smolv::StatsCalculate(smolv::Stats* stats, const void* spirvData, size_t spirvSize)
 {
 	if (!stats)
@@ -1470,77 +1471,21 @@ bool smolv::StatsCalculate(smolv::Stats* stats, const void* spirvData, size_t sp
 	const uint32_t* wordsEnd = words + wordCount;
 	if (!smolv_CheckSpirVHeader(words, wordCount))
 		return false;
+	words += 5;
 	
-	// go over instructions
 	stats->inputCount++;
 	stats->totalSize += wordCount;
 
-	//printf("%4s %-20s Ln\n", "Offs", "Op");
-	size_t offset = 5;
-	words += 5;
 	while (words < wordsEnd)
 	{
 		_SMOLV_READ_OP();
 
 		if (op < kKnownOpsCount)
 		{
-			//printf("%04i %-20s %2i  ", (int)offset, smolv_GetOpName(op), instrLen);
 			stats->opCounts[op]++;
 			stats->opSizes[op] += instrLen;
 		}
-		else
-		{
-			//printf("%04i Op#%i %2i  ", (int)offset, op, instrLen);
-		}
-
-		switch(op)
-		{
-			case SpvOpDecorate:
-				/*
-				if (instrLen < 3)
-					return false;
-				printf("OpDecor id %3i dec %3i ", words[1], words[2]);
-				for (int i = 3; i < instrLen; ++i)
-					printf("%i ", words[i]);
-				printf("\n");
-				 */
-				break;
-			case SpvOpLoad:
-				/*
-				if (instrLen < 4)
-					return false;
-				printf("t %3i res %3i ptr %3i ", words[1], words[2], words[3]);
-				for (int i = 4; i < instrLen; ++i)
-					printf("%i ", words[i]);
-				 printf("\n");
-				 */
-				break;
-			case SpvOpAccessChain:
-				/*
-				if (instrLen < 4)
-					return false;
-				printf("t %3i res %3i bas %3i ", words[1], words[2], words[3]);
-				for (int i = 4; i < instrLen; ++i)
-					printf("%i ", words[i]);
-				 printf("\n");
-				 */
-				break;
-			case SpvOpVectorShuffle:
-				/*
-				if (instrLen < 5)
-					return false;
-				printf("t %3i res %3i v1 %3i v2 %3i ", words[1], words[2], words[3], words[4]);
-				for (int i = 5; i < instrLen; ++i)
-					printf("%i ", words[i]);
-				 printf("\n");
-				*/
-				break;
-			default:
-				break;
-		}
-		
 		words += instrLen;
-		offset += instrLen;
 		stats->totalOps++;
 	}
 	
@@ -1559,11 +1504,9 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 		return false;
 	bytes += 20;
 	
-	// go over instructions
 	stats->totalSizeSmol += smolvSize;
 	
 	uint32_t val;
-	
 	while (bytes < bytesEnd)
 	{
 		const uint8_t* instrBegin = bytes;
