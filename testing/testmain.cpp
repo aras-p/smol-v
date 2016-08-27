@@ -2,6 +2,7 @@
 #include "external/lz4/lz4.h"
 #include "external/lz4/lz4hc.h"
 #include "external/zstd/zstd.h"
+#include "external/glslang/SPIRV/SPVRemapper.h"
 
 
 typedef std::vector<uint8_t> ByteArray;
@@ -22,6 +23,17 @@ void ReadFile(const char* fileName, ByteArray& output)
 	}
 }
 
+static void RemapSPIRV(const void* data, size_t size, ByteArray& output)
+{
+	spv::spirvbin_t remapper;
+
+	const std::uint32_t* dataI = (const std::uint32_t*)data;
+	const size_t sizeI = size/4;
+	std::vector<std::uint32_t> buf(dataI, dataI+sizeI);
+	
+	remapper.remap(buf, remapper.ALL_BUT_STRIP);
+	output.insert(output.end(), (const uint8_t*)buf.data(), ((const uint8_t*)buf.data()) + buf.size()*4);
+}
 
 static size_t CompressLZ4HC(const void* data, size_t size, int level = 0)
 {
@@ -136,6 +148,7 @@ int main()
 
 	// all test data lumped together, to check how well it compresses as a whole block
 	ByteArray spirvAll;
+	ByteArray spirvRemapAll;
 	ByteArray smolvAll;
 
 	// go over all test files
@@ -198,20 +211,25 @@ int main()
 		// Append original and SMOLV code to the whole blob
 		spirvAll.insert(spirvAll.end(), spirv.begin(), spirv.end());
 		smolvAll.insert(smolvAll.end(), smolv.begin(), smolv.end());
+		RemapSPIRV(spirv.data(), spirv.size(), spirvRemapAll);
 	}
 
 	// Compress various ways (as a whole blob) and record sizes
 	printf("Compressing...\n");
+	smolv::InputStatsRecordCompressedSize(stats, "0 Remap", spirvRemapAll.size());
 	smolv::InputStatsRecordCompressedSize(stats, "0 SMOL", smolvAll.size());
 
-	//smolv::InputStatsRecordCompressedSize(stats, "1 LZ4HC", CompressLZ4HC(spirvAll.data(), spirvAll.size()));
-	smolv::InputStatsRecordCompressedSize(stats, "2 smLZ4HC", CompressLZ4HC(smolvAll.data(), smolvAll.size()));
+	smolv::InputStatsRecordCompressedSize(stats, "1    LZ4HC", CompressLZ4HC(spirvAll.data(), spirvAll.size()));
+	smolv::InputStatsRecordCompressedSize(stats, "1 re+LZ4HC", CompressLZ4HC(spirvRemapAll.data(), spirvRemapAll.size()));
+	smolv::InputStatsRecordCompressedSize(stats, "1 sm+LZ4HC", CompressLZ4HC(smolvAll.data(), smolvAll.size()));
 
-	//smolv::InputStatsRecordCompressedSize(stats, "3 Zstd", CompressZstd(spirvAll.data(), spirvAll.size()));
-	smolv::InputStatsRecordCompressedSize(stats, "4 smZstd", CompressZstd(smolvAll.data(), smolvAll.size()));
+	smolv::InputStatsRecordCompressedSize(stats, "2    Zstd", CompressZstd(spirvAll.data(), spirvAll.size()));
+	smolv::InputStatsRecordCompressedSize(stats, "2 re+Zstd", CompressZstd(spirvRemapAll.data(), spirvRemapAll.size()));
+	smolv::InputStatsRecordCompressedSize(stats, "2 sm+Zstd", CompressZstd(smolvAll.data(), smolvAll.size()));
 
-	//smolv::InputStatsRecordCompressedSize(stats, "5 Zstd20", CompressZstd(spirvAll.data(), spirvAll.size(), 20));
-	smolv::InputStatsRecordCompressedSize(stats, "6 smZstd20", CompressZstd(smolvAll.data(), smolvAll.size(), 20));
+	smolv::InputStatsRecordCompressedSize(stats, "3    Zstd20", CompressZstd(spirvAll.data(), spirvAll.size(), 20));
+	smolv::InputStatsRecordCompressedSize(stats, "3 re+Zstd20", CompressZstd(spirvRemapAll.data(), spirvRemapAll.size(), 20));
+	smolv::InputStatsRecordCompressedSize(stats, "3 sm+Zstd20", CompressZstd(smolvAll.data(), smolvAll.size(), 20));
 	
 	smolv::InputStatsPrint(stats);
 	
