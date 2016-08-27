@@ -751,8 +751,10 @@ struct smolv::InputStats
 {
 	size_t opCounts[kKnownOpsCount] = {};
 	size_t opSizes[kKnownOpsCount] = {};
+	size_t opSizesSmol[kKnownOpsCount] = {};
 	size_t totalOps = 0;
 	size_t totalSize = 0;
+	size_t totalSizeSmol = 0;
 	size_t inputCount = 0;
 	std::map<std::string, size_t> compressedSizes;
 };
@@ -1115,6 +1117,70 @@ bool smolv::InputStatsCalculate(smolv::InputStats* stats, const void* spirvData,
 }
 
 
+bool smolv::InputStatsCalculateSmol(smolv::InputStats* stats, const void* smolvData, size_t smolvSize)
+{
+	if (!stats)
+		return false;
+	
+	const uint8_t* bytes = (const uint8_t*)smolvData;
+	const uint8_t* bytesEnd = bytes + smolvSize;
+	if (!smolv_CheckSmolHeader(bytes, smolvSize))
+		return false;
+	
+	// go over instructions
+	stats->totalSizeSmol += smolvSize;
+	
+	uint32_t val;
+	
+	while (bytes < bytesEnd)
+	{
+		// read length + opcode
+		const uint8_t* instrBegin = bytes;
+		uint32_t instrLen;
+		SpvOp op;
+		if (!smolv_ReadLengthOp(bytes, bytesEnd, instrLen, op))
+			return false;
+		
+		size_t ioffs = 1;
+		if (smolv_OpHasType(op))
+		{
+			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
+			ioffs++;
+		}
+		if (smolv_OpHasResult(op))
+		{
+			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
+			ioffs++;
+		}
+		
+		// read the rest of the instruction words
+		if (op == SpvOpDecorate || op == SpvOpMemberDecorate)
+		{
+			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
+			ioffs++;
+			for (; ioffs < instrLen; ++ioffs)
+			{
+				if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
+			}
+		}
+		else
+		{
+			for (; ioffs < instrLen; ++ioffs)
+			{
+				if (!smolv_Read4(bytes, bytesEnd, val)) return false;
+			}
+		}
+		
+		if (op < kKnownOpsCount)
+		{
+			stats->opSizesSmol[op] += bytes - instrBegin;
+		}
+	}
+	
+	return true;
+}
+
+
 bool smolv::InputStatsRecordCompressedSize(InputStats* stats, const char* compressor, size_t compressedSize)
 {
 	if (!stats)
@@ -1132,15 +1198,19 @@ void smolv::InputStatsPrint(const InputStats* stats)
 	typedef std::pair<SpvOp,size_t> OpCounter;
 	OpCounter counts[kKnownOpsCount];
 	OpCounter sizes[kKnownOpsCount];
+	OpCounter sizesSmol[kKnownOpsCount];
 	for (int i = 0; i < kKnownOpsCount; ++i)
 	{
 		counts[i].first = (SpvOp)i;
 		counts[i].second = stats->opCounts[i];
 		sizes[i].first = (SpvOp)i;
 		sizes[i].second = stats->opSizes[i];
+		sizesSmol[i].first = (SpvOp)i;
+		sizesSmol[i].second = stats->opSizesSmol[i];
 	}
 	std::sort(counts, counts + kKnownOpsCount, [](OpCounter a, OpCounter b) { return a.second > b.second; });
 	std::sort(sizes, sizes + kKnownOpsCount, [](OpCounter a, OpCounter b) { return a.second > b.second; });
+	std::sort(sizesSmol, sizesSmol + kKnownOpsCount, [](OpCounter a, OpCounter b) { return a.second > b.second; });
 	
 	printf("Stats for %i SPIR-V inputs, total size %i words (%.1fKB):\n", (int)stats->inputCount, (int)stats->totalSize, stats->totalSize * 4.0f / 1024.0f);
 	printf("Most occuring ops:\n");
@@ -1156,10 +1226,22 @@ void smolv::InputStatsPrint(const InputStats* stats)
 		printf(" #%2i: %-20s %4i (%4.1f%%) avg len %.1f\n",
 			   i,
 			   kSpirvOpNames[op],
-			   (int)sizes[i].second,
+			   (int)sizes[i].second*4,
 			   (float)sizes[i].second / (float)stats->totalSize * 100.0f,
-			   (float)sizes[i].second / (float)stats->opCounts[op]
+			   (float)sizes[i].second*4 / (float)stats->opCounts[op]
 		);
+	}
+	printf("Largest total size of ops in SMOL:\n");
+	for (int i = 0; i < 15; ++i)
+	{
+		SpvOp op = sizesSmol[i].first;
+		printf(" #%2i: %-20s %4i (%4.1f%%) avg len %.1f\n",
+			   i,
+			   kSpirvOpNames[op],
+			   (int)sizesSmol[i].second,
+			   (float)sizesSmol[i].second / (float)stats->totalSizeSmol * 100.0f,
+			   (float)sizesSmol[i].second / (float)stats->opCounts[op]
+			   );
 	}
 	
 	printf("Compression: original size %.1fKB\n", stats->totalSize*4.0f/1024.0f);

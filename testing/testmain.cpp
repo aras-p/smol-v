@@ -187,6 +187,14 @@ int main()
 			break;
 		}
 
+		// SMOL encoding stats
+		if (!smolv::InputStatsCalculateSmol(stats, smolv.data(), smolv.size()))
+		{
+			printf("ERROR: failed to calc SMOLV instruction stats (bug?) %s\n", kFiles[i]);
+			++errorCount;
+			break;
+		}
+
 		// Append original and SMOLV code to the whole blob
 		spirvAll.insert(spirvAll.end(), spirv.begin(), spirv.end());
 		smolvAll.insert(smolvAll.end(), smolv.begin(), smolv.end());
