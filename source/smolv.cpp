@@ -834,6 +834,17 @@ static bool smolv_ReadVarint(const uint8_t*& data, const uint8_t* dataEnd, uint3
 	return true; //@TODO: report failures
 }
 
+static uint32_t smolv_ZigEncode(int32_t i)
+{
+	return (i << 1) ^ (i >> 31);
+}
+
+static int32_t smolv_ZigDecode(uint32_t u)
+{
+	 return (u & 1) ? ((u >> 1) ^ ~0) : (u >> 1);
+}
+
+
 // Shuffling bits of length + opcode to be more compact in varint encoding in typical cases:
 // 0b LLLL LLLL LLLL LLLL OOOO OOOO OOOO OOOO is how SPIR-V encodes it (L=length, O=op), we shuffle into:
 // 0b LLLL LLLL LLLO OOOO OOOL LLLL OOOO OOOO, so that typical lengths (<32) and ops (<256) fit under
@@ -884,9 +895,20 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv)
 	while (words < wordsEnd)
 	{
 		_SMOLV_READ_OP();
+
+		// length + opcode
 		smolv_WriteLengthOp(outSmolv, instrLen, op);
-		for (int i = 1; i < instrLen; ++i)
-			smolv_Write4(outSmolv, words[i]);
+
+		size_t ioffs = 1;
+		// write type as varint, if we have it
+		if (smolv_OpHasType(op))
+		{
+			smolv_WriteVarint(outSmolv, words[ioffs]);
+			ioffs++;
+		}
+		
+		for (; ioffs < instrLen; ++ioffs)
+			smolv_Write4(outSmolv, words[ioffs]);
 		
 		words += instrLen;
 	}
@@ -913,13 +935,25 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 
 	while (bytes < bytesEnd)
 	{
+		// read length + opcode
 		uint32_t instrLen;
 		SpvOp op;
 		if (!smolv_ReadLengthOp(bytes, bytesEnd, instrLen, op))
 			return false;
 		smolv_Write4(outSpirv, (instrLen << 16) | op);
 
-		for (int i = 1; i < instrLen; ++i)
+		size_t ioffs = 1;
+
+		// read type as varint, if we have it
+		if (smolv_OpHasType(op))
+		{
+			if (!smolv_ReadVarint(bytes, bytesEnd, val))
+				return false;
+			smolv_Write4(outSpirv, val);
+			ioffs++;
+		}
+
+		for (; ioffs < instrLen; ++ioffs)
 		{
 			if (!smolv_Read4(bytes, bytesEnd, val))
 				return false;
