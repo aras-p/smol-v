@@ -757,27 +757,27 @@ static const OpData kSpirvOpData[] =
 	{1, 1, 0, 0}, // Transpose
 	{1, 1, 0, 0}, // #85
 	{1, 1, 0, 0}, // SampledImage
-	{1, 1, 0, 0}, // ImageSampleImplicitLod
-	{1, 1, 0, 0}, // ImageSampleExplicitLod
-	{1, 1, 0, 0}, // ImageSampleDrefImplicitLod
-	{1, 1, 0, 0}, // ImageSampleDrefExplicitLod
-	{1, 1, 0, 0}, // ImageSampleProjImplicitLod
-	{1, 1, 0, 0}, // ImageSampleProjExplicitLod
-	{1, 1, 0, 0}, // ImageSampleProjDrefImplicitLod
-	{1, 1, 0, 0}, // ImageSampleProjDrefExplicitLod
-	{1, 1, 0, 0}, // ImageFetch
-	{1, 1, 0, 0}, // ImageGather
-	{1, 1, 0, 0}, // ImageDrefGather
-	{1, 1, 0, 0}, // ImageRead
-	{0, 0, 0, 0}, // ImageWrite
-	{1, 1, 0, 0}, // Image
-	{1, 1, 0, 0}, // ImageQueryFormat
-	{1, 1, 0, 0}, // ImageQueryOrder
-	{1, 1, 0, 0}, // ImageQuerySizeLod
-	{1, 1, 0, 0}, // ImageQuerySize
-	{1, 1, 0, 0}, // ImageQueryLod
-	{1, 1, 0, 0}, // ImageQueryLevels
-	{1, 1, 0, 0}, // ImageQuerySamples
+	{1, 1, 2, 1}, // ImageSampleImplicitLod
+	{1, 1, 2, 1}, // ImageSampleExplicitLod
+	{1, 1, 3, 1}, // ImageSampleDrefImplicitLod
+	{1, 1, 3, 1}, // ImageSampleDrefExplicitLod
+	{1, 1, 2, 1}, // ImageSampleProjImplicitLod
+	{1, 1, 2, 1}, // ImageSampleProjExplicitLod
+	{1, 1, 3, 1}, // ImageSampleProjDrefImplicitLod
+	{1, 1, 3, 1}, // ImageSampleProjDrefExplicitLod
+	{1, 1, 2, 1}, // ImageFetch
+	{1, 1, 3, 1}, // ImageGather
+	{1, 1, 3, 1}, // ImageDrefGather
+	{1, 1, 2, 1}, // ImageRead
+	{0, 0, 3, 1}, // ImageWrite
+	{1, 1, 1, 0}, // Image
+	{1, 1, 1, 0}, // ImageQueryFormat
+	{1, 1, 1, 0}, // ImageQueryOrder
+	{1, 1, 2, 0}, // ImageQuerySizeLod
+	{1, 1, 1, 0}, // ImageQuerySize
+	{1, 1, 2, 0}, // ImageQueryLod
+	{1, 1, 1, 0}, // ImageQueryLevels
+	{1, 1, 1, 0}, // ImageQuerySamples
 	{1, 1, 0, 0}, // #108
 	{1, 1, 0, 0}, // ConvertFToU
 	{1, 1, 0, 0}, // ConvertFToS
@@ -975,18 +975,18 @@ static const OpData kSpirvOpData[] =
 	{0, 0, 0, 0}, // CaptureEventProfilingInfo
 	{1, 1, 0, 0}, // GetDefaultQueue
 	{1, 1, 0, 0}, // BuildNDRange
-	{1, 1, 0, 0}, // ImageSparseSampleImplicitLod
-	{1, 1, 0, 0}, // ImageSparseSampleExplicitLod
-	{1, 1, 0, 0}, // ImageSparseSampleDrefImplicitLod
-	{1, 1, 0, 0}, // ImageSparseSampleDrefExplicitLod
-	{1, 1, 0, 0}, // ImageSparseSampleProjImplicitLod
-	{1, 1, 0, 0}, // ImageSparseSampleProjExplicitLod
-	{1, 1, 0, 0}, // ImageSparseSampleProjDrefImplicitLod
-	{1, 1, 0, 0}, // ImageSparseSampleProjDrefExplicitLod
-	{1, 1, 0, 0}, // ImageSparseFetch
-	{1, 1, 0, 0}, // ImageSparseGather
-	{1, 1, 0, 0}, // ImageSparseDrefGather
-	{1, 1, 0, 0}, // ImageSparseTexelsResident
+	{1, 1, 2, 1}, // ImageSparseSampleImplicitLod
+	{1, 1, 2, 1}, // ImageSparseSampleExplicitLod
+	{1, 1, 3, 1}, // ImageSparseSampleDrefImplicitLod
+	{1, 1, 3, 1}, // ImageSparseSampleDrefExplicitLod
+	{1, 1, 2, 1}, // ImageSparseSampleProjImplicitLod
+	{1, 1, 2, 1}, // ImageSparseSampleProjExplicitLod
+	{1, 1, 3, 1}, // ImageSparseSampleProjDrefImplicitLod
+	{1, 1, 3, 1}, // ImageSparseSampleProjDrefExplicitLod
+	{1, 1, 2, 1}, // ImageSparseFetch
+	{1, 1, 3, 1}, // ImageSparseGather
+	{1, 1, 3, 1}, // ImageSparseDrefGather
+	{1, 1, 1, 0}, // ImageSparseTexelsResident
 	{0, 0, 0, 0}, // NoLine
 	{1, 1, 0, 0}, // AtomicFlagTestAndSet
 	{0, 0, 0, 0}, // AtomicFlagClear
