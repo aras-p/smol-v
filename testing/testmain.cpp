@@ -1,6 +1,6 @@
 #include "../source/smolv.h"
-#include "external/lz4.h"
-#include "external/lz4hc.h"
+#include "external/lz4/lz4.h"
+#include "external/lz4/lz4hc.h"
 
 
 typedef std::vector<uint8_t> ByteArray;

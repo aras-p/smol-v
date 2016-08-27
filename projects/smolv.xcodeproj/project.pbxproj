@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		2BC453B61D70B20D00DFFF3B /* smolv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BC453B41D70B20D00DFFF3B /* smolv.cpp */; };
 		2BC453B91D70B22400DFFF3B /* testmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BC453B81D70B22400DFFF3B /* testmain.cpp */; };
-		2BC466081D70DC6D00DFFF3B /* lz4.c in Sources */ = {isa = PBXBuildFile; fileRef = 2BC466041D70DC6D00DFFF3B /* lz4.c */; };
-		2BC466091D70DC6D00DFFF3B /* lz4hc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2BC466061D70DC6D00DFFF3B /* lz4hc.c */; };
+		2BC4660F1D71849F00DFFF3B /* lz4.c in Sources */ = {isa = PBXBuildFile; fileRef = 2BC4660B1D71849F00DFFF3B /* lz4.c */; };
+		2BC466101D71849F00DFFF3B /* lz4hc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2BC4660D1D71849F00DFFF3B /* lz4hc.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,10 +31,10 @@
 		2BC453B51D70B20D00DFFF3B /* smolv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = smolv.h; sourceTree = "<group>"; };
 		2BC453B81D70B22400DFFF3B /* testmain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testmain.cpp; sourceTree = "<group>"; };
 		2BC453BA1D70BA1700DFFF3B /* spirv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spirv.h; sourceTree = "<group>"; };
-		2BC466041D70DC6D00DFFF3B /* lz4.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lz4.c; path = external/lz4.c; sourceTree = "<group>"; };
-		2BC466051D70DC6D00DFFF3B /* lz4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lz4.h; path = external/lz4.h; sourceTree = "<group>"; };
-		2BC466061D70DC6D00DFFF3B /* lz4hc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lz4hc.c; path = external/lz4hc.c; sourceTree = "<group>"; };
-		2BC466071D70DC6D00DFFF3B /* lz4hc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lz4hc.h; path = external/lz4hc.h; sourceTree = "<group>"; };
+		2BC4660B1D71849F00DFFF3B /* lz4.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lz4.c; path = external/lz4/lz4.c; sourceTree = "<group>"; };
+		2BC4660C1D71849F00DFFF3B /* lz4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lz4.h; path = external/lz4/lz4.h; sourceTree = "<group>"; };
+		2BC4660D1D71849F00DFFF3B /* lz4hc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lz4hc.c; path = external/lz4/lz4hc.c; sourceTree = "<group>"; };
+		2BC4660E1D71849F00DFFF3B /* lz4hc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lz4hc.h; path = external/lz4/lz4hc.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,12 +89,20 @@
 		2BC466031D70DC6100DFFF3B /* external */ = {
 			isa = PBXGroup;
 			children = (
-				2BC466041D70DC6D00DFFF3B /* lz4.c */,
-				2BC466051D70DC6D00DFFF3B /* lz4.h */,
-				2BC466061D70DC6D00DFFF3B /* lz4hc.c */,
-				2BC466071D70DC6D00DFFF3B /* lz4hc.h */,
+				2BC4660A1D71849200DFFF3B /* lz4 */,
 			);
 			name = external;
+			sourceTree = "<group>";
+		};
+		2BC4660A1D71849200DFFF3B /* lz4 */ = {
+			isa = PBXGroup;
+			children = (
+				2BC4660B1D71849F00DFFF3B /* lz4.c */,
+				2BC4660C1D71849F00DFFF3B /* lz4.h */,
+				2BC4660D1D71849F00DFFF3B /* lz4hc.c */,
+				2BC4660E1D71849F00DFFF3B /* lz4hc.h */,
+			);
+			name = lz4;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -153,8 +161,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2BC466081D70DC6D00DFFF3B /* lz4.c in Sources */,
-				2BC466091D70DC6D00DFFF3B /* lz4hc.c in Sources */,
+				2BC4660F1D71849F00DFFF3B /* lz4.c in Sources */,
+				2BC466101D71849F00DFFF3B /* lz4hc.c in Sources */,
 				2BC453B91D70B22400DFFF3B /* testmain.cpp in Sources */,
 				2BC453B61D70B20D00DFFF3B /* smolv.cpp in Sources */,
 			);
