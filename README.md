@@ -1,10 +1,5 @@
 # SMOL-V: like Vulkan/Khronos SPIR-V, but smaller.
 
-smol-v - v0.1 - public domain - https://github.com/aras-p/smol-v
-authored on 2016 by Aras Pranckevicius
-no warranty implied; use at your own risk
-
-
 ## Overview
 
 SMOL-V encodes Vulkan/Khronos SPIR-V format programs into a form that is smaller, and is more
@@ -48,3 +43,13 @@ other files under testing/external to the build too (3rd party code: glslang rem
 - Not much prevention is done against malformed/corrupted inputs, TODO.
 - Out of memory cases are not handled. The code will either throw exception
   or crash, depending on your compilation flags.
+
+## License
+
+Public Domain
+
+There is 3rd party code under the testing framework (`testing/external`); it is not required for
+using SMOL-V. All that code (glslang, lz4, ZStd is BSD-licensed, and taken from github repositories of the respective
+projects).
+
+
