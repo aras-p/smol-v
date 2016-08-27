@@ -239,7 +239,7 @@ int main()
 	std::map<std::string, size_t> sizes;
 
 	;;sizes["0 Remap"] = spirvRemapAll.size();
-	sizes["0 SMOL"] = smolvAll.size();
+	sizes["0 SMOL-V"] = smolvAll.size();
 
 	;;sizes["1    LZ4HC"] = CompressLZ4HC(spirvAll.data(), spirvAll.size());
 	;;sizes["1 re+LZ4HC"] = CompressLZ4HC(spirvRemapAll.data(), spirvRemapAll.size());
