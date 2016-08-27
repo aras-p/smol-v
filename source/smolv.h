@@ -22,6 +22,9 @@
 //   IDs). Often instructions reference things that were computed just before, so this results in
 //   small deltas. These values are also encoded using "varint" scheme.
 //
+// A somewhat similar utility is spirv-remap from glslang, see
+// https://github.com/KhronosGroup/glslang/blob/master/README-spirv-remap.txt
+//
 //
 // ### USAGE:
 //
