@@ -5,21 +5,32 @@
 
 typedef std::vector<uint8_t> ByteArray;
 
-ByteArray ReadFile(const char* fileName)
+
+void ReadFile(const char* fileName, ByteArray& output)
 {
-	ByteArray arr;
 	FILE* f = fopen(fileName, "rb");
 	if (f)
 	{
 		fseek(f, 0, SEEK_END);
 		size_t size = ftell(f);
 		fseek(f, 0, SEEK_SET);
-		arr.resize(size);
-		fread(arr.data(), size, 1, f);
+		size_t pos = output.size();
+		output.resize(pos + size);
+		fread(output.data() + pos, size, 1, f);
 		fclose(f);
 	}
-	return arr;
 }
+
+
+static size_t CompressLZ4HC(const void* data, size_t size)
+{
+	int bufferSize = LZ4_compressBound((int)size);
+	char* buffer = new char[bufferSize];
+	size_t resSize = LZ4_compress_HC ((const char*)data, buffer, (int)size, bufferSize, 0);
+	delete[] buffer;
+	return resSize;
+}
+
 
 int main()
 {
@@ -40,10 +51,12 @@ int main()
 		"tests/spirv-dumps/s3-0022-f40e2e1e.spirv",
 		"tests/spirv-dumps/s4-0006-a5e06270.spirv",
 	};
+	ByteArray spirvAll;
 	for (size_t i = 0; i < sizeof(kFiles)/sizeof(kFiles[0]); ++i)
 	{
 		printf("Reading %s\n", kFiles[i]);
-		ByteArray spirv = ReadFile(kFiles[i]);
+		ByteArray spirv;
+		ReadFile(kFiles[i], spirv);
 		if (spirv.empty())
 		{
 			printf("ERROR: failed to read %s\n", kFiles[i]);
@@ -55,14 +68,14 @@ int main()
 			break;
 		}
 
-		int spirvSize = (int)spirv.size();
-		int maxLZ4Size = LZ4_compressBound(spirvSize);
-		char* destLZ4HC = new char[maxLZ4Size];
-		int sizeLZ4HC = LZ4_compress_HC ((const char*)spirv.data(), destLZ4HC, spirvSize, maxLZ4Size, 0);
-		smolv::InputStatsRecordCompressedSize(stats, "LZ4HC", sizeLZ4HC);
-		delete[] destLZ4HC;
+		spirvAll.insert(spirvAll.end(), spirv.begin(), spirv.end());
+		
+		smolv::InputStatsRecordCompressedSize(stats, "LZ4HC", CompressLZ4HC(spirv.data(), spirv.size()));
 		printf("\n");
 	}
+
+	smolv::InputStatsRecordCompressedSize(stats, "LZ4HC-solid", CompressLZ4HC(spirvAll.data(), spirvAll.size()));
+	
 	smolv::InputStatsPrint(stats);
 	
 	smolv::InputStatsDelete(stats);

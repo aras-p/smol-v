@@ -412,14 +412,50 @@ bool smolv::InputStatsCalculate(smolv::InputStats* stats, const void* spirvData,
 		SpvOp op = (SpvOp)(words[0] & 0xFFFF);
 		if (op < kKnownOpsCount)
 		{
-			printf("%04i %-20s %2i\n", (int)offset, kSpirvOpNames[op], instrLen);
+			printf("%04i %-20s %2i  ", (int)offset, kSpirvOpNames[op], instrLen);
 			stats->opCounts[op]++;
 			stats->opSizes[op] += instrLen;
 		}
 		else
 		{
-			printf("%04i Op#%i %2i\n", (int)offset, op, instrLen);
+			printf("%04i Op#%i %2i  ", (int)offset, op, instrLen);
 		}
+
+		switch(op)
+		{
+			case SpvOpDecorate:
+				if (instrLen < 3)
+					return false;
+				printf("id %3i dec %3i ", words[1], words[2]);
+				for (int i = 3; i < instrLen; ++i)
+					printf("%i ", words[i]);
+				break;
+			case SpvOpLoad:
+				if (instrLen < 4)
+					return false;
+				printf("t %3i res %3i ptr %3i ", words[1], words[2], words[3]);
+				for (int i = 4; i < instrLen; ++i)
+					printf("%i ", words[i]);
+				break;
+			case SpvOpAccessChain:
+				if (instrLen < 4)
+					return false;
+				printf("t %3i res %3i bas %3i ", words[1], words[2], words[3]);
+				for (int i = 4; i < instrLen; ++i)
+					printf("%i ", words[i]);
+				break;
+			case SpvOpVectorShuffle:
+				if (instrLen < 5)
+					return false;
+				printf("t %3i res %3i v1 %3i v2 %3i ", words[1], words[2], words[3], words[4]);
+				for (int i = 5; i < instrLen; ++i)
+					printf("%i ", words[i]);
+				break;
+			default:
+				break;
+		}
+		printf("\n");
+		
 		words += instrLen;
 		offset += instrLen;
 		stats->totalOps++;
@@ -479,7 +515,7 @@ void smolv::InputStatsPrint(const InputStats* stats)
 	printf("Compression: original size %.1fKB\n", stats->totalSize*4.0f/1024.0f);
 	for (auto&& kv : stats->compressedSizes)
 	{
-		printf("%6s: %5.1fKB (%5.1f%%)\n", kv.first.c_str(), kv.second/1024.0f, (float)kv.second/(stats->totalSize*4.0f)*100.0f);
+		printf("%-12s: %5.1fKB (%5.1f%%)\n", kv.first.c_str(), kv.second/1024.0f, (float)kv.second/(stats->totalSize*4.0f)*100.0f);
 	}
 }
 
