@@ -687,10 +687,10 @@ static const OpData kSpirvOpData[] =
 	{1, 0, 0, 0}, // ExtInstImport
 	{1, 1, 0, 0}, // ExtInst
 	{1, 1, 0, 0}, // #13
-	{0, 0, 0, 0}, // MemoryModel
+	{0, 0, 0, 1}, // MemoryModel
 	{0, 0, 0, 0}, // EntryPoint
-	{0, 0, 0, 0}, // ExecutionMode
-	{0, 0, 0, 0}, // Capability
+	{0, 0, 0, 1}, // ExecutionMode
+	{0, 0, 0, 1}, // Capability
 	{1, 1, 0, 0}, // #18
 	{1, 0, 0, 1}, // TypeVoid
 	{1, 0, 0, 1}, // TypeBool
@@ -717,17 +717,17 @@ static const OpData kSpirvOpData[] =
 	{1, 1, 0, 0}, // ConstantTrue
 	{1, 1, 0, 0}, // ConstantFalse
 	{1, 1, 0, 0}, // Constant
-	{1, 1, 0, 0}, // ConstantComposite
-	{1, 1, 0, 0}, // ConstantSampler
+	{1, 1, 9, 0}, // ConstantComposite
+	{1, 1, 0, 1}, // ConstantSampler
 	{1, 1, 0, 0}, // ConstantNull
 	{1, 1, 0, 0}, // #47
 	{1, 1, 0, 0}, // SpecConstantTrue
 	{1, 1, 0, 0}, // SpecConstantFalse
 	{1, 1, 0, 0}, // SpecConstant
-	{1, 1, 0, 0}, // SpecConstantComposite
+	{1, 1, 9, 0}, // SpecConstantComposite
 	{1, 1, 0, 0}, // SpecConstantOp
 	{1, 1, 0, 0}, // #53
-	{1, 1, 0, 0}, // Function
+	{1, 1, 0, 1}, // Function
 	{1, 1, 0, 0}, // FunctionParameter
 	{0, 0, 0, 0}, // FunctionEnd
 	{1, 1, 0, 0}, // FunctionCall
