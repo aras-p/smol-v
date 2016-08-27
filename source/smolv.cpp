@@ -1075,7 +1075,7 @@ static bool smolv_CheckSmolHeader(const uint8_t* bytes, size_t byteCount)
 }
 
 
-struct smolv::InputStats
+struct smolv::Stats
 {
 	size_t opCounts[kKnownOpsCount] = {};
 	size_t opSizes[kKnownOpsCount] = {};
@@ -1087,12 +1087,12 @@ struct smolv::InputStats
 };
 
 
-smolv::InputStats* smolv::InputStatsCreate()
+smolv::Stats* smolv::StatsCreate()
 {
-	return new InputStats();
+	return new Stats();
 }
 
-void smolv::InputStatsDelete(smolv::InputStats *s)
+void smolv::StatsDelete(smolv::Stats *s)
 {
 	delete s;
 }
@@ -1365,7 +1365,7 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 // Calculating instruction count / space stats on SPIR-V and SMOL-V
 
 
-bool smolv::InputStatsCalculate(smolv::InputStats* stats, const void* spirvData, size_t spirvSize)
+bool smolv::StatsCalculate(smolv::Stats* stats, const void* spirvData, size_t spirvSize)
 {
 	if (!stats)
 		return false;
@@ -1453,7 +1453,7 @@ bool smolv::InputStatsCalculate(smolv::InputStats* stats, const void* spirvData,
 }
 
 
-bool smolv::InputStatsCalculateSmol(smolv::InputStats* stats, const void* smolvData, size_t smolvSize)
+bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_t smolvSize)
 {
 	if (!stats)
 		return false;
@@ -1527,7 +1527,7 @@ bool smolv::InputStatsCalculateSmol(smolv::InputStats* stats, const void* smolvD
 
 
 
-void smolv::InputStatsPrint(const InputStats* stats)
+void smolv::StatsPrint(const Stats* stats)
 {
 	if (!stats)
 		return;

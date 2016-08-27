@@ -82,13 +82,13 @@ namespace smolv
 	// -------------------------------------------------------------------
 	// Computing instruction statistics on SPIR-V/SMOL-V programs
 
-	struct InputStats;
+	struct Stats;
 
-	InputStats* InputStatsCreate();
-	void InputStatsDelete(InputStats* s);
+	Stats* StatsCreate();
+	void StatsDelete(Stats* s);
 
-	bool InputStatsCalculate(InputStats* stats, const void* spirvData, size_t spirvSize);
-	bool InputStatsCalculateSmol(InputStats* stats, const void* smolvData, size_t smolvSize);
-	void InputStatsPrint(const InputStats* stats);
+	bool StatsCalculate(Stats* stats, const void* spirvData, size_t spirvSize);
+	bool StatsCalculateSmol(Stats* stats, const void* smolvData, size_t smolvSize);
+	void StatsPrint(const Stats* stats);
 
 } // namespace smolv

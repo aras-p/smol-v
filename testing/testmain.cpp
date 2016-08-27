@@ -64,7 +64,7 @@ static size_t CompressZstd(const void* data, size_t size, int level = 0)
 
 int main()
 {
-	smolv::InputStats* stats = smolv::InputStatsCreate();
+	smolv::Stats* stats = smolv::StatsCreate();
 
 	// files we're testing on
 	const char* kFiles[] =
@@ -171,7 +171,7 @@ int main()
 		}
 
 		// Basic SPIR-V input stats
-		if (!smolv::InputStatsCalculate(stats, spirv.data(), spirv.size()))
+		if (!smolv::StatsCalculate(stats, spirv.data(), spirv.size()))
 		{
 			printf("ERROR: failed to calc instruction stats (invalid SPIR-V?) %s\n", kFiles[i]);
 			++errorCount;
@@ -205,7 +205,7 @@ int main()
 		}
 
 		// SMOL encoding stats
-		if (!smolv::InputStatsCalculateSmol(stats, smolv.data(), smolv.size()))
+		if (!smolv::StatsCalculateSmol(stats, smolv.data(), smolv.size()))
 		{
 			printf("ERROR: failed to calc SMOLV instruction stats (bug?) %s\n", kFiles[i]);
 			++errorCount;
@@ -237,8 +237,8 @@ int main()
 	;;sizes["3 re+Zstd20"] = CompressZstd(spirvRemapAll.data(), spirvRemapAll.size(), 20);
 	sizes["3 sm+Zstd20"] = CompressZstd(smolvAll.data(), smolvAll.size(), 20);
 	
-	smolv::InputStatsPrint(stats);
-	smolv::InputStatsDelete(stats);
+	smolv::StatsPrint(stats);
+	smolv::StatsDelete(stats);
 	
 	printf("Compression: original size %.1fKB\n", spirvAll.size()/1024.0f);
 	for (auto&& kv : sizes)
