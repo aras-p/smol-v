@@ -1186,12 +1186,39 @@ static SpvOp smolv_RemapOp(SpvOp op)
 }
 
 
+// For most compact varint encoding of common instructions, the instruction length should come out
+// into 3 bits (be <8). SPIR-V instruction lengths are always at least 1, and for some other
+// instructions they are guaranteed to be some other minimum length. Adjust the length before encoding,
+// and after encoding accordingly.
+
+static uint32_t smolv_EncodeLen(SpvOp op, uint32_t len)
+{
+	len--;
+	if (op == SpvOpVectorShuffle)	len -= 4;
+	if (op == SpvOpDecorate)		len -= 2;
+	if (op == SpvOpLoad)			len -= 3;
+	if (op == SpvOpAccessChain)		len -= 3;
+	return len;
+}
+
+static uint32_t smolv_DecodeLen(SpvOp op, uint32_t len)
+{
+	len++;
+	if (op == SpvOpVectorShuffle)	len += 4;
+	if (op == SpvOpDecorate)		len += 2;
+	if (op == SpvOpLoad)			len += 3;
+	if (op == SpvOpAccessChain)		len += 3;
+	return len;
+}
+
+
 // Shuffling bits of length + opcode to be more compact in varint encoding in typical cases:
 // 0x LLLL OOOO is how SPIR-V encodes it (L=lenght, O=op), we shuffle into:
 // 0x LLLO OOLO, so that common case (op<16, len<8) is encoded into one byte.
 
 static void smolv_WriteLengthOp(smolv::ByteArray& arr, uint32_t len, SpvOp op)
 {
+	len = smolv_EncodeLen(op, len);
 	op = smolv_RemapOp(op);
 	uint32_t oplen = ((len >> 4) << 20) | ((op >> 4) << 8) | ((len & 0xF) << 4) | (op & 0xF);
 	smolv_WriteVarint(arr, oplen);
@@ -1204,7 +1231,9 @@ static bool smolv_ReadLengthOp(const uint8_t*& data, const uint8_t* dataEnd, uin
 		return false;
 	outLen = ((val >> 20) << 4) | ((val >> 4) & 0xF);
 	outOp = (SpvOp)(((val >> 4) & 0xFFF0) | (val & 0xF));
+
 	outOp = smolv_RemapOp(outOp);
+	outLen = smolv_DecodeLen(outOp, outLen);
 	return true;
 }
 
@@ -1489,6 +1518,7 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 	const uint8_t* bytesEnd = bytes + smolvSize;
 	if (!smolv_CheckSmolHeader(bytes, smolvSize))
 		return false;
+	bytes += 20;
 	
 	// go over instructions
 	stats->totalSizeSmol += smolvSize;
