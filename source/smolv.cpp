@@ -1068,6 +1068,8 @@ static const int kSmolHeaderMagic = 0x534D4F4C; // "SMOL"
 
 static bool smolv_CheckSpirVHeader(const uint32_t* words, size_t wordCount)
 {
+	//@TODO: if SPIR-V header magic was reversed, that means the file got written
+	// in a "big endian" order. Need to byteswap all words then.
 	return smolv_CheckGenericHeader(words, wordCount, kSpirVHeaderMagic);
 }
 static bool smolv_CheckSmolHeader(const uint8_t* bytes, size_t byteCount)
@@ -1231,7 +1233,9 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv)
 	if (!smolv_CheckSpirVHeader(words, wordCount))
 		return false;
 
-	//@TODO: reserve
+	// reserve space in output (typical compression is to about 30%; reserve half of input space)
+	outSmolv.reserve(outSmolv.size() + spirvSize/2);
+
 	// header
 	smolv_Write4(outSmolv, kSmolHeaderMagic);
 	smolv_Write4(outSmolv, words[1]); // version
@@ -1274,11 +1278,11 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv)
 			smolv_WriteVarint(outSmolv, words[ioffs]);
 			ioffs++;
 		}
-		// write result as delta+varint, if we have it
+		// write result as delta+zig+varint, if we have it
 		if (smolv_OpHasResult(op))
 		{
 			uint32_t v = words[ioffs];
-			smolv_WriteVarint(outSmolv, smolv_ZigEncode(v - prevResult));
+			smolv_WriteVarint(outSmolv, smolv_ZigEncode(v - prevResult)); // some deltas are negative, use zig
 			prevResult = v;
 			ioffs++;
 		}
@@ -1333,6 +1337,9 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 	const uint8_t* bytesEnd = bytes + smolvSize;
 	if (!smolv_CheckSmolHeader(bytes, smolvSize))
 		return false;
+	
+	// reserve space in output (typical compression is to about 30%; so reserve 3x of input space)
+	outSpirv.reserve(outSpirv.size() + smolvSize*2);
 
 	uint32_t val;
 
