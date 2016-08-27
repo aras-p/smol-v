@@ -200,6 +200,22 @@ int main()
 		if (spirv != spirvDecoded)
 		{
 			printf("ERROR: did not encode+decode properly (bug?) %s\n", kFiles[i]);
+			const uint8_t* spirvPtr = spirv.data();
+			const uint8_t* spirvPtrEnd = spirvPtr + spirv.size();
+			const uint8_t* spirvDecodedPtr = spirvDecoded.data();
+			const uint8_t* spirvDecodedEnd = spirvDecodedPtr + spirvDecoded.size();
+			int idx = 0;
+			while (spirvPtr < spirvPtrEnd && spirvDecodedPtr < spirvDecodedEnd)
+			{
+				if (*spirvPtr != *spirvDecodedPtr)
+				{
+					printf("  byte #%04i %02x -> %02x\n", idx, *spirvPtr, *spirvDecodedPtr);
+				}
+				++spirvPtr;
+				++spirvDecodedPtr;
+				++idx;
+			}
+			
 			++errorCount;
 			break;
 		}
