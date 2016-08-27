@@ -40,7 +40,6 @@
 		2BC453B41D70B20D00DFFF3B /* smolv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = smolv.cpp; sourceTree = "<group>"; };
 		2BC453B51D70B20D00DFFF3B /* smolv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = smolv.h; sourceTree = "<group>"; };
 		2BC453B81D70B22400DFFF3B /* testmain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = testmain.cpp; sourceTree = "<group>"; };
-		2BC453BA1D70BA1700DFFF3B /* spirv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = spirv.h; sourceTree = "<group>"; };
 		2BC4660B1D71849F00DFFF3B /* lz4.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lz4.c; path = external/lz4/lz4.c; sourceTree = "<group>"; };
 		2BC4660C1D71849F00DFFF3B /* lz4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lz4.h; path = external/lz4/lz4.h; sourceTree = "<group>"; };
 		2BC4660D1D71849F00DFFF3B /* lz4hc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = lz4hc.c; path = external/lz4/lz4hc.c; sourceTree = "<group>"; };
@@ -103,7 +102,6 @@
 		2BC453AC1D70B1DA00DFFF3B /* source */ = {
 			isa = PBXGroup;
 			children = (
-				2BC453BA1D70BA1700DFFF3B /* spirv.h */,
 				2BC453B41D70B20D00DFFF3B /* smolv.cpp */,
 				2BC453B51D70B20D00DFFF3B /* smolv.h */,
 			);
