@@ -817,7 +817,7 @@ static void smolv_WriteVarint(smolv::ByteArray& arr, uint32_t v)
 	arr.push_back(v & 127);
 }
 
-static uint32_t smolv_ReadVarint(const uint8_t*& data, const uint8_t* dataEnd)
+static bool smolv_ReadVarint(const uint8_t*& data, const uint8_t* dataEnd, uint32_t& outVal)
 {
 	uint32_t v = 0;
 	uint32_t shift = 0;
@@ -830,46 +830,31 @@ static uint32_t smolv_ReadVarint(const uint8_t*& data, const uint8_t* dataEnd)
 		if (!(b & 128))
 			break;
 	}
-	return v;
+	outVal = v;
+	return true; //@TODO: report failures
 }
 
+// Shuffling bits of length + opcode to be more compact in varint encoding in typical cases:
+// 0b LLLL LLLL LLLL LLLL OOOO OOOO OOOO OOOO is how SPIR-V encodes it (L=length, O=op), we shuffle into:
+// 0b LLLL LLLL LLLO OOOO OOOL LLLL OOOO OOOO, so that typical lengths (<32) and ops (<256) fit under
+// 14 bits and encoded into 2 bytes with varint.
 
-// SPIR-V has about 330 ops defined, and majority of lengths are under 16 words. If our op falls
-// into this case, then write it out in two bytes as: 1LLL_LLOO_OOOO_OOOO (5 bits length,
-// 10 bits op, highest bit set).
-
-static void smolv_WriteOpLength(smolv::ByteArray& arr, uint32_t len, SpvOp op)
+static void smolv_WriteLengthOp(smolv::ByteArray& arr, uint32_t len, SpvOp op)
 {
-	if (len < 32 && op < 1024)
-	{
-		uint16_t v = 0x8000 | (len << 10) | op;
-		smolv_Write2(arr, v);
-	}
-	else
-	{
-		uint32_t v = (len << 16) | op;
-		//@TODO: would not decode properly if op is > 0x7FFF.
-		smolv_Write4(arr, v);
-	}
+	uint32_t oplen = ((len >> 5) << 21) | ((op >> 8) << 13) | ((len & 0x1F) << 8) | (op & 0xFF);
+	smolv_WriteVarint(arr, oplen);
 }
 
-static bool smolv_ReadOpLength(const uint8_t*& data, const uint8_t* dataEnd, uint32_t& outLen, SpvOp& outOp)
+static bool smolv_ReadLengthOp(const uint8_t*& data, const uint8_t* dataEnd, uint32_t& outLen, SpvOp& outOp)
 {
-	uint16_t v1, v2;
-	if (!smolv_Read2(data, dataEnd, v1))
+	uint32_t val;
+	if (!smolv_ReadVarint(data, dataEnd, val))
 		return false;
-	if (v1 & 0x8000)
-	{
-		outLen = (v1 >> 10) & 0x1F;
-		outOp = (SpvOp)(v1 & 0x3FF);
-		return true;
-	}
-	if (!smolv_Read2(data, dataEnd, v2))
-		return false;
-	outLen = v2;
-	outOp = (SpvOp)v1;
+	outLen = ((val >> 21) << 5) | ((val >> 8) & 0x1F);
+	outOp = (SpvOp)(((val >> 13) << 8) | (val & 0xFF));
 	return true;
 }
+
 
 
 #define _SMOLV_READ_OP() \
@@ -899,8 +884,7 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv)
 	while (words < wordsEnd)
 	{
 		_SMOLV_READ_OP();
-
-		smolv_WriteOpLength(outSmolv, instrLen, op);
+		smolv_WriteLengthOp(outSmolv, instrLen, op);
 		for (int i = 1; i < instrLen; ++i)
 			smolv_Write4(outSmolv, words[i]);
 		
@@ -931,10 +915,10 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 	{
 		uint32_t instrLen;
 		SpvOp op;
-		if (!smolv_ReadOpLength(bytes, bytesEnd, instrLen, op))
+		if (!smolv_ReadLengthOp(bytes, bytesEnd, instrLen, op))
 			return false;
+		smolv_Write4(outSpirv, (instrLen << 16) | op);
 
-		val = (instrLen << 16) | op; smolv_Write4(outSpirv, val);
 		for (int i = 1; i < instrLen; ++i)
 		{
 			if (!smolv_Read4(bytes, bytesEnd, val))
