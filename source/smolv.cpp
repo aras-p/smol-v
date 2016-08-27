@@ -660,12 +660,6 @@ static const char* kSpirvOpNames[] =
 };
 static_assert(ARRAY_SIZE(kSpirvOpNames) == kKnownOpsCount, "kSpirvOpNames table mismatch with known SpvOps");
 
-static const char* smolv_GetOpName(SpvOp op)
-{
-	if (op < 0 || op >= kKnownOpsCount)
-		return "???";
-	return kSpirvOpNames[op];
-}
 
 struct OpData
 {
@@ -1103,11 +1097,6 @@ static void smolv_Write4(smolv::ByteArray& arr, uint32_t v)
 	arr.push_back((v >> 16) & 0xFF);
 	arr.push_back(v >> 24);
 }
-static void smolv_Write2(smolv::ByteArray& arr, uint16_t v)
-{
-	arr.push_back(v & 0xFF);
-	arr.push_back((v >> 8) & 0xFF);
-}
 
 static bool smolv_Read4(const uint8_t*& data, const uint8_t* dataEnd, uint32_t& outv)
 {
@@ -1115,15 +1104,6 @@ static bool smolv_Read4(const uint8_t*& data, const uint8_t* dataEnd, uint32_t& 
 		return false;
 	outv = (data[0]) | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
 	data += 4;
-	return true;
-}
-
-static bool smolv_Read2(const uint8_t*& data, const uint8_t* dataEnd, uint16_t& outv)
-{
-	if (data + 2 > dataEnd)
-		return false;
-	outv = (data[0]) | (data[1] << 8);
-	data += 2;
 	return true;
 }
 
