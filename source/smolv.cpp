@@ -443,13 +443,13 @@ static const OpData kSpirvOpData[] =
 	{0, 0, 0, 0}, // GroupDecorate
 	{0, 0, 0, 0}, // GroupMemberDecorate
 	{1, 1, 0, 0}, // #76
-	{1, 1, 0, 0}, // VectorExtractDynamic
-	{1, 1, 0, 0}, // VectorInsertDynamic
+	{1, 1, 1, 1}, // VectorExtractDynamic
+	{1, 1, 2, 1}, // VectorInsertDynamic
 	{1, 1, 2, 1}, // VectorShuffle
-	{1, 1, 0, 0}, // CompositeConstruct
-	{1, 1, 0, 0}, // CompositeExtract
-	{1, 1, 0, 0}, // CompositeInsert
-	{1, 1, 0, 0}, // CopyObject
+	{1, 1, 9, 0}, // CompositeConstruct
+	{1, 1, 1, 1}, // CompositeExtract
+	{1, 1, 2, 1}, // CompositeInsert
+	{1, 1, 1, 0}, // CopyObject
 	{1, 1, 0, 0}, // Transpose
 	{1, 1, 0, 0}, // #85
 	{1, 1, 0, 0}, // SampledImage
@@ -947,9 +947,9 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv)
 
 		// Write out this many IDs, encoding them relative to result ID
 		int relativeCount = smolv_OpDeltaFromResult(op);
-		for (int i = 0; i < relativeCount; ++i)
+		for (int i = 0; i < relativeCount && ioffs < instrLen; ++i, ++ioffs)
 		{
-			smolv_WriteVarint(outSmolv, prevResult - words[ioffs]); ioffs++;
+			smolv_WriteVarint(outSmolv, prevResult - words[ioffs]);
 		}
 		if (smolv_OpVarRest(op))
 		{
@@ -1030,11 +1030,10 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 
 		// Read this many IDs, that are relative to result ID
 		int relativeCount = smolv_OpDeltaFromResult(op);
-		for (int i = 0; i < relativeCount; ++i)
+		for (int i = 0; i < relativeCount && ioffs < instrLen; ++i, ++ioffs)
 		{
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
 			smolv_Write4(outSpirv, prevResult - val);
-			ioffs++;
 		}
 		if (smolv_OpVarRest(op))
 		{
@@ -1196,10 +1195,9 @@ bool smolv::InputStatsCalculateSmol(smolv::InputStats* stats, const void* smolvD
 		}
 		
 		int relativeCount = smolv_OpDeltaFromResult(op);
-		for (int i = 0; i < relativeCount; ++i)
+		for (int i = 0; i < relativeCount && ioffs < instrLen; ++i, ++ioffs)
 		{
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
-			ioffs++;
 		}
 		if (smolv_OpVarRest(op))
 		{
@@ -1259,13 +1257,13 @@ void smolv::InputStatsPrint(const InputStats* stats)
 	
 	printf("Stats for %i SPIR-V inputs, total size %i words (%.1fKB):\n", (int)stats->inputCount, (int)stats->totalSize, stats->totalSize * 4.0f / 1024.0f);
 	printf("Most occuring ops:\n");
-	for (int i = 0; i < 15; ++i)
+	for (int i = 0; i < 20; ++i)
 	{
 		SpvOp op = counts[i].first;
 		printf(" #%2i: %-20s %4i (%4.1f%%)\n", i, kSpirvOpNames[op], (int)counts[i].second, (float)counts[i].second / (float)stats->totalOps * 100.0f);
 	}
 	printf("Largest total size of ops:\n");
-	for (int i = 0; i < 15; ++i)
+	for (int i = 0; i < 20; ++i)
 	{
 		SpvOp op = sizes[i].first;
 		printf(" #%2i: %-20s %4i (%4.1f%%) avg len %.1f\n",
@@ -1277,7 +1275,7 @@ void smolv::InputStatsPrint(const InputStats* stats)
 		);
 	}
 	printf("Largest total size of ops in SMOL:\n");
-	for (int i = 0; i < 15; ++i)
+	for (int i = 0; i < 20; ++i)
 	{
 		SpvOp op = sizesSmol[i].first;
 		printf(" #%2i: %-20s %4i (%4.1f%%) avg len %.1f\n",
