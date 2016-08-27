@@ -1,3 +1,7 @@
+// smol-v - tests code - public domain - https://github.com/aras-p/smol-v
+// authored on 2016 by Aras Pranckevicius
+// no warranty implied; use at your own risk
+
 #include "../source/smolv.h"
 #include "external/lz4/lz4.h"
 #include "external/lz4/lz4hc.h"
@@ -8,7 +12,7 @@
 typedef std::vector<uint8_t> ByteArray;
 
 
-void ReadFile(const char* fileName, ByteArray& output)
+static void ReadFile(const char* fileName, ByteArray& output)
 {
 	FILE* f = fopen(fileName, "rb");
 	if (f)

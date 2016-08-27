@@ -1,3 +1,7 @@
+// smol-v - v0.1 - public domain - https://github.com/aras-p/smol-v
+// authored on 2016 by Aras Pranckevicius
+// no warranty implied; use at your own risk
+
 #pragma once
 
 #include <stdint.h>
