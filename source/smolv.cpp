@@ -1079,7 +1079,11 @@ struct smolv::Stats
 {
 	size_t opCounts[kKnownOpsCount] = {};
 	size_t opSizes[kKnownOpsCount] = {};
-	size_t opSizesSmol[kKnownOpsCount] = {};
+	size_t smolOpSizes[kKnownOpsCount] = {};
+	size_t varintCountsOp[6] = {};
+	size_t varintCountsType[6] = {};
+	size_t varintCountsRes[6] = {};
+	size_t varintCountsOther[6] = {};
 	size_t totalOps = 0;
 	size_t totalSize = 0;
 	size_t totalSizeSmol = 0;
@@ -1160,14 +1164,36 @@ static int32_t smolv_ZigDecode(uint32_t u)
 }
 
 
+// Remap most common Op codes (Load, Store, Decorate, VectorShuffle etc.) to be in < 16 range, for
+// more compact varint encoding. This basically swaps rarely used op values that are < 16 with the
+// ones that are common.
+
+static SpvOp smolv_RemapOp(SpvOp op)
+{
+#	define _SMOLV_SWAP_OP(op1,op2) if (op==op1) return op2; if (op==op2) return op1
+	_SMOLV_SWAP_OP(SpvOpDecorate,SpvOpNop);
+	_SMOLV_SWAP_OP(SpvOpLoad,SpvOpUndef);
+	_SMOLV_SWAP_OP(SpvOpStore,SpvOpSourceContinued);
+	_SMOLV_SWAP_OP(SpvOpAccessChain,SpvOpSource);
+	_SMOLV_SWAP_OP(SpvOpVectorShuffle,SpvOpSourceExtension);
+	_SMOLV_SWAP_OP(SpvOpMemberDecorate,SpvOpString);
+	_SMOLV_SWAP_OP(SpvOpVariable,(SpvOp)9);
+	_SMOLV_SWAP_OP(SpvOpFMul,SpvOpExtension);
+	_SMOLV_SWAP_OP(SpvOpFAdd,SpvOpExtInstImport);
+	_SMOLV_SWAP_OP(SpvOpTypePointer,SpvOpMemoryModel);
+#	undef _SMOLV_SWAP_OP
+	return op;
+}
+
+
 // Shuffling bits of length + opcode to be more compact in varint encoding in typical cases:
-// 0b LLLL LLLL LLLL LLLL OOOO OOOO OOOO OOOO is how SPIR-V encodes it (L=length, O=op), we shuffle into:
-// 0b LLLL LLLL LLLO OOOO OOOL LLLL OOOO OOOO, so that typical lengths (<32) and ops (<256) fit under
-// 14 bits and encoded into 2 bytes with varint.
+// 0x LLLL OOOO is how SPIR-V encodes it (L=lenght, O=op), we shuffle into:
+// 0x LLLO OOLO, so that common case (op<16, len<8) is encoded into one byte.
 
 static void smolv_WriteLengthOp(smolv::ByteArray& arr, uint32_t len, SpvOp op)
 {
-	uint32_t oplen = ((len >> 5) << 21) | ((op >> 8) << 13) | ((len & 0x1F) << 8) | (op & 0xFF);
+	op = smolv_RemapOp(op);
+	uint32_t oplen = ((len >> 4) << 20) | ((op >> 4) << 8) | ((len & 0xF) << 4) | (op & 0xF);
 	smolv_WriteVarint(arr, oplen);
 }
 
@@ -1176,8 +1202,9 @@ static bool smolv_ReadLengthOp(const uint8_t*& data, const uint8_t* dataEnd, uin
 	uint32_t val;
 	if (!smolv_ReadVarint(data, dataEnd, val))
 		return false;
-	outLen = ((val >> 21) << 5) | ((val >> 8) & 0x1F);
-	outOp = (SpvOp)(((val >> 13) << 8) | (val & 0xFF));
+	outLen = ((val >> 20) << 4) | ((val >> 4) & 0xF);
+	outOp = (SpvOp)(((val >> 4) & 0xFFF0) | (val & 0xF));
+	outOp = smolv_RemapOp(outOp);
 	return true;
 }
 
@@ -1470,22 +1497,30 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 	
 	while (bytes < bytesEnd)
 	{
-		// read length + opcode
 		const uint8_t* instrBegin = bytes;
+		const uint8_t* varBegin;
+
+		// read length + opcode
 		uint32_t instrLen;
 		SpvOp op;
+		varBegin = bytes;
 		if (!smolv_ReadLengthOp(bytes, bytesEnd, instrLen, op))
 			return false;
+		stats->varintCountsOp[bytes-varBegin]++;
 		
 		size_t ioffs = 1;
 		if (smolv_OpHasType(op))
 		{
+			varBegin = bytes;
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
+			stats->varintCountsType[bytes-varBegin]++;
 			ioffs++;
 		}
 		if (smolv_OpHasResult(op))
 		{
+			varBegin = bytes;
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
+			stats->varintCountsRes[bytes-varBegin]++;
 			ioffs++;
 		}
 		
@@ -1499,13 +1534,17 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 		int relativeCount = smolv_OpDeltaFromResult(op, zigzag);
 		for (int i = 0; i < relativeCount && ioffs < instrLen; ++i, ++ioffs)
 		{
+			varBegin = bytes;
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
+			stats->varintCountsRes[bytes-varBegin]++;
 		}
 		if (smolv_OpVarRest(op))
 		{
 			for (; ioffs < instrLen; ++ioffs)
 			{
+				varBegin = bytes;
 				if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
+				stats->varintCountsOther[bytes-varBegin]++;
 			}
 		}
 		else
@@ -1518,7 +1557,7 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 		
 		if (op < kKnownOpsCount)
 		{
-			stats->opSizesSmol[op] += bytes - instrBegin;
+			stats->smolOpSizes[op] += bytes - instrBegin;
 		}
 	}
 	
@@ -1543,7 +1582,7 @@ void smolv::StatsPrint(const Stats* stats)
 		sizes[i].first = (SpvOp)i;
 		sizes[i].second = stats->opSizes[i];
 		sizesSmol[i].first = (SpvOp)i;
-		sizesSmol[i].second = stats->opSizesSmol[i];
+		sizesSmol[i].second = stats->smolOpSizes[i];
 	}
 	std::sort(counts, counts + kKnownOpsCount, [](OpCounter a, OpCounter b) { return a.second > b.second; });
 	std::sort(sizes, sizes + kKnownOpsCount, [](OpCounter a, OpCounter b) { return a.second > b.second; });
@@ -1551,13 +1590,13 @@ void smolv::StatsPrint(const Stats* stats)
 	
 	printf("Stats for %i SPIR-V inputs, total size %i words (%.1fKB):\n", (int)stats->inputCount, (int)stats->totalSize, stats->totalSize * 4.0f / 1024.0f);
 	printf("Most occuring ops:\n");
-	for (int i = 0; i < 20; ++i)
+	for (int i = 0; i < 30; ++i)
 	{
 		SpvOp op = counts[i].first;
-		printf(" #%2i: %-20s %4i (%4.1f%%)\n", i, kSpirvOpNames[op], (int)counts[i].second, (float)counts[i].second / (float)stats->totalOps * 100.0f);
+		printf(" #%2i: %4i %-20s %4i (%4.1f%%)\n", i, op, kSpirvOpNames[op], (int)counts[i].second, (float)counts[i].second / (float)stats->totalOps * 100.0f);
 	}
 	printf("Largest total size of ops:\n");
-	for (int i = 0; i < 20; ++i)
+	for (int i = 0; i < 30; ++i)
 	{
 		SpvOp op = sizes[i].first;
 		printf(" #%2i: %-20s %4i (%4.1f%%) avg len %.1f\n",
@@ -1568,8 +1607,14 @@ void smolv::StatsPrint(const Stats* stats)
 			   (float)sizes[i].second*4 / (float)stats->opCounts[op]
 		);
 	}
+	printf("SMOL varint encoding counts per byte length:\n");
+	printf("  B: %6s %6s %6s %6s\n", "Op", "Type", "Result", "Other");
+	for (int i = 1; i < 6; ++i)
+	{
+		printf("  %i: %6i %6i %6i %6i\n", i, (int)stats->varintCountsOp[i], (int)stats->varintCountsType[i], (int)stats->varintCountsRes[i], (int)stats->varintCountsOther[i]);
+	}
 	printf("Largest total size of ops in SMOL:\n");
-	for (int i = 0; i < 20; ++i)
+	for (int i = 0; i < 30; ++i)
 	{
 		SpvOp op = sizesSmol[i].first;
 		printf(" #%2i: %-20s %4i (%4.1f%%) avg len %.1f\n",
@@ -1578,7 +1623,7 @@ void smolv::StatsPrint(const Stats* stats)
 			   (int)sizesSmol[i].second,
 			   (float)sizesSmol[i].second / (float)stats->totalSizeSmol * 100.0f,
 			   (float)sizesSmol[i].second / (float)stats->opCounts[op]
-			   );
+		);
 	}	
 }
 
