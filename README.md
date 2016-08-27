@@ -2,7 +2,8 @@
 
 ## Overview
 
-SMOL-V encodes Vulkan/Khronos SPIR-V format programs into a form that is smaller, and is more
+SMOL-V encodes Vulkan/Khronos [SPIR-V](https://www.khronos.org/registry/spir-v/)
+format programs into a form that is smaller, and is more
 compressible. No changes to the programs are done; they decode into exactly same program
 as was encoded.
 
@@ -18,6 +19,12 @@ to improve this:
 - Some IDs used in the program are delta-encoded, relative to previously seen IDs (e.g. Result
   IDs). Often instructions reference things that were computed just before, so this results in
   small deltas. These values are also encoded using "varint" scheme.
+
+- Reordering instruction opcodes so that the most common ones are the smallest values, for smaller
+  varint encoding.
+
+- Encoding several instructions in a more compact form, e.g. the "typical <4 component swizzle"
+  shape of a VectorShuffle instruction.
 
 A somewhat similar utility is [spirv-remap from glslang](https://github.com/KhronosGroup/glslang/blob/master/README-spirv-remap.txt).
 
