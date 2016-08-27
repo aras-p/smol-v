@@ -912,7 +912,7 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv)
 		if (smolv_OpHasResult(op))
 		{
 			uint32_t v = words[ioffs];
-			smolv_WriteVarint(outSmolv, v - prevResult);
+			smolv_WriteVarint(outSmolv, smolv_ZigEncode(v - prevResult));
 			prevResult = v;
 			ioffs++;
 		}
@@ -969,7 +969,7 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 		{
 			if (!smolv_ReadVarint(bytes, bytesEnd, val))
 				return false;
-			val += prevResult;
+			val = prevResult + smolv_ZigDecode(val);
 			smolv_Write4(outSpirv, val);
 			prevResult = val;
 			ioffs++;
@@ -1002,7 +1002,7 @@ bool smolv::InputStatsCalculate(smolv::InputStats* stats, const void* spirvData,
 	stats->inputCount++;
 	stats->totalSize += wordCount;
 
-	printf("%4s %-20s Ln\n", "Offs", "Op");
+	//printf("%4s %-20s Ln\n", "Offs", "Op");
 	size_t offset = 5;
 	words += 5;
 	while (words < wordsEnd)
@@ -1011,15 +1011,16 @@ bool smolv::InputStatsCalculate(smolv::InputStats* stats, const void* spirvData,
 
 		if (op < kKnownOpsCount)
 		{
-			printf("%04i %-20s %2i  ", (int)offset, smolv_GetOpName(op), instrLen);
+			//printf("%04i %-20s %2i  ", (int)offset, smolv_GetOpName(op), instrLen);
 			stats->opCounts[op]++;
 			stats->opSizes[op] += instrLen;
 		}
 		else
 		{
-			printf("%04i Op#%i %2i  ", (int)offset, op, instrLen);
+			//printf("%04i Op#%i %2i  ", (int)offset, op, instrLen);
 		}
 
+		/*
 		switch(op)
 		{
 			case SpvOpDecorate:
@@ -1054,6 +1055,7 @@ bool smolv::InputStatsCalculate(smolv::InputStats* stats, const void* spirvData,
 				break;
 		}
 		printf("\n");
+		 */
 		
 		words += instrLen;
 		offset += instrLen;
