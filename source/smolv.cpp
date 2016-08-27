@@ -665,7 +665,10 @@ struct OpData
 {
 	uint8_t hasResult;	// does it have result ID?
 	uint8_t hasType;	// does it have type ID?
-	uint8_t deltaFromResult; // how many words after (optional) type+result to write out as deltas from result?
+	// How many words after (optional) type+result to write out as deltas from result?
+	// If negative, encode abs(x) words, and use zigzag encoding, use this on instructions that
+	// often reference IDs that can be either before or after them (e.g. branches).
+	int8_t  deltaFromResult;
 	uint8_t varrest;	// should the rest of words be written in varint encoding?
 };
 static const OpData kSpirvOpData[] =
@@ -916,11 +919,11 @@ static const OpData kSpirvOpData[] =
 	{1, 1, 0, 0}, // #243
 	{1, 1, 0, 0}, // #244
 	{1, 1, 0, 0}, // Phi
-	{0, 0, 0, 0}, // LoopMerge
-	{0, 0, 0, 0}, // SelectionMerge
+	{0, 0,-2, 1}, // LoopMerge
+	{0, 0,-1, 1}, // SelectionMerge
 	{1, 0, 0, 0}, // Label
-	{0, 0, 0, 0}, // Branch
-	{0, 0, 0, 0}, // BranchConditional
+	{0, 0,-1, 0}, // Branch
+	{0, 0,-3, 1}, // BranchConditional
 	{0, 0, 0, 0}, // Switch
 	{0, 0, 0, 0}, // Kill
 	{0, 0, 0, 0}, // Return
@@ -1019,11 +1022,18 @@ static bool smolv_OpHasType(SpvOp op)
 	return kSpirvOpData[op].hasType;
 }
 
-static int smolv_OpDeltaFromResult(SpvOp op)
+static int smolv_OpDeltaFromResult(SpvOp op, bool& outZigzag)
 {
+	outZigzag = false;
 	if (op < 0 || op >= kKnownOpsCount)
 		return 0;
-	return kSpirvOpData[op].deltaFromResult;
+	int delta = kSpirvOpData[op].deltaFromResult;
+	if (delta < 0)
+	{
+		outZigzag = true;
+		return -delta;
+	}
+	return delta;
 }
 
 static bool smolv_OpVarRest(SpvOp op)
@@ -1236,10 +1246,12 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv)
 		}
 
 		// Write out this many IDs, encoding them relative to result ID
-		int relativeCount = smolv_OpDeltaFromResult(op);
+		bool zigzag;
+		int relativeCount = smolv_OpDeltaFromResult(op, zigzag);
 		for (int i = 0; i < relativeCount && ioffs < instrLen; ++i, ++ioffs)
 		{
-			smolv_WriteVarint(outSmolv, prevResult - words[ioffs]);
+			uint32_t delta = prevResult - words[ioffs];
+			smolv_WriteVarint(outSmolv, zigzag ? smolv_ZigEncode(delta) : delta);
 		}
 		if (smolv_OpVarRest(op))
 		{
@@ -1319,10 +1331,12 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 		}
 
 		// Read this many IDs, that are relative to result ID
-		int relativeCount = smolv_OpDeltaFromResult(op);
+		bool zigzag;
+		int relativeCount = smolv_OpDeltaFromResult(op, zigzag);
 		for (int i = 0; i < relativeCount && ioffs < instrLen; ++i, ++ioffs)
 		{
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
+			if (zigzag) val = smolv_ZigDecode(val);
 			smolv_Write4(outSpirv, prevResult - val);
 		}
 		if (smolv_OpVarRest(op))
@@ -1484,7 +1498,8 @@ bool smolv::InputStatsCalculateSmol(smolv::InputStats* stats, const void* smolvD
 			ioffs++;
 		}
 		
-		int relativeCount = smolv_OpDeltaFromResult(op);
+		bool zigzag;
+		int relativeCount = smolv_OpDeltaFromResult(op, zigzag);
 		for (int i = 0; i < relativeCount && ioffs < instrLen; ++i, ++ioffs)
 		{
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
