@@ -1,6 +1,7 @@
 #include "../source/smolv.h"
 #include "external/lz4/lz4.h"
 #include "external/lz4/lz4hc.h"
+#include "external/zstd/zstd.h"
 
 
 typedef std::vector<uint8_t> ByteArray;
@@ -22,11 +23,20 @@ void ReadFile(const char* fileName, ByteArray& output)
 }
 
 
-static size_t CompressLZ4HC(const void* data, size_t size)
+static size_t CompressLZ4HC(const void* data, size_t size, int level = 0)
 {
 	int bufferSize = LZ4_compressBound((int)size);
 	char* buffer = new char[bufferSize];
-	size_t resSize = LZ4_compress_HC ((const char*)data, buffer, (int)size, bufferSize, 0);
+	size_t resSize = LZ4_compress_HC ((const char*)data, buffer, (int)size, bufferSize, level);
+	delete[] buffer;
+	return resSize;
+}
+
+static size_t CompressZstd(const void* data, size_t size, int level = 0)
+{
+	size_t bufferSize = ZSTD_compressBound(size);
+	char* buffer = new char[bufferSize];
+	size_t resSize = ZSTD_compress(buffer, bufferSize, data, size, level);
 	delete[] buffer;
 	return resSize;
 }
@@ -71,10 +81,18 @@ int main()
 		spirvAll.insert(spirvAll.end(), spirv.begin(), spirv.end());
 		
 		smolv::InputStatsRecordCompressedSize(stats, "LZ4HC", CompressLZ4HC(spirv.data(), spirv.size()));
+		smolv::InputStatsRecordCompressedSize(stats, "LZ4HC15", CompressLZ4HC(spirv.data(), spirv.size(), 16));
+		smolv::InputStatsRecordCompressedSize(stats, "Zstd", CompressZstd(spirv.data(), spirv.size()));
+		smolv::InputStatsRecordCompressedSize(stats, "Zstd12", CompressZstd(spirv.data(), spirv.size(), 12));
+		smolv::InputStatsRecordCompressedSize(stats, "Zstd20", CompressZstd(spirv.data(), spirv.size(), 20));
 		printf("\n");
 	}
 
-	smolv::InputStatsRecordCompressedSize(stats, "LZ4HC-solid", CompressLZ4HC(spirvAll.data(), spirvAll.size()));
+	smolv::InputStatsRecordCompressedSize(stats, "__LZ4HC", CompressLZ4HC(spirvAll.data(), spirvAll.size()));
+	smolv::InputStatsRecordCompressedSize(stats, "__LZ4HC15", CompressLZ4HC(spirvAll.data(), spirvAll.size(), 16));
+	smolv::InputStatsRecordCompressedSize(stats, "__Zstd", CompressZstd(spirvAll.data(), spirvAll.size()));
+	smolv::InputStatsRecordCompressedSize(stats, "__Zstd12", CompressZstd(spirvAll.data(), spirvAll.size(), 12));
+	smolv::InputStatsRecordCompressedSize(stats, "__Zstd20", CompressZstd(spirvAll.data(), spirvAll.size(), 20));
 	
 	smolv::InputStatsPrint(stats);
 	

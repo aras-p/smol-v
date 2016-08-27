@@ -515,7 +515,7 @@ void smolv::InputStatsPrint(const InputStats* stats)
 	printf("Compression: original size %.1fKB\n", stats->totalSize*4.0f/1024.0f);
 	for (auto&& kv : stats->compressedSizes)
 	{
-		printf("%-12s: %5.1fKB (%5.1f%%)\n", kv.first.c_str(), kv.second/1024.0f, (float)kv.second/(stats->totalSize*4.0f)*100.0f);
+		printf("%-15s: %5.1fKB (%5.1f%%)\n", kv.first.c_str(), kv.second/1024.0f, (float)kv.second/(stats->totalSize*4.0f)*100.0f);
 	}
 }
 
