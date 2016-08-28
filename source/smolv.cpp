@@ -1159,16 +1159,22 @@ static int32_t smolv_ZigDecode(uint32_t u)
 static SpvOp smolv_RemapOp(SpvOp op)
 {
 #	define _SMOLV_SWAP_OP(op1,op2) if (op==op1) return op2; if (op==op2) return op1
-	_SMOLV_SWAP_OP(SpvOpDecorate,SpvOpNop);
-	_SMOLV_SWAP_OP(SpvOpLoad,SpvOpUndef);
-	_SMOLV_SWAP_OP(SpvOpStore,SpvOpSourceContinued);
-	_SMOLV_SWAP_OP(SpvOpAccessChain,SpvOpSource);
-	_SMOLV_SWAP_OP(SpvOpVectorShuffle,SpvOpSourceExtension);
-	_SMOLV_SWAP_OP(SpvOpMemberDecorate,SpvOpString);
-	_SMOLV_SWAP_OP(SpvOpVariable,(SpvOp)9);
-	_SMOLV_SWAP_OP(SpvOpFMul,SpvOpExtension);
-	_SMOLV_SWAP_OP(SpvOpFAdd,SpvOpExtInstImport);
-	_SMOLV_SWAP_OP(SpvOpTypePointer,SpvOpMemoryModel);
+	_SMOLV_SWAP_OP(SpvOpDecorate,SpvOpNop); // 0: 24%
+	_SMOLV_SWAP_OP(SpvOpLoad,SpvOpUndef); // 1: 17%
+	_SMOLV_SWAP_OP(SpvOpStore,SpvOpSourceContinued); // 2: 9%
+	_SMOLV_SWAP_OP(SpvOpAccessChain,SpvOpSource); // 3: 7.2%
+	_SMOLV_SWAP_OP(SpvOpVectorShuffle,SpvOpSourceExtension); // 4: 5.0%
+	// Name - already small enum value - 5: 4.4%
+	// MemberName - already small enum value - 6: 2.9%
+	_SMOLV_SWAP_OP(SpvOpMemberDecorate,SpvOpString); // 7: 4.0%
+	_SMOLV_SWAP_OP(SpvOpLabel,SpvOpLine); // 8: 0.9%
+	_SMOLV_SWAP_OP(SpvOpVariable,(SpvOp)9); // 9: 3.9%
+	_SMOLV_SWAP_OP(SpvOpFMul,SpvOpExtension); // 10: 3.9%
+	_SMOLV_SWAP_OP(SpvOpFAdd,SpvOpExtInstImport); // 11: 2.5%
+	// ExtInst - already small enum value - 12: 1.2%
+	// VectorShuffleCompact - already small enum value - used for compact shuffle encoding
+	_SMOLV_SWAP_OP(SpvOpTypePointer,SpvOpMemoryModel); // 14: 2.2%
+	_SMOLV_SWAP_OP(SpvOpFNegate,SpvOpEntryPoint); // 15: 1.1%
 #	undef _SMOLV_SWAP_OP
 	return op;
 }
