@@ -1074,7 +1074,11 @@ static bool smolv_CheckSpirVHeader(const uint32_t* words, size_t wordCount)
 }
 static bool smolv_CheckSmolHeader(const uint8_t* bytes, size_t byteCount)
 {
-	return smolv_CheckGenericHeader((const uint32_t*)bytes, byteCount/4, kSmolHeaderMagic);
+	if (!smolv_CheckGenericHeader((const uint32_t*)bytes, byteCount/4, kSmolHeaderMagic))
+		return false;
+	if (byteCount < 24) // one more word past header to store decoded length
+		return false;
+	return true;
 }
 
 
@@ -1085,6 +1089,13 @@ static void smolv_Write4(smolv::ByteArray& arr, uint32_t v)
 	arr.push_back((v >> 16) & 0xFF);
 	arr.push_back(v >> 24);
 }
+
+static void smolv_Write4(uint8_t*& buf, uint32_t v)
+{
+	memcpy(buf, &v, 4);
+	buf += 4;
+}
+
 
 static bool smolv_Read4(const uint8_t*& data, const uint8_t* dataEnd, uint32_t& outv)
 {
@@ -1242,6 +1253,7 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv)
 	smolv_Write4(outSmolv, words[2]); // generator
 	smolv_Write4(outSmolv, words[3]); // bound
 	smolv_Write4(outSmolv, words[4]); // schema
+	smolv_Write4(outSmolv, (uint32_t)spirvSize); // space needed to decode (i.e. original SPIR-V size)
 
 	uint32_t prevResult = 0;
 	uint32_t prevDecorate = 0;
@@ -1331,16 +1343,31 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv)
 }
 
 
-bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
+size_t smolv::GetDecodedBufferSize(const void* smolvData, size_t smolvSize)
 {
+	if (!smolv_CheckSmolHeader((const uint8_t*)smolvData, smolvSize))
+		return 0;
+	const uint32_t* words = (const uint32_t*)smolvData;
+	return words[5];
+}
+
+
+bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuffer, size_t spirvOutputBufferSize)
+{
+	// check header, and whether we have enough output buffer space
+	const size_t neededBufferSize = GetDecodedBufferSize(smolvData, smolvSize);
+	if (neededBufferSize == 0)
+		return false; // invalid SMOL-V
+	if (spirvOutputBufferSize < neededBufferSize)
+		return false; // not enough space in output buffer
+	if (spirvOutputBuffer == NULL)
+		return false; // output buffer is null
+
 	const uint8_t* bytes = (const uint8_t*)smolvData;
 	const uint8_t* bytesEnd = bytes + smolvSize;
-	if (!smolv_CheckSmolHeader(bytes, smolvSize))
-		return false;
-	
-	// reserve space in output (typical compression is to about 30%; so reserve 3x of input space)
-	outSpirv.reserve(outSpirv.size() + smolvSize*2);
 
+	uint8_t* outSpirv = (uint8_t*)spirvOutputBuffer;
+	
 	uint32_t val;
 
 	// header
@@ -1349,6 +1376,7 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 	smolv_Read4(bytes, bytesEnd, val); smolv_Write4(outSpirv, val); // generator
 	smolv_Read4(bytes, bytesEnd, val); smolv_Write4(outSpirv, val); // bound
 	smolv_Read4(bytes, bytesEnd, val); smolv_Write4(outSpirv, val); // schema
+	bytes += 4; // decode buffer size
 
 	uint32_t prevResult = 0;
 	uint32_t prevDecorate = 0;
@@ -1431,6 +1459,9 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv)
 			}
 		}
 	}
+
+	if ((uint8_t*)spirvOutputBuffer + neededBufferSize != outSpirv)
+		return false; // something went wrong during decoding? we should have decoded to exact output size
 	
 	return true;
 }
@@ -1509,7 +1540,7 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 	const uint8_t* bytesEnd = bytes + smolvSize;
 	if (!smolv_CheckSmolHeader(bytes, smolvSize))
 		return false;
-	bytes += 20;
+	bytes += 24;
 	
 	stats->totalSizeSmol += smolvSize;
 	

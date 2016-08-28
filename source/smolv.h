@@ -71,12 +71,21 @@ namespace smolv
 
 	// Decode SMOL-V into SPIR-V.
 	//
-	// Resulting data is appended to outSpirv array (the array is not cleared).
+	// Resulting data is written into the passed buffer. Get required buffer space with
+	// GetDecodeBufferSize; this is the size of decoded SPIR-V program.
 	//
-	// Returns false on malformed input; if that happens the output array might get
-	// partial/broken SPIR-V program.
-	
-	bool Decode(const void* smolvData, size_t smolvSize, ByteArray& outSpirv);
+	// Decoding does no memory allocations.
+	//
+	// Returns false on malformed input; if that happens the output buffer might be only partially
+	// written to.
+	bool Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuffer, size_t spirvOutputBufferSize);
+
+
+	// Given a SMOL-V program, get size of the decoded SPIR-V program.
+	// This is the buffer size that Decode expects.
+	//
+	// Returns zero on malformed input (just checks the header, not the full input).
+	size_t GetDecodedBufferSize(const void* smolvData, size_t smolvSize);
 
 
 	// -------------------------------------------------------------------

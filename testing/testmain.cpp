@@ -227,8 +227,10 @@ int main()
 		}
 
 		// Decode back to SPIR-V
+		size_t spirvDecodedSize = smolv::GetDecodedBufferSize(smolv.data(), smolv.size());
 		ByteArray spirvDecoded;
-		if (!smolv::Decode(smolv.data(), smolv.size(), spirvDecoded))
+		spirvDecoded.resize(spirvDecodedSize);
+		if (!smolv::Decode(smolv.data(), smolv.size(), spirvDecoded.data(), spirvDecodedSize))
 		{
 			printf("ERROR: failed to decode back (bug?) %s\n", kFiles[i]);
 			++errorCount;
