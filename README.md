@@ -60,21 +60,21 @@ projects).
 
 ## Results
 
-As of 2016 August 27, results on 75 shaders (under `tests/spirv-dumps`) are:
+As of 2016 August 28, results on 113 shaders (under `tests/spirv-dumps`) are:
 
 ```
-Compression: original size 807.0KB
-0 Remap        : 806.7KB (100.0%)
-0 SMOL-V       : 277.8KB ( 34.4%)
-1    LZ4HC     : 217.3KB ( 26.9%)
-1 re+LZ4HC     : 157.8KB ( 19.6%)
-1 sm+LZ4HC     :  85.5KB ( 10.6%)
-2    Zstd      : 182.8KB ( 22.7%)
-2 re+Zstd      : 128.4KB ( 15.9%)
-2 sm+Zstd      :  77.9KB (  9.7%)
-3    Zstd20    : 125.7KB ( 15.6%)
-3 re+Zstd20    :  91.5KB ( 11.3%)
-3 sm+Zstd20    :  62.4KB (  7.7%)
+Compression: original size 1314.8KB
+0 Remap       1314.1KB  99.9%
+0 SMOL-V       448.3KB  34.1%
+1    LZ4HC     329.9KB  25.1%
+1 re+LZ4HC     241.8KB  18.4%
+1 sm+LZ4HC     128.0KB   9.7%
+2    Zstd      279.3KB  21.2%
+2 re+Zstd      188.7KB  14.4%
+2 sm+Zstd      117.4KB   8.9%
+3    Zstd20    187.0KB  14.2%
+3 re+Zstd20    129.0KB   9.8%
+3 sm+Zstd20     92.0KB   7.0%
 ```
 
 * "Remap" is spirv-remap from glslang, without debug info stripping (SMOL-V does not strip debug info either).

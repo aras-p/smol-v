@@ -300,7 +300,7 @@ int main()
 	printf("Compression: original size %.1fKB\n", spirvAll.size()/1024.0f);
 	for (auto&& kv : sizes)
 	{
-		printf("%-15s: %5.1fKB (%5.1f%%)\n", kv.first.c_str(), kv.second/1024.0f, (float)kv.second/(float)(spirvAll.size())*100.0f);
+		printf("%-13s %6.1fKB %5.1f%%\n", kv.first.c_str(), kv.second/1024.0f, (float)kv.second/(float)(spirvAll.size())*100.0f);
 	}
 	
 
