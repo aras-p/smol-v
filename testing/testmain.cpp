@@ -10,6 +10,7 @@
 #include "external/glslang/SPIRV/SPVRemapper.h"
 #include <stdio.h>
 #include <map>
+#include <string>
 
 typedef std::vector<uint8_t> ByteArray;
 
@@ -31,12 +32,11 @@ static void ReadFile(const char* fileName, ByteArray& output)
 
 static void RemapSPIRV(const void* data, size_t size, ByteArray& output)
 {
-	spv::spirvbin_t remapper;
-
-	const std::uint32_t* dataI = (const std::uint32_t*)data;
+	const uint32_t* dataI = (const uint32_t*)data;
 	const size_t sizeI = size/4;
-	std::vector<std::uint32_t> buf(dataI, dataI+sizeI);
+	std::vector<uint32_t> buf(dataI, dataI+sizeI);
 	
+	spv::spirvbin_t remapper;
 	remapper.remap(buf, remapper.ALL_BUT_STRIP);
 	output.insert(output.end(), (const uint8_t*)buf.data(), ((const uint8_t*)buf.data()) + buf.size()*4);
 }
@@ -279,7 +279,8 @@ int main()
 
 	// Compress various ways (as a whole blob) and print sizes
 	printf("Compressing...\n");
-	std::map<std::string, size_t> sizes;
+	typedef std::map<std::string, size_t> CompressorSizeMap;
+	CompressorSizeMap sizes;
 
 	;;sizes["0 Remap"] = spirvRemapAll.size();
 	sizes["0 SMOL-V"] = smolvAll.size();
@@ -300,9 +301,9 @@ int main()
 	smolv::StatsDelete(stats);
 	
 	printf("Compression: original size %.1fKB\n", spirvAll.size()/1024.0f);
-	for (auto&& kv : sizes)
+	for (CompressorSizeMap::const_iterator it = sizes.begin(), itEnd = sizes.end(); it != itEnd; ++it)
 	{
-		printf("%-13s %6.1fKB %5.1f%%\n", kv.first.c_str(), kv.second/1024.0f, (float)kv.second/(float)(spirvAll.size())*100.0f);
+		printf("%-13s %6.1fKB %5.1f%%\n", it->first.c_str(), it->second/1024.0f, (float)it->second/(float)(spirvAll.size())*100.0f);
 	}
 	
 

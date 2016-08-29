@@ -1481,17 +1481,18 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuf
 
 struct smolv::Stats
 {
-	size_t opCounts[kKnownOpsCount] = {};
-	size_t opSizes[kKnownOpsCount] = {};
-	size_t smolOpSizes[kKnownOpsCount] = {};
-	size_t varintCountsOp[6] = {};
-	size_t varintCountsType[6] = {};
-	size_t varintCountsRes[6] = {};
-	size_t varintCountsOther[6] = {};
-	size_t totalOps = 0;
-	size_t totalSize = 0;
-	size_t totalSizeSmol = 0;
-	size_t inputCount = 0;
+	Stats() { memset(this, 0, sizeof(*this)); }
+	size_t opCounts[kKnownOpsCount];
+	size_t opSizes[kKnownOpsCount];
+	size_t smolOpSizes[kKnownOpsCount];
+	size_t varintCountsOp[6];
+	size_t varintCountsType[6];
+	size_t varintCountsRes[6];
+	size_t varintCountsOther[6];
+	size_t totalOps;
+	size_t totalSize;
+	size_t totalSizeSmol;
+	size_t inputCount;
 };
 
 
