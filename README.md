@@ -3,7 +3,7 @@
 ## Overview
 
 SMOL-V encodes Vulkan/Khronos [SPIR-V](https://www.khronos.org/registry/spir-v/)
-format programs into a form that is smaller, and is more
+format programs into a form that is *smoller*, and is more
 compressible. No changes to the programs are done; they decode into exactly same program
 as was encoded.
 
