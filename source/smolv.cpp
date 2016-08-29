@@ -5,6 +5,7 @@
 #include "smolv.h"
 #include <stdint.h>
 #include <vector>
+#include <algorithm>
 
 #define ARRAY_SIZE(a) (sizeof(a)/sizeof((a)[0]))
 
@@ -320,7 +321,7 @@ enum SpvOp
 	SpvOpMemoryNamedBarrier = 329,
 	SpvOpModuleProcessed = 330,
 };
-static const size_t kKnownOpsCount = SpvOpModuleProcessed+1;
+static const int kKnownOpsCount = SpvOpModuleProcessed+1;
 
 
 static const char* kSpirvOpNames[] =
@@ -1011,14 +1012,14 @@ static bool smolv_OpHasResult(SpvOp op)
 {
 	if (op < 0 || op >= kKnownOpsCount)
 		return false;
-	return kSpirvOpData[op].hasResult;
+	return kSpirvOpData[op].hasResult != 0;
 }
 
 static bool smolv_OpHasType(SpvOp op)
 {
 	if (op < 0 || op >= kKnownOpsCount)
 		return false;
-	return kSpirvOpData[op].hasType;
+	return kSpirvOpData[op].hasType != 0;
 }
 
 static int smolv_OpDeltaFromResult(SpvOp op, bool& outZigzag)
@@ -1039,7 +1040,7 @@ static bool smolv_OpVarRest(SpvOp op)
 {
 	if (op < 0 || op >= kKnownOpsCount)
 		return false;
-	return kSpirvOpData[op].varrest;
+	return kSpirvOpData[op].varrest != 0;
 }
 
 

@@ -29,7 +29,7 @@ A somewhat similar utility is [spirv-remap from glslang](https://github.com/Khro
 ## Usage
 
 Add `source/smolv.h` and `source/smolv.cpp` to your C++ project build.
-Currently it might require C++11 or somesuch; I only tested with Mac Xcode 7.3 so far.
+Currently it might require C++11 or somesuch; I only tested with Visual Studio 2015 and Mac Xcode 7.3 so far.
 
 `smolv::Encode` and `smolv::Decode` is the basic functionality.
 

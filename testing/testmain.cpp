@@ -2,11 +2,13 @@
 // authored on 2016 by Aras Pranckevicius
 // no warranty implied; use at your own risk
 
+#define _CRT_SECURE_NO_WARNINGS // yes MSVC, I want to use fopen
 #include "../source/smolv.h"
 #include "external/lz4/lz4.h"
 #include "external/lz4/lz4hc.h"
 #include "external/zstd/zstd.h"
 #include "external/glslang/SPIRV/SPVRemapper.h"
+#include <stdio.h>
 #include <map>
 
 typedef std::vector<uint8_t> ByteArray;
