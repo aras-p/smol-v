@@ -28,16 +28,16 @@ A somewhat similar utility is [spirv-remap from glslang](https://github.com/Khro
 
 ## Usage
 
-Add `source/smolv.h` and `source/smolv.cpp` to your C++ project build.
+Add `[source/smolv.h](source/smolv.h)` and `[source/smolv.cpp](source/smolv.cpp)` to your C++ project build.
 It might require C++11 or somesuch; I only tested with Visual Studio 2010, 2015 and Mac Xcode 7.3.
 
-`smolv::Encode` and `smolv::Decode` is the basic functionality.
+`smolv::Encode` and `smolv::Decode` is the basic functionality. See [smolv.h](source/smolv.h).
 
 Other functions are for development/statistics purposes, to figure out frequencies and
 distributions of the instructions.
 
 There's a test + compression benchmarking suite in `testing/testmain.cpp`, using that needs adding
-other files under testing/external to the build too (3rd party code: glslang remapper, ZStd, LZ4).
+other files under testing/external to the build too (3rd party code: glslang remapper, Zstd, LZ4).
 
 
 ## Limitations / TODO
@@ -54,8 +54,9 @@ other files under testing/external to the build too (3rd party code: glslang rem
 Public Domain
 
 There is 3rd party code under the testing framework (`testing/external`); it is not required for
-using SMOL-V. All that code (glslang, lz4, ZStd is BSD-licensed, and taken from github repositories of the respective
-projects).
+using SMOL-V. All that code ([glslang](https://github.com/KhronosGroup/glslang),
+[LZ4](https://github.com/Cyan4973/lz4), [Zstd](https://github.com/Cyan4973/zstd)) is BSD-licensed,
+and taken from github repositories of the respective projects.
 
 
 ## Results
@@ -78,6 +79,6 @@ Compression: original size 1314.8KB
 ```
 
 * "Remap" is spirv-remap from glslang, without debug info stripping (SMOL-V does not strip debug info either).
-* LZ4HC and Zstd are general compression algorithms at default settings (Zstd20 is ZStd compression with almost max setting of 20).
+* LZ4HC and Zstd are general compression algorithms at default settings (Zstd20 is Zstd compression with almost max setting of 20).
 * "re+" is "remapper + compression", "sm+" is "SMOL-V + compression".
 * Compression is done on the whole blob of all the test programs (not individually for each program).
