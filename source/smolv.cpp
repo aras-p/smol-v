@@ -7,8 +7,7 @@
 #include <vector>
 #include <algorithm>
 
-#define ARRAY_SIZE(a) (sizeof(a)/sizeof((a)[0]))
-
+#define SMOLV_ARRAY_SIZE(a) (sizeof(a)/sizeof((a)[0]))
 
 // --------------------------------------------------------------------------------------------
 // Metadata about known SPIR-V operations
@@ -658,7 +657,7 @@ static const char* kSpirvOpNames[] =
 	"MemoryNamedBarrier",
 	"ModuleProcessed",
 };
-static_assert(ARRAY_SIZE(kSpirvOpNames) == kKnownOpsCount, "kSpirvOpNames table mismatch with known SpvOps");
+static_assert(SMOLV_ARRAY_SIZE(kSpirvOpNames) == kKnownOpsCount, "kSpirvOpNames table mismatch with known SpvOps");
 
 
 struct OpData
@@ -1005,7 +1004,7 @@ static const OpData kSpirvOpData[] =
 	{0, 0,-2, 1}, // MemoryNamedBarrier
 	{1, 1, 0, 0}, // ModuleProcessed
 };
-static_assert(ARRAY_SIZE(kSpirvOpData) == kKnownOpsCount, "kSpirvOpData table mismatch with known SpvOps");
+static_assert(SMOLV_ARRAY_SIZE(kSpirvOpData) == kKnownOpsCount, "kSpirvOpData table mismatch with known SpvOps");
 
 
 static bool smolv_OpHasResult(SpvOp op)
