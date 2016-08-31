@@ -1279,7 +1279,7 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 	{
 		_SMOLV_READ_OP();
 
-		if ((flags & StripDebugInfoBit) && smolv_OpDebugInfo(op))
+		if ((flags & kEncodeFlagStripDebugInfo) && smolv_OpDebugInfo(op))
 		{
 			strippedSpirvWordCount -= instrLen;
 			words += instrLen;

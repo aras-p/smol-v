@@ -57,10 +57,11 @@ namespace smolv
 {
 	typedef std::vector<uint8_t> ByteArray;
 
-	enum EncodeFlag
+	enum EncodeFlags
 	{
-		StripDebugInfoBit = 0x1, // Strip all optional SPIR-V instructions
+		kEncodeFlagStripDebugInfo = (1<<0), // Strip all optional SPIR-V instructions (debug names etc.)
 	};
+
 
 	// -------------------------------------------------------------------
 	// Encoding / Decoding
@@ -69,9 +70,11 @@ namespace smolv
 	//
 	// Resulting data is appended to outSmolv array (the array is not cleared).
 	//
+	// flags is bitset of EncodeFlags values.
+	//
 	// Returns false on malformed SPIR-V input; if that happens the output array might get
 	// partial/broken SMOL-V program.
-	bool Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv, uint32_t flags = 0);
+	bool Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv, uint32_t flags);
 
 
 	// Decode SMOL-V into SPIR-V.
