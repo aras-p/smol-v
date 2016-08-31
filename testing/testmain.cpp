@@ -30,14 +30,14 @@ static void ReadFile(const char* fileName, ByteArray& output)
 	}
 }
 
-static void RemapSPIRV(const void* data, size_t size, ByteArray& output)
+static void RemapSPIRV(const void* data, size_t size, bool strip, ByteArray& output)
 {
 	const uint32_t* dataI = (const uint32_t*)data;
 	const size_t sizeI = size/4;
 	std::vector<uint32_t> buf(dataI, dataI+sizeI);
 	
 	spv::spirvbin_t remapper;
-	remapper.remap(buf, remapper.ALL_BUT_STRIP);
+	remapper.remap(buf, strip ? remapper.DO_EVERYTHING : remapper.ALL_BUT_STRIP);
 	output.insert(output.end(), (const uint8_t*)buf.data(), ((const uint8_t*)buf.data()) + buf.size()*4);
 }
 
@@ -193,8 +193,8 @@ int main()
 
 	// all test data lumped together, to check how well it compresses as a whole block
 	ByteArray spirvAll;
-	ByteArray spirvRemapAll;
-	ByteArray smolvAll;
+	ByteArray spirvRemapAll[2];
+	ByteArray smolvAll[2];
 
 	// go over all test files
 	int errorCount = 0;
@@ -221,7 +221,7 @@ int main()
 
 		// Encode to SMOL-V
 		ByteArray smolv;
-		if (!smolv::Encode(spirv.data(), spirv.size(), smolv))
+		if (!smolv::Encode(spirv.data(), spirv.size(), smolv, 0))
 		{
 			printf("ERROR: failed to encode (invalid invalid SPIR-V?) %s\n", kFiles[i]);
 			++errorCount;
@@ -271,46 +271,64 @@ int main()
 			break;
 		}
 
-		// Append original and SMOLV code to the whole blob
+		// Encode to SMOL-V, with debug info stripping
+		ByteArray smolvStripped;
+		if (!smolv::Encode(spirv.data(), spirv.size(), smolvStripped, smolv::kEncodeFlagStripDebugInfo))
+		{
+			printf("ERROR: failed to encode with stripping (invalid invalid SPIR-V?) %s\n", kFiles[i]);
+			++errorCount;
+			break;
+		}
+
+		// Append to "whole blob" arrays
 		spirvAll.insert(spirvAll.end(), spirv.begin(), spirv.end());
-		smolvAll.insert(smolvAll.end(), smolv.begin(), smolv.end());
-		RemapSPIRV(spirv.data(), spirv.size(), spirvRemapAll);
-	}
-
-	// Compress various ways (as a whole blob) and print sizes
-	printf("Compressing...\n");
-	typedef std::map<std::string, size_t> CompressorSizeMap;
-	CompressorSizeMap sizes;
-
-	;;sizes["0 Remap"] = spirvRemapAll.size();
-	sizes["0 SMOL-V"] = smolvAll.size();
-
-	;;sizes["1    LZ4HC"] = CompressLZ4HC(spirvAll.data(), spirvAll.size());
-	;;sizes["1 re+LZ4HC"] = CompressLZ4HC(spirvRemapAll.data(), spirvRemapAll.size());
-	sizes["1 sm+LZ4HC"] = CompressLZ4HC(smolvAll.data(), smolvAll.size());
-
-	;;sizes["2    Zstd"] = CompressZstd(spirvAll.data(), spirvAll.size());
-	;;sizes["2 re+Zstd"] = CompressZstd(spirvRemapAll.data(), spirvRemapAll.size());
-	sizes["2 sm+Zstd"] = CompressZstd(smolvAll.data(), smolvAll.size());
-
-	;;sizes["3    Zstd20"] = CompressZstd(spirvAll.data(), spirvAll.size(), 20);
-	;;sizes["3 re+Zstd20"] = CompressZstd(spirvRemapAll.data(), spirvRemapAll.size(), 20);
-	sizes["3 sm+Zstd20"] = CompressZstd(smolvAll.data(), smolvAll.size(), 20);
-	
-	smolv::StatsPrint(stats);
-	smolv::StatsDelete(stats);
-	
-	printf("Compression: original size %.1fKB\n", spirvAll.size()/1024.0f);
-	for (CompressorSizeMap::const_iterator it = sizes.begin(), itEnd = sizes.end(); it != itEnd; ++it)
-	{
-		printf("%-13s %6.1fKB %5.1f%%\n", it->first.c_str(), it->second/1024.0f, (float)it->second/(float)(spirvAll.size())*100.0f);
+		smolvAll[0].insert(smolvAll[0].end(), smolv.begin(), smolv.end());
+		smolvAll[1].insert(smolvAll[1].end(), smolvStripped.begin(), smolvStripped.end());
+		RemapSPIRV(spirv.data(), spirv.size(), false, spirvRemapAll[0]);
+		RemapSPIRV(spirv.data(), spirv.size(), true, spirvRemapAll[1]);
 	}
 	
-
 	if (errorCount != 0)
 	{
 		printf("Got ERRORS: %i\n", errorCount);
+		smolv::StatsDelete(stats);
 		return 1;
 	}
+	
+	// Print instruction stats
+	smolv::StatsPrint(stats);
+	smolv::StatsDelete(stats);
+
+	// Compress various ways (as a whole blob) and print sizes
+	for (int i = 0; i < 2; ++i)
+	{
+		printf("Compressing %s...\n", i==0 ? "RAW" : "STRIPPED");
+		typedef std::map<std::string, size_t> CompressorSizeMap;
+		CompressorSizeMap sizes;
+
+		;;sizes["0 Remap"] = spirvRemapAll[i].size();
+		sizes["0 SMOL-V"] = smolvAll[i].size();
+
+		;;sizes["1    LZ4HC"] = CompressLZ4HC(spirvAll.data(), spirvAll.size());
+		;;sizes["1 re+LZ4HC"] = CompressLZ4HC(spirvRemapAll[i].data(), spirvRemapAll[i].size());
+		sizes["1 sm+LZ4HC"] = CompressLZ4HC(smolvAll[i].data(), smolvAll[i].size());
+
+		;;sizes["2    Zstd"] = CompressZstd(spirvAll.data(), spirvAll.size());
+		;;sizes["2 re+Zstd"] = CompressZstd(spirvRemapAll[i].data(), spirvRemapAll[i].size());
+		sizes["2 sm+Zstd"] = CompressZstd(smolvAll[i].data(), smolvAll[i].size());
+
+		;;sizes["3    Zstd20"] = CompressZstd(spirvAll.data(), spirvAll.size(), 20);
+		;;sizes["3 re+Zstd20"] = CompressZstd(spirvRemapAll[i].data(), spirvRemapAll[i].size(), 20);
+		sizes["3 sm+Zstd20"] = CompressZstd(smolvAll[i].data(), smolvAll[i].size(), 20);
+		
+		
+		printf("Original size: %.1fKB\n", spirvAll.size()/1024.0f);
+		for (CompressorSizeMap::const_iterator it = sizes.begin(), itEnd = sizes.end(); it != itEnd; ++it)
+		{
+			printf("%-13s %6.1fKB %5.1f%%\n", it->first.c_str(), it->second/1024.0f, (float)it->second/(float)(spirvAll.size())*100.0f);
+		}
+	}
+	
+
 	return 0;
 }
