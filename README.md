@@ -69,8 +69,11 @@ these are not required for using SMOL-V. Not sure how to appropriately
 so I'll go with this: "Binary shader dumps under 'tests' folder are only to be
 used for SMOL-V testing". Details on them:
 
+* `tests/spirv-dumps/talos` - some shaders from [The Talos Principle](http://www.croteam.com/talosprinciple/),
+  Copyright (c) 2002-2016 Croteam All rights reserved.
 * `tests/spirv-dumps/unity` - various [Unity](https://unity3d.com/) shaders, produced
   through a HLSL -> DX11 bytecode -> HLSLcc -> glslang toolchain.
+
 
 
 ## Results

@@ -68,10 +68,15 @@ int main()
 {
 	smolv::Stats* stats = smolv::StatsCreate();
 
+	#define TEST_UNITY 1
+	#define TEST_TALOS 1
+
 	// files we're testing on
 	const char* kFiles[] =
 	{
-		// Shaders produced by Unity's pipeline (HLSL -> DX11 bytecode -> HLSLcc -> glslang); vertex shaders
+		#if TEST_UNITY
+		// Shaders produced by Unity's pipeline (HLSL -> DX11 bytecode -> HLSLcc -> glslang):
+		// vertex shaders
 		"unity/s0-0001-32333750.spirv",
 		"unity/s0-0002-ca3af858.spirv",
 		"unity/s0-0003-6ccb7b5e.spirv",
@@ -112,7 +117,7 @@ int main()
 		"unity/s0-0034-5c3d45dc.spirv",
 		"unity/s0-0045-f2078956.spirv",
 		"unity/s0-0046-0b926d9c.spirv",
-		// Shaders produced by Unity's pipeline (HLSL -> DX11 bytecode -> HLSLcc -> glslang); fragment shaders
+		// fragment shaders
 		"unity/s1-0000-5ca04fe4.spirv",
 		"unity/s1-0000-cf9fe2e0.spirv",
 		"unity/s1-0001-04d9d27b.spirv",
@@ -175,20 +180,125 @@ int main()
 		"unity/s1-0070-7595e017.spirv",
 		"unity/s1-0074-e4935128.spirv",
 		"unity/s1-0084-ffb8278d.spirv",
-		// Shaders produced by Unity's pipeline (HLSL -> DX11 bytecode -> HLSLcc -> glslang); hull shaders
+		// hull shaders
 		"unity/s2-0004-76b9ef38.spirv",
 		"unity/s2-0006-655ac983.spirv",
 		"unity/s2-0019-3ddaf08d.spirv",
 		"unity/s2-0031-412ed89d.spirv",
-		// Shaders produced by Unity's pipeline (HLSL -> DX11 bytecode -> HLSLcc -> glslang); domain shaders
+		// domain shaders
 		"unity/s3-0008-09cef3e4.spirv",
 		"unity/s3-0019-4c006911.spirv",
 		"unity/s3-0022-f40e2e1e.spirv",
 		"unity/s3-0028-e081a509.spirv",
 		"unity/s3-0037-18f71ada.spirv",
-		// Shaders produced by Unity's pipeline (HLSL -> DX11 bytecode -> HLSLcc -> glslang); geometry shaders
+		// geometry shaders
 		"unity/s4-0004-6ec33743.spirv",
 		"unity/s4-0006-a5e06270.spirv",
+		#endif // #if TEST_UNITY
+
+		#if TEST_TALOS
+		// Shaders from The Talos Principle by Croteam:
+		"talos/0078C470.shc",
+		"talos/00DC0D6D.shc",
+		"talos/0141C822.shc",
+		"talos/04CA3D7B.shc",
+		"talos/0A38A8F3.shc",
+		"talos/0C958994.shc",
+		"talos/0D8DD830.shc",
+		"talos/12A491AE.shc",
+		"talos/152916BF.shc",
+		"talos/17A983B3.shc",
+		"talos/17D83DB7.shc",
+		"talos/181EB7F4.shc",
+		"talos/18CD3426.shc",
+		"talos/1AE632D2.shc",
+		"talos/1AFB24CF.shc",
+		"talos/1D86CEC1.shc",
+		"talos/2789ADE0.shc",
+		"talos/2CFAEA42.shc",
+		"talos/2F1269A4.shc",
+		"talos/3025BBCF.shc",
+		"talos/324AA691.shc",
+		"talos/3278D7A2.shc",
+		"talos/35EB2F5D.shc",
+		"talos/36BBB957.shc",
+		"talos/38DA4FDC.shc",
+		"talos/39645236.shc",
+		"talos/397C22DE.shc",
+		"talos/3FC9340A.shc",
+		"talos/42ADB187.shc",
+		"talos/43851D2E.shc",
+		"talos/446D15D1.shc",
+		"talos/48F3A85B.shc",
+		"talos/4CF9349C.shc",
+		"talos/4D3AFE1F.shc",
+		"talos/4DF32AA3.shc",
+		"talos/54A4CD9C.shc",
+		"talos/5584AAD6.shc",
+		"talos/560C8AAE.shc",
+		"talos/58897F63.shc",
+		"talos/5997DC95.shc",
+		"talos/5C3ACFF1.shc",
+		"talos/5F10146A.shc",
+		"talos/62123EF6.shc",
+		"talos/63846EDC.shc",
+		"talos/6616D572.shc",
+		"talos/68ADD87A.shc",
+		"talos/6939EFB6.shc",
+		"talos/6DE20E90.shc",
+		"talos/71090A41.shc",
+		"talos/721FAA4E.shc",
+		"talos/72CF8B9E.shc",
+		"talos/7311A988.shc",
+		"talos/74D7C9BE.shc",
+		"talos/7A632EA9.shc",
+		"talos/7E791068.shc",
+		"talos/7FB437EC.shc",
+		"talos/862ABA13.shc",
+		"talos/8698BECC.shc",
+		"talos/8A8A2AD6.shc",
+		"talos/8B4ABC28.shc",
+		"talos/8E86B6D4.shc",
+		"talos/907A8A15.shc",
+		"talos/90AC21AB.shc",
+		"talos/91D8BCE2.shc",
+		"talos/9420BCB8.shc",
+		"talos/9B8842CA.shc",
+		"talos/9E5A3BEE.shc",
+		"talos/A1B17C65.shc",
+		"talos/A6D5DB71.shc",
+		"talos/AA43457F.shc",
+		"talos/AF45DFA4.shc",
+		"talos/B115E1B7.shc",
+		"talos/B1683E56.shc",
+		"talos/B60DED50.shc",
+		"talos/C3C6FB0C.shc",
+		"talos/C55A421D.shc",
+		"talos/C8A3D253.shc",
+		"talos/CD4F5F10.shc",
+		"talos/CDD726BF.shc",
+		"talos/CE39D960.shc",
+		"talos/D03CB186.shc",
+		"talos/D071359B.shc",
+		"talos/D0D4B04A.shc",
+		"talos/D3A302F3.shc",
+		"talos/D69AF138.shc",
+		"talos/D8175C09.shc",
+		"talos/D95FF51D.shc",
+		"talos/DEDA997A.shc",
+		"talos/E0B57835.shc",
+		"talos/E367B56D.shc",
+		"talos/E87626E9.shc",
+		"talos/EDF61398.shc",
+		"talos/F187344E.shc",
+		"talos/F18905F7.shc",
+		"talos/F4E8AB75.shc",
+		"talos/F54184AD.shc",
+		"talos/F757DA36.shc",
+		"talos/F84FE6FD.shc",
+		"talos/F9D3D588.shc",
+		"talos/FDA341FA.shc",
+		#endif // #if TEST_TALOS
 	};
 
 	// all test data lumped together, to check how well it compresses as a whole block
