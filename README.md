@@ -63,13 +63,13 @@ using SMOL-V. All that code ([glslang](https://github.com/KhronosGroup/glslang),
 [LZ4](https://github.com/Cyan4973/lz4), [Zstd](https://github.com/facebook/zstd)) is BSD-licensed,
 and taken from github repositories of the respective projects.
 
-There are SPIR-V binary shader dumps under `tests` for compression testing;
+There are SPIR-V binary shader dumps under `tests/spirv-dumps` for compression testing;
 these are not required for using SMOL-V. Not sure how to appropriately
 "license" them (but hey they are kinda useless by themselves out of context),
 so I'll go with this: "Binary shader dumps under 'tests' folder are only to be
 used for SMOL-V testing". Details on them:
 
-* `tests/spirv-dumps` - various [Unity](https://unity3d.com/) shaders, produced
+* `tests/spirv-dumps/unity` - various [Unity](https://unity3d.com/) shaders, produced
   through a HLSL -> DX11 bytecode -> HLSLcc -> glslang toolchain.
 
 
