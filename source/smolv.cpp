@@ -1046,6 +1046,17 @@ static bool smolv_OpDebugInfo(SpvOp op)
 		op == SpvOpModuleProcessed;
 }
 
+
+static int smolv_DecorationExtraOps(int dec)
+{
+	if (dec == 0 || (dec >= 2 && dec <= 5)) // RelaxedPrecision, Block..ColMajor
+		return 0;
+	if (dec >= 29 && dec <= 37) // Stream..XfbStride
+		return 1;
+	return -1; // unknown, encode length
+}
+
+
 // --------------------------------------------------------------------------------------------
 
 
@@ -1238,10 +1249,10 @@ static bool smolv_ReadLengthOp(const uint8_t*& data, const uint8_t* dataEnd, uin
 
 
 
-#define _SMOLV_READ_OP() \
-	uint32_t instrLen = words[0] >> 16; \
-	if (instrLen < 1) return false; /* malformed instruction, length needs to be at least 1 */ \
-	if (words + instrLen > wordsEnd) return false; /* malformed instruction, goes past end of data */ \
+#define _SMOLV_READ_OP(len, words, op) \
+	uint32_t len = words[0] >> 16; \
+	if (len < 1) return false; /* malformed instruction, length needs to be at least 1 */ \
+	if (words + len > wordsEnd) return false; /* malformed instruction, goes past end of data */ \
 	SpvOp op = (SpvOp)(words[0] & 0xFFFF)
 
 
@@ -1273,7 +1284,7 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 	words += 5;
 	while (words < wordsEnd)
 	{
-		_SMOLV_READ_OP();
+		_SMOLV_READ_OP(instrLen, words, op);
 
 		if ((flags & kEncodeFlagStripDebugInfo) && smolv_OpDebugInfo(op))
 		{
@@ -1325,6 +1336,67 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 			smolv_WriteVarint(outSmolv, v - prevDecorate);
 			prevDecorate = v;
 			ioffs++;
+		}
+
+		// MemberDecorate special encoding: whole row of MemberDecorate instructions is often referring
+		// to the same type and linearly increasing member indices. Scan ahead to see how many we have,
+		// and encode whole bunch as one.
+		if (op == SpvOpMemberDecorate)
+		{
+			// scan ahead until we reach end, non-member-decoration or different type
+			const uint32_t decorationType = words[ioffs-1];
+			const uint32_t* memberWords = words;
+			uint32_t prevIndex = 0;
+			uint32_t prevOffset = 0;
+			// write a byte on how many we have encoded as a bunch
+			size_t countLocation = outSmolv.size();
+			outSmolv.push_back(0);
+			int count = 0;
+			while (memberWords < wordsEnd && count < 255)
+			{
+				_SMOLV_READ_OP(memberLen, memberWords, memberOp);
+				if (memberOp != SpvOpMemberDecorate)
+					break;
+				if (memberLen < 4)
+					return false; // invalid input
+				if (memberWords[1] != decorationType)
+					break;
+
+				// write member index as delta from previous
+				uint32_t memberIndex = memberWords[2];
+				smolv_WriteVarint(outSmolv, memberIndex - prevIndex);
+				prevIndex = memberIndex;
+
+				// decoration (and length if not common/known)
+				uint32_t memberDec = memberWords[3];
+				smolv_WriteVarint(outSmolv, memberDec);
+				const int knownExtraOps = smolv_DecorationExtraOps(memberDec);
+				if (knownExtraOps == -1)
+					smolv_WriteVarint(outSmolv, memberLen-4);
+				else if (knownExtraOps + 4 != memberLen)
+					return false; // invalid input
+
+				// Offset decorations are most often linearly increasing, so encode as deltas
+				if (memberDec == 35) // Offset
+				{
+					if (memberLen != 5)
+						return false;
+					smolv_WriteVarint(outSmolv, memberWords[4]-prevOffset);
+					prevOffset = memberWords[4];
+				}
+				else
+				{
+					// write rest of decorations as varint
+					for (int i = 4; i < memberLen; ++i)
+						smolv_WriteVarint(outSmolv, memberWords[i]);
+				}
+
+				memberWords += memberLen;
+				++count;
+			}
+			outSmolv[countLocation] = count;
+			words = memberWords;
+			continue;
 		}
 
 		// Write out this many IDs, encoding them relative+zigzag to result ID
@@ -1448,6 +1520,65 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuf
 			ioffs++;
 		}
 
+		// MemberDecorate special decoding
+		if (op == SpvOpMemberDecorate)
+		{
+			if (bytes >= bytesEnd)
+				return false; // broken input
+			int count = *bytes++;
+			int prevIndex = 0;
+			int prevOffset = 0;
+			for (int m = 0; m < count; ++m)
+			{
+				// read member index
+				uint32_t memberIndex;
+				if (!smolv_ReadVarint(bytes, bytesEnd, memberIndex)) return false;
+				memberIndex += prevIndex;
+				prevIndex = memberIndex;
+				
+				// decoration (and length if not common/known)
+				uint32_t memberDec;
+				if (!smolv_ReadVarint(bytes, bytesEnd, memberDec)) return false;
+				const int knownExtraOps = smolv_DecorationExtraOps(memberDec);
+				uint32_t memberLen;
+				if (knownExtraOps == -1)
+				{
+					if (!smolv_ReadVarint(bytes, bytesEnd, memberLen)) return false;
+					memberLen += 4;
+				}
+				else
+					memberLen = 4 + knownExtraOps;
+
+				// write SPIR-V op+length (unless it's first member decoration, in which case it was written before)
+				if (m != 0)
+				{
+					smolv_Write4(outSpirv, (memberLen << 16) | op);
+					smolv_Write4(outSpirv, prevDecorate);
+				}
+				smolv_Write4(outSpirv, memberIndex);
+				smolv_Write4(outSpirv, memberDec);
+				// Special case for Offset decorations
+				if (memberDec == 35) // Offset
+				{
+					if (memberLen != 5)
+						return false;
+					if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
+					val += prevOffset;
+					smolv_Write4(outSpirv, val);
+					prevOffset = val;
+				}
+				else
+				{
+					for (int i = 4; i < memberLen; ++i)
+					{
+						if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
+						smolv_Write4(outSpirv, val);
+					}
+				}
+			}
+			continue;
+		}
+
 		// Read this many IDs, that are relative to result ID
 		int relativeCount = smolv_OpDeltaFromResult(op);
 		for (int i = 0; i < relativeCount && ioffs < instrLen; ++i, ++ioffs)
@@ -1542,7 +1673,7 @@ bool smolv::StatsCalculate(smolv::Stats* stats, const void* spirvData, size_t sp
 
 	while (words < wordsEnd)
 	{
-		_SMOLV_READ_OP();
+		_SMOLV_READ_OP(instrLen, words, op);
 
 		if (op < kKnownOpsCount)
 		{
@@ -1608,7 +1739,36 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
 			ioffs++;
 		}
-		
+		// MemberDecorate special decoding
+		if (op == SpvOpMemberDecorate)
+		{
+			if (bytes >= bytesEnd)
+				return false; // broken input
+			int count = *bytes++;
+			for (int m = 0; m < count; ++m)
+			{
+				uint32_t memberIndex;
+				if (!smolv_ReadVarint(bytes, bytesEnd, memberIndex)) return false;
+				uint32_t memberDec;
+				if (!smolv_ReadVarint(bytes, bytesEnd, memberDec)) return false;
+				const int knownExtraOps = smolv_DecorationExtraOps(memberDec);
+				uint32_t memberLen;
+				if (knownExtraOps == -1)
+				{
+					if (!smolv_ReadVarint(bytes, bytesEnd, memberLen)) return false;
+					memberLen += 4;
+				}
+				else
+					memberLen = 4 + knownExtraOps;
+				for (int i = 4; i < memberLen; ++i)
+				{
+					if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
+				}
+			}
+			stats->smolOpSizes[op] += bytes - instrBegin;
+			continue;
+		}
+
 		int relativeCount = smolv_OpDeltaFromResult(op);
 		for (int i = 0; i < relativeCount && ioffs < instrLen; ++i, ++ioffs)
 		{

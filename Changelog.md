@@ -7,7 +7,9 @@ For an overview, see [readme](README.md).
 * Improve compression for programs already processed by
   spirv-remap. "Relative to result ID" entries now encode
   negative numbers in a more compact way.
+* More compact encoding of MemberDecorate op sequences.
 * Tests: added suite of shaders from DOTA2 and Talos Principle.
+
 
 ## 2016 08 31
 
