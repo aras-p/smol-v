@@ -40,6 +40,10 @@ distributions of the instructions.
 There's a test + compression benchmarking suite in `testing/testmain.cpp`, using that needs adding
 other files under testing/external to the build too (3rd party code: glslang remapper, Zstd, LZ4).
 
+## Changelog
+
+See [**Changelog**](Changelog.md).
+
 
 ## Limitations / TODO
 
