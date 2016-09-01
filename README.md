@@ -79,24 +79,25 @@ used for SMOL-V testing". Details on them:
 
 ## Results
 
-As of 2016 August 28, results on 113 shaders (under `tests/spirv-dumps`) are:
+As of 2016 September 1, results on 323 shaders (under `tests/spirv-dumps`) are:
 
 ```
-Compression: original size 1314.8KB
-0 Remap       1314.1KB  99.9%
-0 SMOL-V       448.3KB  34.1%
-1    LZ4HC     329.9KB  25.1%
-1 re+LZ4HC     241.8KB  18.4%
-1 sm+LZ4HC     128.0KB   9.7%
-2    Zstd      279.3KB  21.2%
-2 re+Zstd      188.7KB  14.4%
-2 sm+Zstd      117.4KB   8.9%
-3    Zstd20    187.0KB  14.2%
-3 re+Zstd20    129.0KB   9.8%
-3 sm+Zstd20     92.0KB   7.0%
+Original size: 3725.4KB
+0 Remap       3560.0KB  95.6%
+0 SMOL-V      1332.4KB  35.8%
+1    LZ4HC     884.4KB  23.7%
+1 re+LZ4HC     743.3KB  20.0%
+1 sm+LZ4HC     446.5KB  12.0%
+2    Zstd      555.4KB  14.9%
+2 re+Zstd      425.6KB  11.4%
+2 sm+Zstd      299.6KB   8.0%
+3    Zstd20    339.4KB   9.1%
+3 re+Zstd20    260.5KB   7.0%
+3 sm+Zstd20    228.1KB   6.1%
 ```
 
-* "Remap" is spirv-remap from glslang, without debug info stripping.
+* "Remap" is spirv-remap from glslang, with debug info stripping.
+* SMOL-V is what you're looking at, with debug info stripping too.
 * LZ4HC and Zstd are general compression algorithms at default settings (Zstd20 is Zstd compression with almost max setting of 20).
 * "re+" is "remapper + compression", "sm+" is "SMOL-V + compression".
 * Compression is done on the whole blob of all the test programs (not individually for each program).

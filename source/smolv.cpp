@@ -664,10 +664,7 @@ struct OpData
 {
 	uint8_t hasResult;	// does it have result ID?
 	uint8_t hasType;	// does it have type ID?
-	// How many words after (optional) type+result to write out as deltas from result?
-	// If negative, encode abs(x) words, and use zigzag encoding, use this on instructions that
-	// often reference IDs that can be either before or after them (e.g. branches).
-	int8_t  deltaFromResult;
+	uint8_t deltaFromResult; // How many words after (optional) type+result to write out as deltas from result?
 	uint8_t varrest;	// should the rest of words be written in varint encoding?
 };
 static const OpData kSpirvOpData[] =
@@ -896,8 +893,8 @@ static const OpData kSpirvOpData[] =
 	{0, 0, 0, 0}, // EndStreamPrimitive
 	{1, 1, 0, 0}, // #222
 	{1, 1, 0, 0}, // #223
-	{0, 0,-3, 0}, // ControlBarrier
-	{0, 0,-2, 0}, // MemoryBarrier
+	{0, 0, 3, 0}, // ControlBarrier
+	{0, 0, 2, 0}, // MemoryBarrier
 	{1, 1, 0, 0}, // #226
 	{1, 1, 0, 0}, // AtomicLoad
 	{0, 0, 0, 0}, // AtomicStore
@@ -918,11 +915,11 @@ static const OpData kSpirvOpData[] =
 	{1, 1, 0, 0}, // #243
 	{1, 1, 0, 0}, // #244
 	{1, 1, 0, 0}, // Phi
-	{0, 0,-2, 1}, // LoopMerge
-	{0, 0,-1, 1}, // SelectionMerge
+	{0, 0, 2, 1}, // LoopMerge
+	{0, 0, 1, 1}, // SelectionMerge
 	{1, 0, 0, 0}, // Label
-	{0, 0,-1, 0}, // Branch
-	{0, 0,-3, 1}, // BranchConditional
+	{0, 0, 1, 0}, // Branch
+	{0, 0, 3, 1}, // BranchConditional
 	{0, 0, 0, 0}, // Switch
 	{0, 0, 0, 0}, // Kill
 	{0, 0, 0, 0}, // Return
@@ -1001,7 +998,7 @@ static const OpData kSpirvOpData[] =
 	{1, 1, 0, 0}, // GetKernelMaxNumSubgroups
 	{1, 1, 0, 0}, // TypeNamedBarrier
 	{1, 1, 0, 1}, // NamedBarrierInitialize
-	{0, 0,-2, 1}, // MemoryNamedBarrier
+	{0, 0, 2, 1}, // MemoryNamedBarrier
 	{1, 1, 0, 0}, // ModuleProcessed
 };
 static_assert(SMOLV_ARRAY_SIZE(kSpirvOpData) == kKnownOpsCount, "kSpirvOpData table mismatch with known SpvOps");
@@ -1021,18 +1018,11 @@ static bool smolv_OpHasType(SpvOp op)
 	return kSpirvOpData[op].hasType != 0;
 }
 
-static int smolv_OpDeltaFromResult(SpvOp op, bool& outZigzag)
+static int smolv_OpDeltaFromResult(SpvOp op)
 {
-	outZigzag = false;
 	if (op < 0 || op >= kKnownOpsCount)
 		return 0;
-	int delta = kSpirvOpData[op].deltaFromResult;
-	if (delta < 0)
-	{
-		outZigzag = true;
-		return -delta;
-	}
-	return delta;
+	return kSpirvOpData[op].deltaFromResult;
 }
 
 static bool smolv_OpVarRest(SpvOp op)
@@ -1222,7 +1212,7 @@ static uint32_t smolv_DecodeLen(SpvOp op, uint32_t len)
 
 
 // Shuffling bits of length + opcode to be more compact in varint encoding in typical cases:
-// 0x LLLL OOOO is how SPIR-V encodes it (L=lenght, O=op), we shuffle into:
+// 0x LLLL OOOO is how SPIR-V encodes it (L=length, O=op), we shuffle into:
 // 0x LLLO OOLO, so that common case (op<16, len<8) is encoded into one byte.
 
 static void smolv_WriteLengthOp(smolv::ByteArray& arr, uint32_t len, SpvOp op)
@@ -1250,7 +1240,7 @@ static bool smolv_ReadLengthOp(const uint8_t*& data, const uint8_t* dataEnd, uin
 
 #define _SMOLV_READ_OP() \
 	uint32_t instrLen = words[0] >> 16; \
-	if (instrLen < 1) return false; /* malformed instruction, lenght needs to be at least 1 */ \
+	if (instrLen < 1) return false; /* malformed instruction, length needs to be at least 1 */ \
 	if (words + instrLen > wordsEnd) return false; /* malformed instruction, goes past end of data */ \
 	SpvOp op = (SpvOp)(words[0] & 0xFFFF)
 
@@ -1337,13 +1327,14 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 			ioffs++;
 		}
 
-		// Write out this many IDs, encoding them relative to result ID
-		bool zigzag;
-		int relativeCount = smolv_OpDeltaFromResult(op, zigzag);
+		// Write out this many IDs, encoding them relative+zigzag to result ID
+		int relativeCount = smolv_OpDeltaFromResult(op);
 		for (int i = 0; i < relativeCount && ioffs < instrLen; ++i, ++ioffs)
 		{
 			uint32_t delta = prevResult - words[ioffs];
-			smolv_WriteVarint(outSmolv, zigzag ? smolv_ZigEncode(delta) : delta);
+			// some deltas are negative (often on branches, or if program was processed by spirv-remap),
+			// so use zig encoding
+			smolv_WriteVarint(outSmolv, smolv_ZigEncode(delta));
 		}
 
 		if (op == SpvOpVectorShuffleCompact)
@@ -1458,12 +1449,11 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuf
 		}
 
 		// Read this many IDs, that are relative to result ID
-		bool zigzag;
-		int relativeCount = smolv_OpDeltaFromResult(op, zigzag);
+		int relativeCount = smolv_OpDeltaFromResult(op);
 		for (int i = 0; i < relativeCount && ioffs < instrLen; ++i, ++ioffs)
 		{
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
-			if (zigzag) val = smolv_ZigDecode(val);
+			val = smolv_ZigDecode(val);
 			smolv_Write4(outSpirv, prevResult - val);
 		}
 
@@ -1619,8 +1609,7 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 			ioffs++;
 		}
 		
-		bool zigzag;
-		int relativeCount = smolv_OpDeltaFromResult(op, zigzag);
+		int relativeCount = smolv_OpDeltaFromResult(op);
 		for (int i = 0; i < relativeCount && ioffs < instrLen; ++i, ++ioffs)
 		{
 			varBegin = bytes;
@@ -1693,7 +1682,7 @@ void smolv::StatsPrint(const Stats* stats)
 	for (int i = 0; i < 30; ++i)
 	{
 		SpvOp op = sizes[i].first;
-		printf(" #%2i: %-20s %4i (%4.1f%%) avg len %.1f\n",
+		printf(" #%2i: %-22s %6i (%4.1f%%) avg len %.1f\n",
 			   i,
 			   kSpirvOpNames[op],
 			   (int)sizes[i].second*4,
@@ -1711,7 +1700,7 @@ void smolv::StatsPrint(const Stats* stats)
 	for (int i = 0; i < 30; ++i)
 	{
 		SpvOp op = sizesSmol[i].first;
-		printf(" #%2i: %-20s %4i (%4.1f%%) avg len %.1f\n",
+		printf(" #%2i: %-22s %6i (%4.1f%%) avg len %.1f\n",
 			   i,
 			   kSpirvOpNames[op],
 			   (int)sizesSmol[i].second,

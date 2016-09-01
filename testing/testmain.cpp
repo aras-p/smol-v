@@ -488,19 +488,19 @@ int main()
 			break;
 		}
 
-		// SMOL encoding stats
-		if (!smolv::StatsCalculateSmol(stats, smolv.data(), smolv.size()))
-		{
-			printf("ERROR: failed to calc SMOLV instruction stats (bug?) %s\n", kFiles[i]);
-			++errorCount;
-			break;
-		}
-
 		// Encode to SMOL-V, with debug info stripping
 		ByteArray smolvStripped;
 		if (!smolv::Encode(spirv.data(), spirv.size(), smolvStripped, smolv::kEncodeFlagStripDebugInfo))
 		{
 			printf("ERROR: failed to encode with stripping (invalid invalid SPIR-V?) %s\n", kFiles[i]);
+			++errorCount;
+			break;
+		}
+
+		// SMOL encoding stats
+		if (!smolv::StatsCalculateSmol(stats, smolvStripped.data(), smolvStripped.size()))
+		{
+			printf("ERROR: failed to calc SMOLV instruction stats (bug?) %s\n", kFiles[i]);
 			++errorCount;
 			break;
 		}
