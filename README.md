@@ -60,7 +60,7 @@ Public Domain
 
 There is 3rd party code under the testing framework (`testing/external`); it is not required for
 using SMOL-V. All that code ([glslang](https://github.com/KhronosGroup/glslang),
-[LZ4](https://github.com/Cyan4973/lz4), [Zstd](https://github.com/Cyan4973/zstd)) is BSD-licensed,
+[LZ4](https://github.com/Cyan4973/lz4), [Zstd](https://github.com/facebook/zstd)) is BSD-licensed,
 and taken from github repositories of the respective projects.
 
 
