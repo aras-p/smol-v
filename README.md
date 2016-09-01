@@ -4,8 +4,9 @@
 
 SMOL-V encodes Vulkan/Khronos [SPIR-V](https://www.khronos.org/registry/spir-v/)
 format programs into a form that is *smoller*, and is more
-compressible. No changes to the programs are done; they decode into exactly same program
-as was encoded.
+compressible. Normally no changes to the programs are done; they decode
+into exactly same program as what was encoded. Optionally, debug information
+can be removed too.
 
 SPIR-V is a very verbose format, several times larger than same programs expressed in other
 shader formats *(e.g. DX11 bytecode, GLSL, DX9 bytecode etc.)*. The SSA-form with ever increasing
@@ -78,7 +79,7 @@ Compression: original size 1314.8KB
 3 sm+Zstd20     92.0KB   7.0%
 ```
 
-* "Remap" is spirv-remap from glslang, without debug info stripping (SMOL-V does not strip debug info either).
+* "Remap" is spirv-remap from glslang, without debug info stripping.
 * LZ4HC and Zstd are general compression algorithms at default settings (Zstd20 is Zstd compression with almost max setting of 20).
 * "re+" is "remapper + compression", "sm+" is "SMOL-V + compression".
 * Compression is done on the whole blob of all the test programs (not individually for each program).
