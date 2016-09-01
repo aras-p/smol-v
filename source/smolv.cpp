@@ -1333,7 +1333,7 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 		if (op == SpvOpDecorate || op == SpvOpMemberDecorate)
 		{
 			uint32_t v = words[ioffs];
-			smolv_WriteVarint(outSmolv, v - prevDecorate);
+			smolv_WriteVarint(outSmolv, smolv_ZigEncode(v - prevDecorate)); // spirv-remapped deltas often negative, use zig
 			prevDecorate = v;
 			ioffs++;
 		}
@@ -1514,7 +1514,7 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuf
 		if (op == SpvOpDecorate || op == SpvOpMemberDecorate)
 		{
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
-			val = prevDecorate + val;
+			val = prevDecorate + smolv_ZigDecode(val);
 			smolv_Write4(outSpirv, val);
 			prevDecorate = val;
 			ioffs++;
