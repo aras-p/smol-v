@@ -7,7 +7,7 @@
 #include <vector>
 #include <algorithm>
 
-#define SMOLV_ARRAY_SIZE(a) (sizeof(a)/sizeof((a)[0]))
+#define _SMOLV_ARRAY_SIZE(a) (sizeof(a)/sizeof((a)[0]))
 
 // --------------------------------------------------------------------------------------------
 // Metadata about known SPIR-V operations
@@ -657,7 +657,7 @@ static const char* kSpirvOpNames[] =
 	"MemoryNamedBarrier",
 	"ModuleProcessed",
 };
-static_assert(SMOLV_ARRAY_SIZE(kSpirvOpNames) == kKnownOpsCount, "kSpirvOpNames table mismatch with known SpvOps");
+static_assert(_SMOLV_ARRAY_SIZE(kSpirvOpNames) == kKnownOpsCount, "kSpirvOpNames table mismatch with known SpvOps");
 
 
 struct OpData
@@ -1001,7 +1001,7 @@ static const OpData kSpirvOpData[] =
 	{0, 0, 2, 1}, // MemoryNamedBarrier
 	{1, 1, 0, 0}, // ModuleProcessed
 };
-static_assert(SMOLV_ARRAY_SIZE(kSpirvOpData) == kKnownOpsCount, "kSpirvOpData table mismatch with known SpvOps");
+static_assert(_SMOLV_ARRAY_SIZE(kSpirvOpData) == kKnownOpsCount, "kSpirvOpData table mismatch with known SpvOps");
 
 
 static bool smolv_OpHasResult(SpvOp op)
@@ -1692,6 +1692,18 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 {
 	if (!stats)
 		return false;
+
+	// debugging helper to dump all encoded bytes to stdout, keep at "if 0"
+#	if 0
+#		define _SMOLV_DEBUG_PRINT_ENCODED_BYTES() { \
+			printf("Op %-22s ", op < kKnownOpsCount ? kSpirvOpNames[op] : "???"); \
+			for (const uint8_t* b = instrBegin; b < bytes; ++b) \
+				printf("%02x ", *b); \
+			printf("\n"); \
+		}
+#	else
+#		define _SMOLV_DEBUG_PRINT_ENCODED_BYTES() {}
+#	endif
 	
 	const uint8_t* bytes = (const uint8_t*)smolvData;
 	const uint8_t* bytesEnd = bytes + smolvSize;
@@ -1766,6 +1778,7 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 				}
 			}
 			stats->smolOpSizes[op] += bytes - instrBegin;
+			_SMOLV_DEBUG_PRINT_ENCODED_BYTES();
 			continue;
 		}
 
@@ -1802,6 +1815,7 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 		{
 			stats->smolOpSizes[op] += bytes - instrBegin;
 		}
+		_SMOLV_DEBUG_PRINT_ENCODED_BYTES();
 	}
 	
 	return true;
