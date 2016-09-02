@@ -1157,7 +1157,7 @@ static bool smolv_ReadVarint(const uint8_t*& data, const uint8_t* dataEnd, uint3
 
 static uint32_t smolv_ZigEncode(int32_t i)
 {
-	return (i << 1) ^ (i >> 31);
+	return (uint32_t(i) << 1) ^ (i >> 31);
 }
 
 static int32_t smolv_ZigDecode(uint32_t u)
