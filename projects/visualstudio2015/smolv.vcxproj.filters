@@ -15,6 +15,9 @@
     <ClCompile Include="..\..\testing\external\lz4\lz4hc.c">
       <Filter>external\lz4</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\testing\external\miniz\miniz.c">
+      <Filter>external\miniz</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\testing\external\zstd\common\entropy_common.c">
       <Filter>external\zstd</Filter>
     </ClCompile>
@@ -66,6 +69,9 @@
     <ClInclude Include="..\..\testing\external\lz4\lz4hc.h">
       <Filter>external\lz4</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\testing\external\miniz\miniz.h">
+      <Filter>external\miniz</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\testing\external\zstd\common\bitstream.h">
       <Filter>external\zstd</Filter>
     </ClInclude>
@@ -109,6 +115,9 @@
     </Filter>
     <Filter Include="external\lz4">
       <UniqueIdentifier>{d372eb43-b5e9-4d82-b2b6-6660af25dddf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\miniz">
+      <UniqueIdentifier>{82f96d14-b1a4-4dba-af67-b558db202ad2}</UniqueIdentifier>
     </Filter>
     <Filter Include="external\zstd">
       <UniqueIdentifier>{7f5fdc8e-a567-4372-b176-efe75af61157}</UniqueIdentifier>

@@ -6,11 +6,13 @@
 #include "../source/smolv.h"
 #include "external/lz4/lz4.h"
 #include "external/lz4/lz4hc.h"
+#include "external/miniz/miniz.h"
 #include "external/zstd/zstd.h"
 #include "external/glslang/SPIRV/SPVRemapper.h"
 #include <stdio.h>
 #include <map>
 #include <string>
+
 
 typedef std::vector<uint8_t> ByteArray;
 
@@ -63,6 +65,19 @@ static size_t CompressZstd(const void* data, size_t size, int level = 0)
 	return resSize;
 }
 
+static size_t CompressMiniz(const void* data, size_t size, int level = MZ_DEFAULT_LEVEL)
+{
+	if (size == 0)
+		return 0;
+	size_t bufferSize = mz_compressBound(size);
+	unsigned char* buffer = new unsigned char[bufferSize];
+	size_t resSize = bufferSize;
+	int res = mz_compress2(buffer, &resSize, (const unsigned char*)data, size, level);
+	delete[] buffer;
+	if (res != MZ_OK)
+		return -1;
+	return resSize;
+}
 
 int main()
 {
@@ -534,17 +549,21 @@ int main()
 		;;sizes["0 Remap"] = spirvRemapAll[i].size();
 		sizes["0 SMOL-V"] = smolvAll[i].size();
 
-		;;sizes["1    LZ4HC"] = CompressLZ4HC(spirvAll.data(), spirvAll.size());
-		;;sizes["1 re+LZ4HC"] = CompressLZ4HC(spirvRemapAll[i].data(), spirvRemapAll[i].size());
-		sizes["1 sm+LZ4HC"] = CompressLZ4HC(smolvAll[i].data(), smolvAll[i].size());
+		;;sizes["1    zlib"] = CompressMiniz(spirvAll.data(), spirvAll.size());
+		;;sizes["1 re+zlib"] = CompressMiniz(spirvRemapAll[i].data(), spirvRemapAll[i].size());
+		sizes["1 sm+zlib"] = CompressMiniz(smolvAll[i].data(), smolvAll[i].size());
 
-		;;sizes["2    Zstd"] = CompressZstd(spirvAll.data(), spirvAll.size());
-		;;sizes["2 re+Zstd"] = CompressZstd(spirvRemapAll[i].data(), spirvRemapAll[i].size());
-		sizes["2 sm+Zstd"] = CompressZstd(smolvAll[i].data(), smolvAll[i].size());
+		;;sizes["2    LZ4HC"] = CompressLZ4HC(spirvAll.data(), spirvAll.size());
+		;;sizes["2 re+LZ4HC"] = CompressLZ4HC(spirvRemapAll[i].data(), spirvRemapAll[i].size());
+		sizes["2 sm+LZ4HC"] = CompressLZ4HC(smolvAll[i].data(), smolvAll[i].size());
 
-		;;sizes["3    Zstd20"] = CompressZstd(spirvAll.data(), spirvAll.size(), 20);
-		;;sizes["3 re+Zstd20"] = CompressZstd(spirvRemapAll[i].data(), spirvRemapAll[i].size(), 20);
-		sizes["3 sm+Zstd20"] = CompressZstd(smolvAll[i].data(), smolvAll[i].size(), 20);
+		;;sizes["3    Zstd"] = CompressZstd(spirvAll.data(), spirvAll.size());
+		;;sizes["3 re+Zstd"] = CompressZstd(spirvRemapAll[i].data(), spirvRemapAll[i].size());
+		sizes["3 sm+Zstd"] = CompressZstd(smolvAll[i].data(), smolvAll[i].size());
+
+		;;sizes["4    Zstd20"] = CompressZstd(spirvAll.data(), spirvAll.size(), 20);
+		;;sizes["4 re+Zstd20"] = CompressZstd(spirvRemapAll[i].data(), spirvRemapAll[i].size(), 20);
+		sizes["4 sm+Zstd20"] = CompressZstd(smolvAll[i].data(), smolvAll[i].size(), 20);
 		
 		
 		printf("Original size: %.1fKB\n", spirvAll.size()/1024.0f);

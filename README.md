@@ -26,6 +26,9 @@ to improve this:
 
 A somewhat similar utility is [spirv-remap from glslang](https://github.com/KhronosGroup/glslang/blob/master/README-spirv-remap.txt).
 
+See [this blog post](http://aras-p.info/blog/2016/09/01/SPIR-V-Compression/) for more information about
+how I did SMOL-V.
+
 
 ## Usage
 
@@ -38,7 +41,7 @@ Other functions are for development/statistics purposes, to figure out frequenci
 distributions of the instructions.
 
 There's a test + compression benchmarking suite in `testing/testmain.cpp`, using that needs adding
-other files under testing/external to the build too (3rd party code: glslang remapper, Zstd, LZ4).
+other files under testing/external to the build too (3rd party code: glslang remapper, Zstd, LZ4, miniz).
 
 ## Changelog
 
@@ -59,9 +62,10 @@ See [**Changelog**](Changelog.md).
 Code itself: **Public Domain**.
 
 There is 3rd party code under the testing framework (`testing/external`); it is not required for
-using SMOL-V. All that code ([glslang](https://github.com/KhronosGroup/glslang),
+using SMOL-V. Most of that code ([glslang](https://github.com/KhronosGroup/glslang),
 [LZ4](https://github.com/Cyan4973/lz4), [Zstd](https://github.com/facebook/zstd)) is BSD-licensed,
-and taken from github repositories of the respective projects.
+and taken from github repositories of the respective projects. [miniz](https://github.com/richgel999/miniz)
+is public domain.
 
 There are SPIR-V binary shader dumps under `tests/spirv-dumps` for compression testing;
 these are not required for using SMOL-V. Not sure how to appropriately

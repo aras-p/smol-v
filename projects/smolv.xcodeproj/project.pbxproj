@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2B48E40C1D79CCEB009E1645 /* miniz.c in Sources */ = {isa = PBXBuildFile; fileRef = 2B48E40B1D79CCEB009E1645 /* miniz.c */; };
 		2BC453B61D70B20D00DFFF3B /* smolv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BC453B41D70B20D00DFFF3B /* smolv.cpp */; };
 		2BC453B91D70B22400DFFF3B /* testmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BC453B81D70B22400DFFF3B /* testmain.cpp */; };
 		2BC4660F1D71849F00DFFF3B /* lz4.c in Sources */ = {isa = PBXBuildFile; fileRef = 2BC4660B1D71849F00DFFF3B /* lz4.c */; };
@@ -36,6 +37,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2B48E40B1D79CCEB009E1645 /* miniz.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = miniz.c; path = external/miniz/miniz.c; sourceTree = "<group>"; };
+		2B48E40D1D79CDBD009E1645 /* miniz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = miniz.h; path = external/miniz/miniz.h; sourceTree = "<group>"; };
 		2BC453AA1D70B1DA00DFFF3B /* smolv */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = smolv; sourceTree = BUILT_PRODUCTS_DIR; };
 		2BC453B41D70B20D00DFFF3B /* smolv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = smolv.cpp; sourceTree = "<group>"; };
 		2BC453B51D70B20D00DFFF3B /* smolv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = smolv.h; sourceTree = "<group>"; };
@@ -82,6 +85,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2B48E40A1D79CCE1009E1645 /* miniz */ = {
+			isa = PBXGroup;
+			children = (
+				2B48E40D1D79CDBD009E1645 /* miniz.h */,
+				2B48E40B1D79CCEB009E1645 /* miniz.c */,
+			);
+			name = miniz;
+			sourceTree = "<group>";
+		};
 		2BC453A11D70B1DA00DFFF3B = {
 			isa = PBXGroup;
 			children = (
@@ -122,6 +134,7 @@
 		2BC466031D70DC6100DFFF3B /* external */ = {
 			isa = PBXGroup;
 			children = (
+				2B48E40A1D79CCE1009E1645 /* miniz */,
 				2BC4663B1D71D6E800DFFF3B /* glslang */,
 				2BC466111D71854000DFFF3B /* zstd */,
 				2BC4660A1D71849200DFFF3B /* lz4 */,
@@ -259,6 +272,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B48E40C1D79CCEB009E1645 /* miniz.c in Sources */,
 				2BC4663F1D71D6FE00DFFF3B /* SPVRemapper.cpp in Sources */,
 				2BC466241D71877900DFFF3B /* entropy_common.c in Sources */,
 				2BC4663A1D7188EE00DFFF3B /* xxhash.c in Sources */,
