@@ -2,6 +2,11 @@
 
 For an overview, see [readme](README.md).
 
+## 2016 09 04
+
+* Tests: added suite of shaders from Shadertoy.
+
+
 ## 2016 09 01
 
 * Improve compression for programs already processed by

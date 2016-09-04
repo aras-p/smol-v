@@ -74,6 +74,8 @@ so I'll go with this: "Binary shader dumps under 'tests' folder are only to be
 used for SMOL-V testing". Details on them:
 
 * `tests/spirv-dumps/dota2` - some shaders from [DOTA2](http://blog.dota2.com/), Copyright Valve Corporation, all rights reserved.
+* `tests/spirv-dumps/shadertoy` - several most popular shaders from [Shadertoy](https://www.shadertoy.com/), converted to Vulkan
+  SPIR-V via glslang. Copyrights by their individual authors (filename matches last component of shadertoy URL).
 * `tests/spirv-dumps/talos` - some shaders from [The Talos Principle](http://www.croteam.com/talosprinciple/),
   Copyright (c) 2002-2016 Croteam All rights reserved.
 * `tests/spirv-dumps/unity` - various [Unity](https://unity3d.com/) shaders, produced
@@ -86,22 +88,24 @@ used for SMOL-V testing". Details on them:
 As of 2016 September 1, results on 323 shaders (under `tests/spirv-dumps`) are:
 
 ```
-Original size: 3725.4KB
-0 Remap       3560.0KB  95.6%
-0 SMOL-V      1302.5KB  35.0%
-1    LZ4HC     884.4KB  23.7%
-1 re+LZ4HC     743.3KB  20.0%
-1 sm+LZ4HC     441.6KB  11.9%
-2    Zstd      555.4KB  14.9%
-2 re+Zstd      425.6KB  11.4%
-2 sm+Zstd      297.0KB   8.0%
-3    Zstd20    339.4KB   9.1%
-3 re+Zstd20    260.5KB   7.0%
-3 sm+Zstd20    227.0KB   6.1%
+0 Remap       4540.2KB  93.3%
+0 SMOL-V      1629.1KB  33.5%
+1    zlib     1212.7KB  24.9%
+1 re+zlib     1079.4KB  22.2%
+1 sm+zlib      601.8KB  12.4%
+2    LZ4HC    1342.6KB  27.6%
+2 re+LZ4HC    1147.9KB  23.6%
+2 sm+LZ4HC     606.0KB  12.4%
+3    Zstd      898.7KB  18.5%
+3 re+Zstd      742.6KB  15.3%
+3 sm+Zstd      445.3KB   9.1%
+4    Zstd20    589.3KB  12.1%
+4 re+Zstd20    508.8KB  10.5%
+4 sm+Zstd20    347.8KB   7.1%
 ```
 
 * "Remap" is spirv-remap from glslang, with debug info stripping.
 * SMOL-V is what you're looking at, with debug info stripping too.
-* LZ4HC and Zstd are general compression algorithms at default settings (Zstd20 is Zstd compression with almost max setting of 20).
+* zlib, LZ4HC and Zstd are general compression algorithms at default settings (Zstd20 is Zstd compression with almost max setting of 20).
 * "re+" is "remapper + compression", "sm+" is "SMOL-V + compression".
 * Compression is done on the whole blob of all the test programs (not individually for each program).

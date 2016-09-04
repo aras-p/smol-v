@@ -86,6 +86,7 @@ int main()
 	#define TEST_UNITY 1
 	#define TEST_TALOS 1
 	#define TEST_DOTA2 1
+	#define TEST_SHADERTOY 1
 
 	// files we're testing on
 	const char* kFiles[] =
@@ -429,6 +430,27 @@ int main()
 		"dota2/922799.spv",
 		"dota2/952476.spv",
 		#endif // #if TEST_DOTA2
+		
+		#if TEST_SHADERTOY
+		"shadertoy/st-4sfGWX.spv",
+		"shadertoy/st-MdX3Rr.spv",
+		"shadertoy/st-MdX3zr.spv",
+		"shadertoy/st-MdlGW7.spv",
+		"shadertoy/st-Mlt3Wn.spv",
+		"shadertoy/st-Ms2SD1.spv",
+		"shadertoy/st-MsXGWr.spv",
+		"shadertoy/st-Msl3Rr.spv",
+		"shadertoy/st-Mt3GWs.spv",
+		"shadertoy/st-Xds3zN.spv",
+		"shadertoy/st-XdsGDB.spv",
+		"shadertoy/st-XltGDr.spv",
+		"shadertoy/st-XsX3RB.spv",
+		"shadertoy/st-XslGRr.spv",
+		"shadertoy/st-XtlSD7.spv",
+		"shadertoy/st-XtsSWs.spv",
+		"shadertoy/st-ld3Gz2.spv",
+		"shadertoy/st-lsSXzD.spv",
+		#endif // #if TEST_SHADERTOY
 	};
 
 	// all test data lumped together, to check how well it compresses as a whole block
