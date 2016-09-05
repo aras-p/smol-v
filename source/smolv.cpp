@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <vector>
 #include <algorithm>
+#include <cstdio>
+#include <cstring>
 
 #define _SMOLV_ARRAY_SIZE(a) (sizeof(a)/sizeof((a)[0]))
 
