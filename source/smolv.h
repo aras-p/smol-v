@@ -55,6 +55,7 @@
 
 #include <stdint.h>
 #include <vector>
+#include <cstddef>
 
 namespace smolv
 {
