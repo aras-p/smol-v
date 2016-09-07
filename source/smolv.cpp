@@ -9,6 +9,10 @@
 #include <cstdio>
 #include <cstring>
 
+#if !defined(_MSC_VER) && __cplusplus < 201103L
+#define static_assert(x,y)
+#endif
+
 #define _SMOLV_ARRAY_SIZE(a) (sizeof(a)/sizeof((a)[0]))
 
 // --------------------------------------------------------------------------------------------
@@ -1823,7 +1827,10 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 	return true;
 }
 
-
+static bool CompareOpCounters (std::pair<SpvOp,size_t> a, std::pair<SpvOp,size_t> b)
+{
+	return a.second > b.second;
+}
 
 void smolv::StatsPrint(const Stats* stats)
 {
@@ -1843,9 +1850,9 @@ void smolv::StatsPrint(const Stats* stats)
 		sizesSmol[i].first = (SpvOp)i;
 		sizesSmol[i].second = stats->smolOpSizes[i];
 	}
-	std::sort(counts, counts + kKnownOpsCount, [](OpCounter a, OpCounter b) { return a.second > b.second; });
-	std::sort(sizes, sizes + kKnownOpsCount, [](OpCounter a, OpCounter b) { return a.second > b.second; });
-	std::sort(sizesSmol, sizesSmol + kKnownOpsCount, [](OpCounter a, OpCounter b) { return a.second > b.second; });
+	std::sort(counts, counts + kKnownOpsCount, CompareOpCounters);
+	std::sort(sizes, sizes + kKnownOpsCount, CompareOpCounters);
+	std::sort(sizesSmol, sizesSmol + kKnownOpsCount, CompareOpCounters);
 	
 	printf("Stats for %i SPIR-V inputs, total size %i words (%.1fKB):\n", (int)stats->inputCount, (int)stats->totalSize, stats->totalSize * 4.0f / 1024.0f);
 	printf("Most occuring ops:\n");
