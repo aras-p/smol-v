@@ -9,8 +9,9 @@
 #include "external/miniz/miniz.h"
 #include "external/zstd/zstd.h"
 #include "external/glslang/SPIRV/SPVRemapper.h"
+#include "external/spirv-tools-markv/source/comp/markv.h"
+#include "external/spirv-tools-markv/tools/comp/markv_model_factory.h"
 #include <stdio.h>
-#include <map>
 #include <string>
 
 
@@ -41,6 +42,41 @@ static void RemapSPIRV(const void* data, size_t size, bool strip, ByteArray& out
 	spv::spirvbin_t remapper;
 	remapper.remap(buf, strip ? remapper.DO_EVERYTHING : remapper.ALL_BUT_STRIP);
 	output.insert(output.end(), (const uint8_t*)buf.data(), ((const uint8_t*)buf.data()) + buf.size()*4);
+}
+
+static void MarkVMessageHandler(spv_message_level_t level, const char*, const spv_position_t& position, const char* message)
+{
+    switch (level)
+    {
+        case SPV_MSG_FATAL:
+        case SPV_MSG_INTERNAL_ERROR:
+        case SPV_MSG_ERROR:
+            printf("MARK-V error: %s\n", message);
+            break;
+        case SPV_MSG_WARNING:
+            printf("MARK-V warning: %s\n", message);
+            break;
+        default:
+            break;
+    }
+}
+
+static void EncodeToMarkv(const void* data, size_t size, ByteArray& output, const spvtools::comp::MarkvModel& model)
+{
+    spv_context ctx = spvContextCreate(SPV_ENV_UNIVERSAL_1_2);
+
+    const uint32_t* dataI = (const uint32_t*)data;
+    const size_t sizeI = size/4;
+    std::vector<uint32_t> buf(dataI, dataI+sizeI);
+    spvtools::comp::MarkvCodecOptions options = {};
+    std::vector<uint8_t> encoded;
+
+    if (SPV_SUCCESS == spvtools::comp::SpirvToMarkv(ctx, buf, options, model, MarkVMessageHandler, spvtools::comp::MarkvLogConsumer(), spvtools::comp::MarkvDebugConsumer(), &encoded))
+        output.insert(output.end(), encoded.begin(), encoded.end());
+    else
+        printf("error: Failed to encode to MARK-V\n");
+
+    spvContextDestroy(ctx);
 }
 
 static size_t CompressLZ4HC(const void* data, size_t size, int level = 0)
@@ -463,6 +499,12 @@ int main()
 	ByteArray spirvAll;
 	ByteArray spirvRemapAll[2];
 	ByteArray smolvAll[2];
+    ByteArray markvAll[3];
+
+    // create models for compression with MARK-V
+    std::unique_ptr<spvtools::comp::MarkvModel> markvModel0 = spvtools::comp::CreateMarkvModel(spvtools::comp::kMarkvModelShaderLite);
+    std::unique_ptr<spvtools::comp::MarkvModel> markvModel1 = spvtools::comp::CreateMarkvModel(spvtools::comp::kMarkvModelShaderMid);
+    std::unique_ptr<spvtools::comp::MarkvModel> markvModel2 = spvtools::comp::CreateMarkvModel(spvtools::comp::kMarkvModelShaderMax);
 
 	// go over all test files
 	int errorCount = 0;
@@ -554,6 +596,9 @@ int main()
 		smolvAll[1].insert(smolvAll[1].end(), smolvStripped.begin(), smolvStripped.end());
 		RemapSPIRV(spirv.data(), spirv.size(), false, spirvRemapAll[0]);
 		RemapSPIRV(spirv.data(), spirv.size(), true, spirvRemapAll[1]);
+        EncodeToMarkv(spirv.data(), spirv.size(), markvAll[0], *markvModel0);
+        EncodeToMarkv(spirv.data(), spirv.size(), markvAll[1], *markvModel1);
+        EncodeToMarkv(spirv.data(), spirv.size(), markvAll[2], *markvModel2);
 	}
 	
 	if (errorCount != 0)
@@ -568,39 +613,47 @@ int main()
 	smolv::StatsDelete(stats);
 
 	// Compress various ways (as a whole blob) and print sizes
-	for (int i = 0; i < 2; ++i)
+    const char* kCompressorNames[] = {"<none>", "zlib", "LZ4 HC", "Zstandard", "Zstandard 20"};
+    const char* kDataNames[] = {"Raw", "Remapper", "MarkV Lite", "Markv Mid", "MarkV Max", "SmolV"};
+	for (int striptype = 0; striptype < 2; ++striptype)
 	{
-		printf("Compressing %s...\n", i==0 ? "RAW" : "STRIPPED");
-		typedef std::map<std::string, size_t> CompressorSizeMap;
-		CompressorSizeMap sizes;
+		printf("\nEvaluating %s...\n", striptype==0 ? "Raw SPIR-V" : "SPIR-V with debug info stripped out");
+        
+        for (int ctype = 0; ctype < 5; ++ctype)
+        {
+            printf("Compressed with %s:\n", kCompressorNames[ctype]);
+            for (int dtype = 0; dtype < 6; ++dtype)
+            {
+                if (striptype == 0 && (dtype == 2 || dtype == 3 || dtype == 4))
+                    continue; // MarkV always strips, so skip evaluating it on non-stripped case
 
-		;;sizes["0 Remap"] = spirvRemapAll[i].size();
-		sizes["0 SMOL-V"] = smolvAll[i].size();
-
-		;;sizes["1    zlib"] = CompressMiniz(spirvAll.data(), spirvAll.size());
-		;;sizes["1 re+zlib"] = CompressMiniz(spirvRemapAll[i].data(), spirvRemapAll[i].size());
-		sizes["1 sm+zlib"] = CompressMiniz(smolvAll[i].data(), smolvAll[i].size());
-
-		;;sizes["2    LZ4HC"] = CompressLZ4HC(spirvAll.data(), spirvAll.size());
-		;;sizes["2 re+LZ4HC"] = CompressLZ4HC(spirvRemapAll[i].data(), spirvRemapAll[i].size());
-		sizes["2 sm+LZ4HC"] = CompressLZ4HC(smolvAll[i].data(), smolvAll[i].size());
-
-		;;sizes["3    Zstd"] = CompressZstd(spirvAll.data(), spirvAll.size());
-		;;sizes["3 re+Zstd"] = CompressZstd(spirvRemapAll[i].data(), spirvRemapAll[i].size());
-		sizes["3 sm+Zstd"] = CompressZstd(smolvAll[i].data(), smolvAll[i].size());
-
-		;;sizes["4    Zstd20"] = CompressZstd(spirvAll.data(), spirvAll.size(), 20);
-		;;sizes["4 re+Zstd20"] = CompressZstd(spirvRemapAll[i].data(), spirvRemapAll[i].size(), 20);
-		sizes["4 sm+Zstd20"] = CompressZstd(smolvAll[i].data(), smolvAll[i].size(), 20);
-		
-		
-		printf("Original size: %.1fKB\n", spirvAll.size()/1024.0f);
-		for (CompressorSizeMap::const_iterator it = sizes.begin(), itEnd = sizes.end(); it != itEnd; ++it)
-		{
-			printf("%-13s %6.1fKB %5.1f%%\n", it->first.c_str(), it->second/1024.0f, (float)it->second/(float)(spirvAll.size())*100.0f);
-		}
+                const ByteArray* inputData = &spirvAll;
+                switch (dtype)
+                {
+                    case 0: inputData = &spirvAll; break;
+                    case 1: inputData = &spirvRemapAll[striptype]; break;
+                    case 2: inputData = &markvAll[0]; break;
+                    case 3: inputData = &markvAll[1]; break;
+                    case 4: inputData = &markvAll[2]; break;
+                    case 5: inputData = &smolvAll[striptype]; break;
+                    default: assert(false);
+                }
+                
+                size_t size = inputData->size();
+                switch(ctype)
+                {
+                    case 0: size = inputData->size(); break;
+                    case 1: size = CompressMiniz(inputData->data(), inputData->size()); break;
+                    case 2: size = CompressLZ4HC(inputData->data(), inputData->size()); break;
+                    case 3: size = CompressZstd(inputData->data(), inputData->size()); break;
+                    case 4: size = CompressZstd(inputData->data(), inputData->size(), 20); break;
+                    default: assert(false);
+                }
+                
+                printf("%-10s %6.1fKB %5.1f%%\n", kDataNames[dtype], size/1024.0f, (float)size/(float)(spirvAll.size())*100.0f);
+            }
+        }
 	}
-	
 
 	return 0;
 }
