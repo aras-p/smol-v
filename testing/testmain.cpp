@@ -87,6 +87,7 @@ int main()
 	#define TEST_TALOS 1
 	#define TEST_DOTA2 1
 	#define TEST_SHADERTOY 1
+    #define TEST_DXC 1
 
 	// files we're testing on
 	const char* kFiles[] =
@@ -451,6 +452,11 @@ int main()
 		"shadertoy/st-ld3Gz2.spv",
 		"shadertoy/st-lsSXzD.spv",
 		#endif // #if TEST_SHADERTOY
+        
+        #if TEST_DXC
+        // Shaders produced by Microsoft's DXC (shader model 6 -> vulkan 1.1)
+        "dxc/imgui-vs.spv",
+        #endif // #if TEST_DXC
 	};
 
 	// all test data lumped together, to check how well it compresses as a whole block
