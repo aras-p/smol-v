@@ -11,6 +11,9 @@
 #include "external/glslang/SPIRV/SPVRemapper.h"
 #include "external/spirv-tools-markv/source/comp/markv.h"
 #include "external/spirv-tools-markv/tools/comp/markv_model_factory.h"
+
+#define SOKOL_IMPL
+#include "external/sokol_time.h"
 #include <stdio.h>
 #include <string>
 
@@ -117,6 +120,7 @@ static size_t CompressMiniz(const void* data, size_t size, int level = MZ_DEFAUL
 
 int main()
 {
+    stm_setup();
 	smolv::Stats* stats = smolv::StatsCreate();
 
 	#define TEST_UNITY 1

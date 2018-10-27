@@ -190,6 +190,7 @@
 		2BA86A402184635B0080BFB8 /* markv_model_factory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = markv_model_factory.cpp; sourceTree = "<group>"; };
 		2BA86A412184635B0080BFB8 /* markv_model_shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = markv_model_shader.cpp; sourceTree = "<group>"; };
 		2BA86A422184635B0080BFB8 /* markv_model_shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = markv_model_shader.h; sourceTree = "<group>"; };
+		2BA86A4621849ED00080BFB8 /* sokol_time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sokol_time.h; path = external/sokol_time.h; sourceTree = "<group>"; };
 		2BC453AA1D70B1DA00DFFF3B /* smolv */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = smolv; sourceTree = BUILT_PRODUCTS_DIR; };
 		2BC453B41D70B20D00DFFF3B /* smolv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = smolv.cpp; sourceTree = "<group>"; };
 		2BC453B51D70B20D00DFFF3B /* smolv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = smolv.h; sourceTree = "<group>"; };
@@ -426,6 +427,7 @@
 		2BC466031D70DC6100DFFF3B /* external */ = {
 			isa = PBXGroup;
 			children = (
+				2BA86A4621849ED00080BFB8 /* sokol_time.h */,
 				2BA86987218453CC0080BFB8 /* spirv-tools-markv */,
 				2B48E40A1D79CCE1009E1645 /* miniz */,
 				2BC4663B1D71D6E800DFFF3B /* glslang */,
