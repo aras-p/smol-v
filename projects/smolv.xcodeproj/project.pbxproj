@@ -8,8 +8,74 @@
 
 /* Begin PBXBuildFile section */
 		2B48E40C1D79CCEB009E1645 /* miniz.c in Sources */ = {isa = PBXBuildFile; fileRef = 2B48E40B1D79CCEB009E1645 /* miniz.c */; };
+		2BA86999218453F20080BFB8 /* markv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA8698B218453F20080BFB8 /* markv.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA8699A218453F20080BFB8 /* markv_codec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA8698C218453F20080BFB8 /* markv_codec.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA8699B218453F20080BFB8 /* move_to_front.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA86990218453F20080BFB8 /* move_to_front.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA8699C218453F20080BFB8 /* bit_stream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA86994218453F20080BFB8 /* bit_stream.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA8699D218453F20080BFB8 /* markv_decoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA86997218453F20080BFB8 /* markv_decoder.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA8699E218453F20080BFB8 /* markv_encoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA86998218453F20080BFB8 /* markv_encoder.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA869B2218457350080BFB8 /* opcode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869A1218457330080BFB8 /* opcode.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA869B3218457350080BFB8 /* assembly_grammar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869A2218457330080BFB8 /* assembly_grammar.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA869B4218457350080BFB8 /* binary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869A3218457340080BFB8 /* binary.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA869B5218457350080BFB8 /* diagnostic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869AD218457340080BFB8 /* diagnostic.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA869BD218457EA0080BFB8 /* spirv_endian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869B7218457EA0080BFB8 /* spirv_endian.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA869BE218457EA0080BFB8 /* operand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869B9218457EA0080BFB8 /* operand.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA869BF218457EA0080BFB8 /* spirv_target_env.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869BC218457EA0080BFB8 /* spirv_target_env.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA869C2218458490080BFB8 /* text.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869C1218458490080BFB8 /* text.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA869C5218458A20080BFB8 /* text_handler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869C3218458A10080BFB8 /* text_handler.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA869C7218459010080BFB8 /* ext_inst.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869C6218459010080BFB8 /* ext_inst.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA869C9218459B50080BFB8 /* id_descriptor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869C8218459B50080BFB8 /* id_descriptor.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA869CC218459F80080BFB8 /* disassemble.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869CB218459F80080BFB8 /* disassemble.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA869CE21845B8D0080BFB8 /* parsed_operand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869CD21845B8D0080BFB8 /* parsed_operand.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA869D021845BAE0080BFB8 /* name_mapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869CF21845BAE0080BFB8 /* name_mapper.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA869D221845BDF0080BFB8 /* table.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869D121845BDF0080BFB8 /* table.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA869D521845C420080BFB8 /* parse_number.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869D421845C420080BFB8 /* parse_number.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA869D821845C840080BFB8 /* validate.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869D721845C840080BFB8 /* validate.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A04218460070080BFB8 /* function.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869D9218460040080BFB8 /* function.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A05218460070080BFB8 /* validate_arithmetics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869DB218460040080BFB8 /* validate_arithmetics.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A06218460070080BFB8 /* validate_atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869DD218460040080BFB8 /* validate_atomics.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A07218460070080BFB8 /* validate_bitwise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869DE218460040080BFB8 /* validate_bitwise.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A08218460070080BFB8 /* validate_builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869DF218460040080BFB8 /* validate_builtins.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A09218460070080BFB8 /* validate_constants.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869E0218460040080BFB8 /* validate_constants.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A0A218460070080BFB8 /* validate_datarules.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869E1218460040080BFB8 /* validate_datarules.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A0B218460070080BFB8 /* validate_execution_limitations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869E2218460040080BFB8 /* validate_execution_limitations.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A0C218460070080BFB8 /* validate_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869E3218460040080BFB8 /* validate_image.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A0D218460070080BFB8 /* validate_interfaces.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869E4218460040080BFB8 /* validate_interfaces.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A0E218460070080BFB8 /* validate_memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869E5218460040080BFB8 /* validate_memory.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A0F218460070080BFB8 /* validate_mode_setting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869E6218460040080BFB8 /* validate_mode_setting.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A10218460070080BFB8 /* validate_literals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869E7218460040080BFB8 /* validate_literals.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A11218460070080BFB8 /* validate_non_uniform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869E8218460040080BFB8 /* validate_non_uniform.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A12218460070080BFB8 /* construct.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869E9218460050080BFB8 /* construct.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A13218460070080BFB8 /* validate_barriers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869EC218460050080BFB8 /* validate_barriers.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A14218460070080BFB8 /* validate_cfg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869ED218460050080BFB8 /* validate_cfg.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A15218460070080BFB8 /* validate_composites.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869EE218460050080BFB8 /* validate_composites.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A16218460070080BFB8 /* validate_conversion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869EF218460050080BFB8 /* validate_conversion.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A17218460070080BFB8 /* validate_annotation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869F3218460050080BFB8 /* validate_annotation.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A18218460070080BFB8 /* validate_capability.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869F4218460060080BFB8 /* validate_capability.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A19218460070080BFB8 /* validate_debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869F5218460060080BFB8 /* validate_debug.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A1A218460070080BFB8 /* instruction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869F6218460060080BFB8 /* instruction.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A1B218460070080BFB8 /* validate_instruction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869F7218460060080BFB8 /* validate_instruction.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A1C218460070080BFB8 /* validate_ext_inst.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869F8218460060080BFB8 /* validate_ext_inst.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A1D218460070080BFB8 /* validate_function.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869F9218460060080BFB8 /* validate_function.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A1E218460070080BFB8 /* validate_id.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869FA218460060080BFB8 /* validate_id.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A1F218460070080BFB8 /* validate_decorations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869FB218460060080BFB8 /* validate_decorations.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A20218460070080BFB8 /* validate_logicals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869FC218460060080BFB8 /* validate_logicals.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A21218460070080BFB8 /* validate_primitives.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869FD218460060080BFB8 /* validate_primitives.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A22218460070080BFB8 /* validation_state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869FE218460060080BFB8 /* validation_state.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A23218460070080BFB8 /* basic_block.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA869FF218460060080BFB8 /* basic_block.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A24218460070080BFB8 /* validate_layout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA86A00218460060080BFB8 /* validate_layout.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A25218460070080BFB8 /* validate_adjacency.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA86A01218460060080BFB8 /* validate_adjacency.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A26218460070080BFB8 /* validate_derivatives.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA86A02218460070080BFB8 /* validate_derivatives.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A27218460070080BFB8 /* validate_type.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA86A03218460070080BFB8 /* validate_type.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A292184608E0080BFB8 /* spirv_validator_options.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA86A282184608E0080BFB8 /* spirv_validator_options.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A2C218460E10080BFB8 /* extensions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA86A2A218460E10080BFB8 /* extensions.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A2D218460E10080BFB8 /* print.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA86A2B218460E10080BFB8 /* print.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A2F218461140080BFB8 /* string_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA86A2E218461130080BFB8 /* string_utils.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A31218461530080BFB8 /* enum_string_mapping.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA86A30218461520080BFB8 /* enum_string_mapping.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A442184635B0080BFB8 /* markv_model_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA86A402184635B0080BFB8 /* markv_model_factory.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
+		2BA86A452184635B0080BFB8 /* markv_model_shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BA86A412184635B0080BFB8 /* markv_model_shader.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
 		2BC453B61D70B20D00DFFF3B /* smolv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BC453B41D70B20D00DFFF3B /* smolv.cpp */; };
-		2BC453B91D70B22400DFFF3B /* testmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BC453B81D70B22400DFFF3B /* testmain.cpp */; };
+		2BC453B91D70B22400DFFF3B /* testmain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2BC453B81D70B22400DFFF3B /* testmain.cpp */; settings = {COMPILER_FLAGS = "-I ../testing/external/spirv-tools-markv"; }; };
 		2BC4660F1D71849F00DFFF3B /* lz4.c in Sources */ = {isa = PBXBuildFile; fileRef = 2BC4660B1D71849F00DFFF3B /* lz4.c */; };
 		2BC466101D71849F00DFFF3B /* lz4hc.c in Sources */ = {isa = PBXBuildFile; fileRef = 2BC4660D1D71849F00DFFF3B /* lz4hc.c */; };
 		2BC466241D71877900DFFF3B /* entropy_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 2BC466181D71877900DFFF3B /* entropy_common.c */; };
@@ -39,6 +105,91 @@
 /* Begin PBXFileReference section */
 		2B48E40B1D79CCEB009E1645 /* miniz.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = miniz.c; path = external/miniz/miniz.c; sourceTree = "<group>"; };
 		2B48E40D1D79CDBD009E1645 /* miniz.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = miniz.h; path = external/miniz/miniz.h; sourceTree = "<group>"; };
+		2BA8698B218453F20080BFB8 /* markv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = markv.cpp; sourceTree = "<group>"; };
+		2BA8698C218453F20080BFB8 /* markv_codec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = markv_codec.cpp; sourceTree = "<group>"; };
+		2BA86990218453F20080BFB8 /* move_to_front.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = move_to_front.cpp; sourceTree = "<group>"; };
+		2BA86994218453F20080BFB8 /* bit_stream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bit_stream.cpp; sourceTree = "<group>"; };
+		2BA86997218453F20080BFB8 /* markv_decoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = markv_decoder.cpp; sourceTree = "<group>"; };
+		2BA86998218453F20080BFB8 /* markv_encoder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = markv_encoder.cpp; sourceTree = "<group>"; };
+		2BA869A1218457330080BFB8 /* opcode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = opcode.cpp; sourceTree = "<group>"; };
+		2BA869A2218457330080BFB8 /* assembly_grammar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = assembly_grammar.cpp; sourceTree = "<group>"; };
+		2BA869A3218457340080BFB8 /* binary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = binary.cpp; sourceTree = "<group>"; };
+		2BA869AD218457340080BFB8 /* diagnostic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = diagnostic.cpp; sourceTree = "<group>"; };
+		2BA869B7218457EA0080BFB8 /* spirv_endian.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spirv_endian.cpp; sourceTree = "<group>"; };
+		2BA869B9218457EA0080BFB8 /* operand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = operand.cpp; sourceTree = "<group>"; };
+		2BA869BC218457EA0080BFB8 /* spirv_target_env.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spirv_target_env.cpp; sourceTree = "<group>"; };
+		2BA869C1218458490080BFB8 /* text.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = text.cpp; sourceTree = "<group>"; };
+		2BA869C3218458A10080BFB8 /* text_handler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = text_handler.cpp; sourceTree = "<group>"; };
+		2BA869C6218459010080BFB8 /* ext_inst.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ext_inst.cpp; sourceTree = "<group>"; };
+		2BA869C8218459B50080BFB8 /* id_descriptor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = id_descriptor.cpp; sourceTree = "<group>"; };
+		2BA869CB218459F80080BFB8 /* disassemble.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = disassemble.cpp; sourceTree = "<group>"; };
+		2BA869CD21845B8D0080BFB8 /* parsed_operand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = parsed_operand.cpp; sourceTree = "<group>"; };
+		2BA869CF21845BAE0080BFB8 /* name_mapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = name_mapper.cpp; sourceTree = "<group>"; };
+		2BA869D121845BDF0080BFB8 /* table.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = table.cpp; sourceTree = "<group>"; };
+		2BA869D421845C420080BFB8 /* parse_number.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = parse_number.cpp; sourceTree = "<group>"; };
+		2BA869D721845C840080BFB8 /* validate.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate.cpp; sourceTree = "<group>"; };
+		2BA869D9218460040080BFB8 /* function.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = function.cpp; sourceTree = "<group>"; };
+		2BA869DA218460040080BFB8 /* basic_block.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = basic_block.h; sourceTree = "<group>"; };
+		2BA869DB218460040080BFB8 /* validate_arithmetics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_arithmetics.cpp; sourceTree = "<group>"; };
+		2BA869DC218460040080BFB8 /* decoration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = decoration.h; sourceTree = "<group>"; };
+		2BA869DD218460040080BFB8 /* validate_atomics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_atomics.cpp; sourceTree = "<group>"; };
+		2BA869DE218460040080BFB8 /* validate_bitwise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_bitwise.cpp; sourceTree = "<group>"; };
+		2BA869DF218460040080BFB8 /* validate_builtins.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_builtins.cpp; sourceTree = "<group>"; };
+		2BA869E0218460040080BFB8 /* validate_constants.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_constants.cpp; sourceTree = "<group>"; };
+		2BA869E1218460040080BFB8 /* validate_datarules.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_datarules.cpp; sourceTree = "<group>"; };
+		2BA869E2218460040080BFB8 /* validate_execution_limitations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_execution_limitations.cpp; sourceTree = "<group>"; };
+		2BA869E3218460040080BFB8 /* validate_image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_image.cpp; sourceTree = "<group>"; };
+		2BA869E4218460040080BFB8 /* validate_interfaces.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_interfaces.cpp; sourceTree = "<group>"; };
+		2BA869E5218460040080BFB8 /* validate_memory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_memory.cpp; sourceTree = "<group>"; };
+		2BA869E6218460040080BFB8 /* validate_mode_setting.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_mode_setting.cpp; sourceTree = "<group>"; };
+		2BA869E7218460040080BFB8 /* validate_literals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_literals.cpp; sourceTree = "<group>"; };
+		2BA869E8218460040080BFB8 /* validate_non_uniform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_non_uniform.cpp; sourceTree = "<group>"; };
+		2BA869E9218460050080BFB8 /* construct.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = construct.cpp; sourceTree = "<group>"; };
+		2BA869EA218460050080BFB8 /* construct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = construct.h; sourceTree = "<group>"; };
+		2BA869EB218460050080BFB8 /* function.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = function.h; sourceTree = "<group>"; };
+		2BA869EC218460050080BFB8 /* validate_barriers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_barriers.cpp; sourceTree = "<group>"; };
+		2BA869ED218460050080BFB8 /* validate_cfg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_cfg.cpp; sourceTree = "<group>"; };
+		2BA869EE218460050080BFB8 /* validate_composites.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_composites.cpp; sourceTree = "<group>"; };
+		2BA869EF218460050080BFB8 /* validate_conversion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_conversion.cpp; sourceTree = "<group>"; };
+		2BA869F0218460050080BFB8 /* validate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = validate.h; sourceTree = "<group>"; };
+		2BA869F1218460050080BFB8 /* instruction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = instruction.h; sourceTree = "<group>"; };
+		2BA869F2218460050080BFB8 /* validation_state.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = validation_state.h; sourceTree = "<group>"; };
+		2BA869F3218460050080BFB8 /* validate_annotation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_annotation.cpp; sourceTree = "<group>"; };
+		2BA869F4218460060080BFB8 /* validate_capability.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_capability.cpp; sourceTree = "<group>"; };
+		2BA869F5218460060080BFB8 /* validate_debug.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_debug.cpp; sourceTree = "<group>"; };
+		2BA869F6218460060080BFB8 /* instruction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = instruction.cpp; sourceTree = "<group>"; };
+		2BA869F7218460060080BFB8 /* validate_instruction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_instruction.cpp; sourceTree = "<group>"; };
+		2BA869F8218460060080BFB8 /* validate_ext_inst.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_ext_inst.cpp; sourceTree = "<group>"; };
+		2BA869F9218460060080BFB8 /* validate_function.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_function.cpp; sourceTree = "<group>"; };
+		2BA869FA218460060080BFB8 /* validate_id.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_id.cpp; sourceTree = "<group>"; };
+		2BA869FB218460060080BFB8 /* validate_decorations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_decorations.cpp; sourceTree = "<group>"; };
+		2BA869FC218460060080BFB8 /* validate_logicals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_logicals.cpp; sourceTree = "<group>"; };
+		2BA869FD218460060080BFB8 /* validate_primitives.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_primitives.cpp; sourceTree = "<group>"; };
+		2BA869FE218460060080BFB8 /* validation_state.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validation_state.cpp; sourceTree = "<group>"; };
+		2BA869FF218460060080BFB8 /* basic_block.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = basic_block.cpp; sourceTree = "<group>"; };
+		2BA86A00218460060080BFB8 /* validate_layout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_layout.cpp; sourceTree = "<group>"; };
+		2BA86A01218460060080BFB8 /* validate_adjacency.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_adjacency.cpp; sourceTree = "<group>"; };
+		2BA86A02218460070080BFB8 /* validate_derivatives.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_derivatives.cpp; sourceTree = "<group>"; };
+		2BA86A03218460070080BFB8 /* validate_type.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = validate_type.cpp; sourceTree = "<group>"; };
+		2BA86A282184608E0080BFB8 /* spirv_validator_options.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = spirv_validator_options.cpp; sourceTree = "<group>"; };
+		2BA86A2A218460E10080BFB8 /* extensions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = extensions.cpp; sourceTree = "<group>"; };
+		2BA86A2B218460E10080BFB8 /* print.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = print.cpp; sourceTree = "<group>"; };
+		2BA86A2E218461130080BFB8 /* string_utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = string_utils.cpp; sourceTree = "<group>"; };
+		2BA86A30218461520080BFB8 /* enum_string_mapping.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = enum_string_mapping.cpp; sourceTree = "<group>"; };
+		2BA86A32218462100080BFB8 /* bit_stream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bit_stream.h; sourceTree = "<group>"; };
+		2BA86A33218462100080BFB8 /* markv_codec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = markv_codec.h; sourceTree = "<group>"; };
+		2BA86A34218462110080BFB8 /* markv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = markv.h; sourceTree = "<group>"; };
+		2BA86A35218462110080BFB8 /* markv_logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = markv_logger.h; sourceTree = "<group>"; };
+		2BA86A36218462110080BFB8 /* huffman_codec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = huffman_codec.h; sourceTree = "<group>"; };
+		2BA86A37218462110080BFB8 /* markv_encoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = markv_encoder.h; sourceTree = "<group>"; };
+		2BA86A38218462110080BFB8 /* markv_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = markv_model.h; sourceTree = "<group>"; };
+		2BA86A39218462110080BFB8 /* move_to_front.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = move_to_front.h; sourceTree = "<group>"; };
+		2BA86A3A218462110080BFB8 /* markv_decoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = markv_decoder.h; sourceTree = "<group>"; };
+		2BA86A3E2184635B0080BFB8 /* markv_model_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = markv_model_factory.h; sourceTree = "<group>"; };
+		2BA86A3F2184635B0080BFB8 /* markv_model_shader_default_autogen.inc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.pascal; path = markv_model_shader_default_autogen.inc; sourceTree = "<group>"; };
+		2BA86A402184635B0080BFB8 /* markv_model_factory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = markv_model_factory.cpp; sourceTree = "<group>"; };
+		2BA86A412184635B0080BFB8 /* markv_model_shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = markv_model_shader.cpp; sourceTree = "<group>"; };
+		2BA86A422184635B0080BFB8 /* markv_model_shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = markv_model_shader.h; sourceTree = "<group>"; };
 		2BC453AA1D70B1DA00DFFF3B /* smolv */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = smolv; sourceTree = BUILT_PRODUCTS_DIR; };
 		2BC453B41D70B20D00DFFF3B /* smolv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = smolv.cpp; sourceTree = "<group>"; };
 		2BC453B51D70B20D00DFFF3B /* smolv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = smolv.h; sourceTree = "<group>"; };
@@ -94,6 +245,147 @@
 			name = miniz;
 			sourceTree = "<group>";
 		};
+		2BA86987218453CC0080BFB8 /* spirv-tools-markv */ = {
+			isa = PBXGroup;
+			children = (
+				2BA86A3B2184632D0080BFB8 /* tools */,
+				2BA86988218453DA0080BFB8 /* source */,
+			);
+			name = "spirv-tools-markv";
+			path = "external/spirv-tools-markv";
+			sourceTree = "<group>";
+		};
+		2BA86988218453DA0080BFB8 /* source */ = {
+			isa = PBXGroup;
+			children = (
+				2BA86A30218461520080BFB8 /* enum_string_mapping.cpp */,
+				2BA86A2A218460E10080BFB8 /* extensions.cpp */,
+				2BA86A2B218460E10080BFB8 /* print.cpp */,
+				2BA86A282184608E0080BFB8 /* spirv_validator_options.cpp */,
+				2BA869D621845C600080BFB8 /* val */,
+				2BA869D321845C210080BFB8 /* util */,
+				2BA869D121845BDF0080BFB8 /* table.cpp */,
+				2BA869CF21845BAE0080BFB8 /* name_mapper.cpp */,
+				2BA869CD21845B8D0080BFB8 /* parsed_operand.cpp */,
+				2BA869CB218459F80080BFB8 /* disassemble.cpp */,
+				2BA869C8218459B50080BFB8 /* id_descriptor.cpp */,
+				2BA869C6218459010080BFB8 /* ext_inst.cpp */,
+				2BA869C3218458A10080BFB8 /* text_handler.cpp */,
+				2BA869C1218458490080BFB8 /* text.cpp */,
+				2BA869B9218457EA0080BFB8 /* operand.cpp */,
+				2BA869B7218457EA0080BFB8 /* spirv_endian.cpp */,
+				2BA869BC218457EA0080BFB8 /* spirv_target_env.cpp */,
+				2BA869A2218457330080BFB8 /* assembly_grammar.cpp */,
+				2BA869A3218457340080BFB8 /* binary.cpp */,
+				2BA869AD218457340080BFB8 /* diagnostic.cpp */,
+				2BA869A1218457330080BFB8 /* opcode.cpp */,
+				2BA86989218453E20080BFB8 /* comp */,
+			);
+			path = source;
+			sourceTree = "<group>";
+		};
+		2BA86989218453E20080BFB8 /* comp */ = {
+			isa = PBXGroup;
+			children = (
+				2BA86A32218462100080BFB8 /* bit_stream.h */,
+				2BA86A36218462110080BFB8 /* huffman_codec.h */,
+				2BA86A33218462100080BFB8 /* markv_codec.h */,
+				2BA86A3A218462110080BFB8 /* markv_decoder.h */,
+				2BA86A37218462110080BFB8 /* markv_encoder.h */,
+				2BA86A35218462110080BFB8 /* markv_logger.h */,
+				2BA86A38218462110080BFB8 /* markv_model.h */,
+				2BA86A34218462110080BFB8 /* markv.h */,
+				2BA86A39218462110080BFB8 /* move_to_front.h */,
+				2BA86994218453F20080BFB8 /* bit_stream.cpp */,
+				2BA8698C218453F20080BFB8 /* markv_codec.cpp */,
+				2BA86997218453F20080BFB8 /* markv_decoder.cpp */,
+				2BA86998218453F20080BFB8 /* markv_encoder.cpp */,
+				2BA8698B218453F20080BFB8 /* markv.cpp */,
+				2BA86990218453F20080BFB8 /* move_to_front.cpp */,
+			);
+			path = comp;
+			sourceTree = "<group>";
+		};
+		2BA869D321845C210080BFB8 /* util */ = {
+			isa = PBXGroup;
+			children = (
+				2BA86A2E218461130080BFB8 /* string_utils.cpp */,
+				2BA869D421845C420080BFB8 /* parse_number.cpp */,
+			);
+			path = util;
+			sourceTree = "<group>";
+		};
+		2BA869D621845C600080BFB8 /* val */ = {
+			isa = PBXGroup;
+			children = (
+				2BA869FF218460060080BFB8 /* basic_block.cpp */,
+				2BA869DA218460040080BFB8 /* basic_block.h */,
+				2BA869E9218460050080BFB8 /* construct.cpp */,
+				2BA869EA218460050080BFB8 /* construct.h */,
+				2BA869DC218460040080BFB8 /* decoration.h */,
+				2BA869D9218460040080BFB8 /* function.cpp */,
+				2BA869EB218460050080BFB8 /* function.h */,
+				2BA869F6218460060080BFB8 /* instruction.cpp */,
+				2BA869F1218460050080BFB8 /* instruction.h */,
+				2BA86A01218460060080BFB8 /* validate_adjacency.cpp */,
+				2BA869F3218460050080BFB8 /* validate_annotation.cpp */,
+				2BA869DB218460040080BFB8 /* validate_arithmetics.cpp */,
+				2BA869DD218460040080BFB8 /* validate_atomics.cpp */,
+				2BA869EC218460050080BFB8 /* validate_barriers.cpp */,
+				2BA869DE218460040080BFB8 /* validate_bitwise.cpp */,
+				2BA869DF218460040080BFB8 /* validate_builtins.cpp */,
+				2BA869F4218460060080BFB8 /* validate_capability.cpp */,
+				2BA869ED218460050080BFB8 /* validate_cfg.cpp */,
+				2BA869EE218460050080BFB8 /* validate_composites.cpp */,
+				2BA869E0218460040080BFB8 /* validate_constants.cpp */,
+				2BA869EF218460050080BFB8 /* validate_conversion.cpp */,
+				2BA869E1218460040080BFB8 /* validate_datarules.cpp */,
+				2BA869F5218460060080BFB8 /* validate_debug.cpp */,
+				2BA869FB218460060080BFB8 /* validate_decorations.cpp */,
+				2BA86A02218460070080BFB8 /* validate_derivatives.cpp */,
+				2BA869E2218460040080BFB8 /* validate_execution_limitations.cpp */,
+				2BA869F8218460060080BFB8 /* validate_ext_inst.cpp */,
+				2BA869F9218460060080BFB8 /* validate_function.cpp */,
+				2BA869FA218460060080BFB8 /* validate_id.cpp */,
+				2BA869E3218460040080BFB8 /* validate_image.cpp */,
+				2BA869F7218460060080BFB8 /* validate_instruction.cpp */,
+				2BA869E4218460040080BFB8 /* validate_interfaces.cpp */,
+				2BA86A00218460060080BFB8 /* validate_layout.cpp */,
+				2BA869E7218460040080BFB8 /* validate_literals.cpp */,
+				2BA869FC218460060080BFB8 /* validate_logicals.cpp */,
+				2BA869E5218460040080BFB8 /* validate_memory.cpp */,
+				2BA869E6218460040080BFB8 /* validate_mode_setting.cpp */,
+				2BA869E8218460040080BFB8 /* validate_non_uniform.cpp */,
+				2BA869FD218460060080BFB8 /* validate_primitives.cpp */,
+				2BA86A03218460070080BFB8 /* validate_type.cpp */,
+				2BA869F0218460050080BFB8 /* validate.h */,
+				2BA869FE218460060080BFB8 /* validation_state.cpp */,
+				2BA869F2218460050080BFB8 /* validation_state.h */,
+				2BA869D721845C840080BFB8 /* validate.cpp */,
+			);
+			path = val;
+			sourceTree = "<group>";
+		};
+		2BA86A3B2184632D0080BFB8 /* tools */ = {
+			isa = PBXGroup;
+			children = (
+				2BA86A3D218463470080BFB8 /* comp */,
+			);
+			path = tools;
+			sourceTree = "<group>";
+		};
+		2BA86A3D218463470080BFB8 /* comp */ = {
+			isa = PBXGroup;
+			children = (
+				2BA86A402184635B0080BFB8 /* markv_model_factory.cpp */,
+				2BA86A3E2184635B0080BFB8 /* markv_model_factory.h */,
+				2BA86A3F2184635B0080BFB8 /* markv_model_shader_default_autogen.inc */,
+				2BA86A412184635B0080BFB8 /* markv_model_shader.cpp */,
+				2BA86A422184635B0080BFB8 /* markv_model_shader.h */,
+			);
+			path = comp;
+			sourceTree = "<group>";
+		};
 		2BC453A11D70B1DA00DFFF3B = {
 			isa = PBXGroup;
 			children = (
@@ -134,6 +426,7 @@
 		2BC466031D70DC6100DFFF3B /* external */ = {
 			isa = PBXGroup;
 			children = (
+				2BA86987218453CC0080BFB8 /* spirv-tools-markv */,
 				2B48E40A1D79CCE1009E1645 /* miniz */,
 				2BC4663B1D71D6E800DFFF3B /* glslang */,
 				2BC466111D71854000DFFF3B /* zstd */,
@@ -272,21 +565,87 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2BA86A2D218460E10080BFB8 /* print.cpp in Sources */,
+				2BA86A11218460070080BFB8 /* validate_non_uniform.cpp in Sources */,
+				2BA869D021845BAE0080BFB8 /* name_mapper.cpp in Sources */,
+				2BA86A24218460070080BFB8 /* validate_layout.cpp in Sources */,
+				2BA869BE218457EA0080BFB8 /* operand.cpp in Sources */,
+				2BA86A04218460070080BFB8 /* function.cpp in Sources */,
 				2B48E40C1D79CCEB009E1645 /* miniz.c in Sources */,
+				2BA86A13218460070080BFB8 /* validate_barriers.cpp in Sources */,
 				2BC4663F1D71D6FE00DFFF3B /* SPVRemapper.cpp in Sources */,
 				2BC466241D71877900DFFF3B /* entropy_common.c in Sources */,
+				2BA869C2218458490080BFB8 /* text.cpp in Sources */,
 				2BC4663A1D7188EE00DFFF3B /* xxhash.c in Sources */,
+				2BA86A20218460070080BFB8 /* validate_logicals.cpp in Sources */,
+				2BA8699D218453F20080BFB8 /* markv_decoder.cpp in Sources */,
+				2BA869D521845C420080BFB8 /* parse_number.cpp in Sources */,
 				2BC466301D71879200DFFF3B /* huf_compress.c in Sources */,
+				2BA86A452184635B0080BFB8 /* markv_model_shader.cpp in Sources */,
+				2BA869CC218459F80080BFB8 /* disassemble.cpp in Sources */,
 				2BC4660F1D71849F00DFFF3B /* lz4.c in Sources */,
+				2BA86A26218460070080BFB8 /* validate_derivatives.cpp in Sources */,
+				2BA86A23218460070080BFB8 /* basic_block.cpp in Sources */,
+				2BA869BD218457EA0080BFB8 /* spirv_endian.cpp in Sources */,
+				2BA86A08218460070080BFB8 /* validate_builtins.cpp in Sources */,
 				2BC466101D71849F00DFFF3B /* lz4hc.c in Sources */,
 				2BC466321D71879200DFFF3B /* zstd_compress.c in Sources */,
+				2BA86A1F218460070080BFB8 /* validate_decorations.cpp in Sources */,
+				2BA86A06218460070080BFB8 /* validate_atomics.cpp in Sources */,
+				2BA86A1A218460070080BFB8 /* instruction.cpp in Sources */,
+				2BA86A1D218460070080BFB8 /* validate_function.cpp in Sources */,
+				2BA86A292184608E0080BFB8 /* spirv_validator_options.cpp in Sources */,
+				2BA8699C218453F20080BFB8 /* bit_stream.cpp in Sources */,
+				2BA86A0E218460070080BFB8 /* validate_memory.cpp in Sources */,
+				2BA869C9218459B50080BFB8 /* id_descriptor.cpp in Sources */,
 				2BC466271D71877900DFFF3B /* zstd_common.c in Sources */,
+				2BA86A442184635B0080BFB8 /* markv_model_factory.cpp in Sources */,
 				2BC466251D71877900DFFF3B /* fse_decompress.c in Sources */,
 				2BC466391D7188E300DFFF3B /* fse_compress.c in Sources */,
+				2BA86A27218460070080BFB8 /* validate_type.cpp in Sources */,
+				2BA86999218453F20080BFB8 /* markv.cpp in Sources */,
+				2BA86A19218460070080BFB8 /* validate_debug.cpp in Sources */,
+				2BA86A1E218460070080BFB8 /* validate_id.cpp in Sources */,
+				2BA86A0B218460070080BFB8 /* validate_execution_limitations.cpp in Sources */,
 				2BC466441D71D80200DFFF3B /* doc.cpp in Sources */,
+				2BA86A0F218460070080BFB8 /* validate_mode_setting.cpp in Sources */,
+				2BA86A1C218460070080BFB8 /* validate_ext_inst.cpp in Sources */,
+				2BA86A21218460070080BFB8 /* validate_primitives.cpp in Sources */,
+				2BA86A2F218461140080BFB8 /* string_utils.cpp in Sources */,
 				2BC466311D71879200DFFF3B /* zbuff_compress.c in Sources */,
+				2BA86A15218460070080BFB8 /* validate_composites.cpp in Sources */,
+				2BA869C7218459010080BFB8 /* ext_inst.cpp in Sources */,
+				2BA869CE21845B8D0080BFB8 /* parsed_operand.cpp in Sources */,
+				2BA869D821845C840080BFB8 /* validate.cpp in Sources */,
+				2BA869B4218457350080BFB8 /* binary.cpp in Sources */,
 				2BC453B91D70B22400DFFF3B /* testmain.cpp in Sources */,
+				2BA869D221845BDF0080BFB8 /* table.cpp in Sources */,
+				2BA8699A218453F20080BFB8 /* markv_codec.cpp in Sources */,
+				2BA86A12218460070080BFB8 /* construct.cpp in Sources */,
+				2BA86A17218460070080BFB8 /* validate_annotation.cpp in Sources */,
+				2BA86A10218460070080BFB8 /* validate_literals.cpp in Sources */,
+				2BA86A09218460070080BFB8 /* validate_constants.cpp in Sources */,
+				2BA86A22218460070080BFB8 /* validation_state.cpp in Sources */,
 				2BC453B61D70B20D00DFFF3B /* smolv.cpp in Sources */,
+				2BA869B2218457350080BFB8 /* opcode.cpp in Sources */,
+				2BA86A0D218460070080BFB8 /* validate_interfaces.cpp in Sources */,
+				2BA869BF218457EA0080BFB8 /* spirv_target_env.cpp in Sources */,
+				2BA86A0C218460070080BFB8 /* validate_image.cpp in Sources */,
+				2BA869C5218458A20080BFB8 /* text_handler.cpp in Sources */,
+				2BA86A2C218460E10080BFB8 /* extensions.cpp in Sources */,
+				2BA869B3218457350080BFB8 /* assembly_grammar.cpp in Sources */,
+				2BA86A1B218460070080BFB8 /* validate_instruction.cpp in Sources */,
+				2BA8699B218453F20080BFB8 /* move_to_front.cpp in Sources */,
+				2BA86A14218460070080BFB8 /* validate_cfg.cpp in Sources */,
+				2BA86A0A218460070080BFB8 /* validate_datarules.cpp in Sources */,
+				2BA8699E218453F20080BFB8 /* markv_encoder.cpp in Sources */,
+				2BA86A31218461530080BFB8 /* enum_string_mapping.cpp in Sources */,
+				2BA86A25218460070080BFB8 /* validate_adjacency.cpp in Sources */,
+				2BA869B5218457350080BFB8 /* diagnostic.cpp in Sources */,
+				2BA86A16218460070080BFB8 /* validate_conversion.cpp in Sources */,
+				2BA86A18218460070080BFB8 /* validate_capability.cpp in Sources */,
+				2BA86A05218460070080BFB8 /* validate_arithmetics.cpp in Sources */,
+				2BA86A07218460070080BFB8 /* validate_bitwise.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
