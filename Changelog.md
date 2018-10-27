@@ -2,6 +2,11 @@
 
 For an overview, see [readme](README.md).
 
+## 2018 10 27
+
+* Added support for SPIR-V 1.2 and 1.3 versions.
+
+
 ## 2016 09 04
 
 * Tests: added suite of shaders from Shadertoy.
