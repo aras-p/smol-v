@@ -1,5 +1,5 @@
 // smol-v - tests code - public domain - https://github.com/aras-p/smol-v
-// authored on 2016 by Aras Pranckevicius
+// authored on 2016-2018 by Aras Pranckevicius
 // no warranty implied; use at your own risk
 
 #define _CRT_SECURE_NO_WARNINGS // yes MSVC, I want to use fopen
@@ -55,6 +55,7 @@ static void MarkVMessageHandler(spv_message_level_t level, const char*, const sp
         case SPV_MSG_INTERNAL_ERROR:
         case SPV_MSG_ERROR:
             printf("MARK-V error: %s\n", message);
+            exit(1);
             break;
         case SPV_MSG_WARNING:
             printf("MARK-V warning: %s\n", message);
@@ -64,7 +65,7 @@ static void MarkVMessageHandler(spv_message_level_t level, const char*, const sp
     }
 }
 
-static void EncodeToMarkv(const void* data, size_t size, ByteArray& output, const spvtools::comp::MarkvModel& model)
+static uint64_t EncodeToMarkv(const void* data, size_t size, ByteArray& output, const spvtools::comp::MarkvModel& model)
 {
     spv_context ctx = spvContextCreate(SPV_ENV_UNIVERSAL_1_2);
 
@@ -77,9 +78,30 @@ static void EncodeToMarkv(const void* data, size_t size, ByteArray& output, cons
     if (SPV_SUCCESS == spvtools::comp::SpirvToMarkv(ctx, buf, options, model, MarkVMessageHandler, spvtools::comp::MarkvLogConsumer(), spvtools::comp::MarkvDebugConsumer(), &encoded))
         output.insert(output.end(), encoded.begin(), encoded.end());
     else
+    {
         printf("error: Failed to encode to MARK-V\n");
+        exit(1);
+    }
+
+    // time decode duration
+    uint64_t timeDecStart = stm_now();
+    std::vector<uint32_t> bufDecoded;
+    if (SPV_SUCCESS != spvtools::comp::MarkvToSpirv(ctx, encoded, options, model, MarkVMessageHandler, spvtools::comp::MarkvLogConsumer(), spvtools::comp::MarkvDebugConsumer(), &bufDecoded))
+    {
+        printf("error: Failed to decode MARK-V back\n");
+        exit(1);
+    }
+    uint64_t timeDecDur = stm_since(timeDecStart);
 
     spvContextDestroy(ctx);
+    
+    if (buf.size() != bufDecoded.size())
+    {
+        printf("ERROR: MARK-V did not encode+decode properly (bug?) sizes %zi vs %zi\n", buf.size(), bufDecoded.size());
+        exit(1);
+    }
+    
+    return timeDecDur;
 }
 
 static size_t CompressLZ4HC(const void* data, size_t size, int level = 0)
@@ -508,9 +530,13 @@ int main()
     // create models for compression with MARK-V
     std::unique_ptr<spvtools::comp::MarkvModel> markvModel0 = spvtools::comp::CreateMarkvModel(spvtools::comp::kMarkvModelShaderLite);
     std::unique_ptr<spvtools::comp::MarkvModel> markvModel1 = spvtools::comp::CreateMarkvModel(spvtools::comp::kMarkvModelShaderMid);
-    std::unique_ptr<spvtools::comp::MarkvModel> markvModel2 = spvtools::comp::CreateMarkvModel(spvtools::comp::kMarkvModelShaderMax);
+    // do not evaluate "Max" model yet, since it fails to decompress some shaders :) (see issue #2015 on SPIRV-Tools)
+    //std::unique_ptr<spvtools::comp::MarkvModel> markvModel2 = spvtools::comp::CreateMarkvModel(spvtools::comp::kMarkvModelShaderMax);
 
-	// go over all test files
+    uint64_t timeDecodeSmolv = 0;
+    uint64_t timeDecodeMarkv[3] = {};
+
+    // go over all test files
 	int errorCount = 0;
 	for (size_t i = 0; i < sizeof(kFiles)/sizeof(kFiles[0]); ++i)
 	{
@@ -546,12 +572,14 @@ int main()
 		size_t spirvDecodedSize = smolv::GetDecodedBufferSize(smolv.data(), smolv.size());
 		ByteArray spirvDecoded;
 		spirvDecoded.resize(spirvDecodedSize);
+        uint64_t timeDecStart = stm_now();
 		if (!smolv::Decode(smolv.data(), smolv.size(), spirvDecoded.data(), spirvDecodedSize))
 		{
 			printf("ERROR: failed to decode back (bug?) %s\n", kFiles[i]);
 			++errorCount;
 			break;
 		}
+        timeDecodeSmolv += stm_since(timeDecStart);
 
 		// Check that it decoded 100% the same
 		if (spirv != spirvDecoded)
@@ -600,9 +628,9 @@ int main()
 		smolvAll[1].insert(smolvAll[1].end(), smolvStripped.begin(), smolvStripped.end());
 		RemapSPIRV(spirv.data(), spirv.size(), false, spirvRemapAll[0]);
 		RemapSPIRV(spirv.data(), spirv.size(), true, spirvRemapAll[1]);
-        EncodeToMarkv(spirv.data(), spirv.size(), markvAll[0], *markvModel0);
-        EncodeToMarkv(spirv.data(), spirv.size(), markvAll[1], *markvModel1);
-        EncodeToMarkv(spirv.data(), spirv.size(), markvAll[2], *markvModel2);
+        timeDecodeMarkv[0] += EncodeToMarkv(spirv.data(), spirv.size(), markvAll[0], *markvModel0);
+        timeDecodeMarkv[1] += EncodeToMarkv(spirv.data(), spirv.size(), markvAll[1], *markvModel1);
+        //timeDecodeMarkv[2] += EncodeToMarkv(spirv.data(), spirv.size(), markvAll[2], *markvModel2);
 	}
 	
 	if (errorCount != 0)
@@ -615,6 +643,12 @@ int main()
 	// Print instruction stats
 	smolv::StatsPrint(stats);
 	smolv::StatsDelete(stats);
+    
+    // Print decoding times
+    printf("\nDecompression performance:\n");
+    printf("Time taken to decode MARK-V Lite: %.1fms\n", stm_ms(timeDecodeMarkv[0]));
+    printf("Time taken to decode MARK-V Mid:  %.1fms\n", stm_ms(timeDecodeMarkv[1]));
+    printf("Time taken to decode SMOL-V:      %.1fms\n", stm_ms(timeDecodeSmolv));
 
 	// Compress various ways (as a whole blob) and print sizes
     const char* kCompressorNames[] = {"<none>", "zlib", "LZ4 HC", "Zstandard", "Zstandard 20"};
@@ -625,6 +659,9 @@ int main()
         
         for (int ctype = 0; ctype < 5; ++ctype)
         {
+            if (ctype == 4)
+                continue; // do not evaluate MARK-V Max yet, since it has some bugs
+
             printf("Compressed with %s:\n", kCompressorNames[ctype]);
             for (int dtype = 0; dtype < 6; ++dtype)
             {
