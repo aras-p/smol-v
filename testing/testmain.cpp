@@ -1,5 +1,5 @@
 // smol-v - tests code - public domain - https://github.com/aras-p/smol-v
-// authored on 2016 by Aras Pranckevicius
+// authored on 2016-2018 by Aras Pranckevicius
 // no warranty implied; use at your own risk
 
 #define _CRT_SECURE_NO_WARNINGS // yes MSVC, I want to use fopen
@@ -9,8 +9,10 @@
 #include "external/miniz/miniz.h"
 #include "external/zstd/zstd.h"
 #include "external/glslang/SPIRV/SPVRemapper.h"
+
+#define SOKOL_IMPL
+#include "external/sokol_time.h"
 #include <stdio.h>
-#include <map>
 #include <string>
 
 
@@ -81,6 +83,7 @@ static size_t CompressMiniz(const void* data, size_t size, int level = MZ_DEFAUL
 
 int main()
 {
+	stm_setup();
 	smolv::Stats* stats = smolv::StatsCreate();
 
 	#define TEST_UNITY 1
@@ -464,6 +467,8 @@ int main()
 	ByteArray spirvRemapAll[2];
 	ByteArray smolvAll[2];
 
+	uint64_t timeDecodeSmolv = 0;
+
 	// go over all test files
 	int errorCount = 0;
 	for (size_t i = 0; i < sizeof(kFiles)/sizeof(kFiles[0]); ++i)
@@ -500,12 +505,14 @@ int main()
 		size_t spirvDecodedSize = smolv::GetDecodedBufferSize(smolv.data(), smolv.size());
 		ByteArray spirvDecoded;
 		spirvDecoded.resize(spirvDecodedSize);
+		uint64_t timeDecStart = stm_now();
 		if (!smolv::Decode(smolv.data(), smolv.size(), spirvDecoded.data(), spirvDecodedSize))
 		{
 			printf("ERROR: failed to decode back (bug?) %s\n", kFiles[i]);
 			++errorCount;
 			break;
 		}
+		timeDecodeSmolv += stm_since(timeDecStart);
 
 		// Check that it decoded 100% the same
 		if (spirv != spirvDecoded)
@@ -567,37 +574,44 @@ int main()
 	smolv::StatsPrint(stats);
 	smolv::StatsDelete(stats);
 
+	// Print decoding times
+	printf("\nDecompression performance:\n");
+	printf("Time taken to decode SMOL-V:      %.1fms\n", stm_ms(timeDecodeSmolv));
+
 	// Compress various ways (as a whole blob) and print sizes
-	for (int i = 0; i < 2; ++i)
+	const char* kCompressorNames[] = { "<none>", "zlib", "LZ4 HC", "Zstandard", "Zstandard 20" };
+	const char* kDataNames[] = { "Raw", "Remapper", "SmolV" };
+	for (int striptype = 0; striptype < 2; ++striptype)
 	{
-		printf("Compressing %s...\n", i==0 ? "RAW" : "STRIPPED");
-		typedef std::map<std::string, size_t> CompressorSizeMap;
-		CompressorSizeMap sizes;
+		printf("\nEvaluating %s...\n", striptype == 0 ? "Raw SPIR-V" : "SPIR-V with debug info stripped out");
 
-		;;sizes["0 Remap"] = spirvRemapAll[i].size();
-		sizes["0 SMOL-V"] = smolvAll[i].size();
-
-		;;sizes["1    zlib"] = CompressMiniz(spirvAll.data(), spirvAll.size());
-		;;sizes["1 re+zlib"] = CompressMiniz(spirvRemapAll[i].data(), spirvRemapAll[i].size());
-		sizes["1 sm+zlib"] = CompressMiniz(smolvAll[i].data(), smolvAll[i].size());
-
-		;;sizes["2    LZ4HC"] = CompressLZ4HC(spirvAll.data(), spirvAll.size());
-		;;sizes["2 re+LZ4HC"] = CompressLZ4HC(spirvRemapAll[i].data(), spirvRemapAll[i].size());
-		sizes["2 sm+LZ4HC"] = CompressLZ4HC(smolvAll[i].data(), smolvAll[i].size());
-
-		;;sizes["3    Zstd"] = CompressZstd(spirvAll.data(), spirvAll.size());
-		;;sizes["3 re+Zstd"] = CompressZstd(spirvRemapAll[i].data(), spirvRemapAll[i].size());
-		sizes["3 sm+Zstd"] = CompressZstd(smolvAll[i].data(), smolvAll[i].size());
-
-		;;sizes["4    Zstd20"] = CompressZstd(spirvAll.data(), spirvAll.size(), 20);
-		;;sizes["4 re+Zstd20"] = CompressZstd(spirvRemapAll[i].data(), spirvRemapAll[i].size(), 20);
-		sizes["4 sm+Zstd20"] = CompressZstd(smolvAll[i].data(), smolvAll[i].size(), 20);
-		
-		
-		printf("Original size: %.1fKB\n", spirvAll.size()/1024.0f);
-		for (CompressorSizeMap::const_iterator it = sizes.begin(), itEnd = sizes.end(); it != itEnd; ++it)
+		for (int ctype = 0; ctype < 5; ++ctype)
 		{
-			printf("%-13s %6.1fKB %5.1f%%\n", it->first.c_str(), it->second/1024.0f, (float)it->second/(float)(spirvAll.size())*100.0f);
+			printf("Compressed with %s:\n", kCompressorNames[ctype]);
+			for (int dtype = 0; dtype < 3; ++dtype)
+			{
+				const ByteArray* inputData = &spirvAll;
+				switch (dtype)
+				{
+				case 0: inputData = &spirvAll; break;
+				case 1: inputData = &spirvRemapAll[striptype]; break;
+				case 2: inputData = &smolvAll[striptype]; break;
+				default: assert(false);
+				}
+
+				size_t size = inputData->size();
+				switch (ctype)
+				{
+				case 0: size = inputData->size(); break;
+				case 1: size = CompressMiniz(inputData->data(), inputData->size()); break;
+				case 2: size = CompressLZ4HC(inputData->data(), inputData->size()); break;
+				case 3: size = CompressZstd(inputData->data(), inputData->size()); break;
+				case 4: size = CompressZstd(inputData->data(), inputData->size(), 20); break;
+				default: assert(false);
+				}
+
+				printf("%-10s %6.1fKB %5.1f%%\n", kDataNames[dtype], size / 1024.0f, (float)size / (float)(spirvAll.size())*100.0f);
+			}
 		}
 	}
 	
