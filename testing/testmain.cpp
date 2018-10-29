@@ -71,12 +71,12 @@ static size_t CompressMiniz(const void* data, size_t size, int level = MZ_DEFAUL
 		return 0;
 	size_t bufferSize = mz_compressBound(size);
 	unsigned char* buffer = new unsigned char[bufferSize];
-	size_t resSize = bufferSize;
+	mz_ulong resSize = bufferSize;
 	int res = mz_compress2(buffer, &resSize, (const unsigned char*)data, size, level);
 	delete[] buffer;
 	if (res != MZ_OK)
 		return -1;
-	return resSize;
+	return (size_t)resSize;
 }
 
 int main()
