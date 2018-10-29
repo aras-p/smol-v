@@ -63,8 +63,8 @@ Code itself: **Public Domain**.
 
 There is 3rd party code under the testing framework (`testing/external`); it is not required for
 using SMOL-V. Most of that code ([glslang](https://github.com/KhronosGroup/glslang),
-[LZ4](https://github.com/Cyan4973/lz4), [Zstd](https://github.com/facebook/zstd)) is BSD-licensed,
-and taken from github repositories of the respective projects. [miniz](https://github.com/richgel999/miniz)
+[LZ4](https://github.com/Cyan4973/lz4), [Zstd](https://github.com/facebook/zstd), [sokol_time.h](https://github.com/floooh/sokol/blob/master/sokol_time.h))
+is BSD or zlib-licensed, and taken from github repositories of the respective projects. [miniz](https://github.com/richgel999/miniz)
 is public domain.
 
 There are SPIR-V binary shader dumps under `tests/spirv-dumps` for compression testing;
@@ -85,27 +85,37 @@ used for SMOL-V testing". Details on them:
 
 ## Results
 
-As of 2016 September 1, results on 323 shaders (under `tests/spirv-dumps`) are:
+As of 2018 October 29, results on 342 shaders (under `tests/spirv-dumps`) are:
 
 ```
-0 Remap       4540.2KB  93.3%
-0 SMOL-V      1629.1KB  33.5%
-1    zlib     1212.7KB  24.9%
-1 re+zlib     1079.4KB  22.2%
-1 sm+zlib      601.8KB  12.4%
-2    LZ4HC    1342.6KB  27.6%
-2 re+LZ4HC    1147.9KB  23.6%
-2 sm+LZ4HC     606.0KB  12.4%
-3    Zstd      898.7KB  18.5%
-3 re+Zstd      742.6KB  15.3%
-3 sm+Zstd      445.3KB   9.1%
-4    Zstd20    589.3KB  12.1%
-4 re+Zstd20    508.8KB  10.5%
-4 sm+Zstd20    347.8KB   7.1%
+Compressed with <none>:
+Raw        4869.9KB 100.0%
+Remapper   4541.4KB  93.3%
+SmolV      1629.5KB  33.5%
+
+Compressed with zlib:
+Raw        1213.3KB  24.9%
+Remapper   1079.7KB  22.2%
+SmolV       602.1KB  12.4%
+
+Compressed with LZ4 HC:
+Raw        1343.4KB  27.6%
+Remapper   1148.1KB  23.6%
+SmolV       606.3KB  12.5%
+
+Compressed with Zstandard:
+Raw         899.3KB  18.5%
+Remapper    742.1KB  15.2%
+SmolV       445.6KB   9.1%
+
+Compressed with Zstandard 20:
+Raw         589.7KB  12.1%
+Remapper    508.9KB  10.5%
+SmolV       348.0KB   7.1%
 ```
 
-* "Remap" is spirv-remap from glslang, with debug info stripping.
-* SMOL-V is what you're looking at, with debug info stripping too.
+* "Raw" is just raw SPIR-V, with no extra processing.
+* "Remapper" is spirv-remap from glslang, with debug info stripping.
+* SmolV is what you're looking at, with debug info stripping too.
 * zlib, LZ4HC and Zstd are general compression algorithms at default settings (Zstd20 is Zstd compression with almost max setting of 20).
-* "re+" is "remapper + compression", "sm+" is "SMOL-V + compression".
 * Compression is done on the whole blob of all the test programs (not individually for each program).
