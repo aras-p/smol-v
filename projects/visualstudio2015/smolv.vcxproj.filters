@@ -42,6 +42,204 @@
     <ClCompile Include="..\..\testing\external\zstd\compress\zstd_compress.c">
       <Filter>external\zstd</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\comp\bit_stream.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\comp\markv.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\comp\markv_codec.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\comp\markv_decoder.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\comp\markv_encoder.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\comp\move_to_front.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\util\parse_number.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\util\string_utils.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\basic_block.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\construct.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\function.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\instruction.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_adjacency.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_annotation.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_arithmetics.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_atomics.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_barriers.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_bitwise.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_builtins.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_capability.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_cfg.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_composites.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_constants.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_conversion.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_datarules.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_debug.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_decorations.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_derivatives.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_execution_limitations.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_ext_inst.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_function.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_id.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_image.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_instruction.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_interfaces.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_layout.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_literals.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_logicals.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_memory.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_mode_setting.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_non_uniform.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_primitives.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validate_type.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\val\validation_state.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\assembly_grammar.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\binary.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\diagnostic.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\disassemble.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\enum_string_mapping.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\ext_inst.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\extensions.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\id_descriptor.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\name_mapper.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\opcode.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\operand.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\parsed_operand.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\print.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\spirv_endian.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\spirv_target_env.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\spirv_validator_options.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\table.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\text.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\source\text_handler.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\tools\comp\markv_model_factory.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\testing\external\spirv-tools-markv\tools\comp\markv_model_shader.cpp">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\smolv.h" />
@@ -105,6 +303,159 @@
     <ClInclude Include="..\..\testing\external\zstd\zstd.h">
       <Filter>external\zstd</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\comp\bit_stream.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\comp\huffman_codec.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\comp\markv.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\comp\markv_codec.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\comp\markv_decoder.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\comp\markv_encoder.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\comp\markv_logger.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\comp\markv_model.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\comp\move_to_front.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\util\bitutils.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\util\hex_float.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\util\make_unique.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\util\parse_number.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\util\string_utils.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\val\basic_block.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\val\construct.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\val\decoration.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\val\function.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\val\instruction.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\val\validate.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\val\validation_state.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\assembly_grammar.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\binary.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\cfa.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\diagnostic.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\disassemble.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\enum_set.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\enum_string_mapping.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\ext_inst.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\extensions.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\id_descriptor.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\instruction.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\latest_version_glsl_std_450_header.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\latest_version_opencl_std_header.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\latest_version_spirv_header.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\macro.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\name_mapper.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\opcode.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\operand.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\parsed_operand.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\print.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\spirv_constant.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\spirv_definition.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\spirv_endian.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\spirv_target_env.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\spirv_validator_options.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\table.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\text.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\source\text_handler.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\tools\comp\markv_model_factory.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\testing\external\spirv-tools-markv\tools\comp\markv_model_shader.h">
+      <Filter>external\spirv-tools-markv</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="external">
@@ -121,6 +472,9 @@
     </Filter>
     <Filter Include="external\zstd">
       <UniqueIdentifier>{7f5fdc8e-a567-4372-b176-efe75af61157}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\spirv-tools-markv">
+      <UniqueIdentifier>{2bd3deeb-56fd-43c9-930b-3be2d9758c40}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
