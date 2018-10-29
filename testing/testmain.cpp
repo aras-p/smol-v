@@ -659,14 +659,14 @@ int main()
         
         for (int ctype = 0; ctype < 5; ++ctype)
         {
-            if (ctype == 4)
-                continue; // do not evaluate MARK-V Max yet, since it has some bugs
-
             printf("Compressed with %s:\n", kCompressorNames[ctype]);
             for (int dtype = 0; dtype < 6; ++dtype)
             {
                 if (striptype == 0 && (dtype == 2 || dtype == 3 || dtype == 4))
                     continue; // MarkV always strips, so skip evaluating it on non-stripped case
+
+                if (dtype == 4)
+                    continue; // do not evaluate MARK-V Max yet, since it has some bugs
 
                 const ByteArray* inputData = &spirvAll;
                 switch (dtype)
