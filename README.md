@@ -61,7 +61,7 @@ See [**Changelog**](Changelog.md).
 
 ## License
 
-Code itself: **Public Domain**.
+Code itself: **Public Domain** or **MIT**, pick whichever works better for you.
 
 There is 3rd party code under the testing framework (`testing/external`); it is not required for
 using SMOL-V. Most of that code ([glslang](https://github.com/KhronosGroup/glslang),
