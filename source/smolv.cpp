@@ -1380,7 +1380,7 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 				const int knownExtraOps = smolv_DecorationExtraOps(memberDec);
 				if (knownExtraOps == -1)
 					smolv_WriteVarint(outSmolv, memberLen-4);
-				else if (knownExtraOps + 4 != memberLen)
+				else if (unsigned(knownExtraOps) + 4 != memberLen)
 					return false; // invalid input
 
 				// Offset decorations are most often linearly increasing, so encode as deltas
@@ -1394,14 +1394,14 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 				else
 				{
 					// write rest of decorations as varint
-					for (int i = 4; i < memberLen; ++i)
+					for (uint32_t i = 4; i < memberLen; ++i)
 						smolv_WriteVarint(outSmolv, memberWords[i]);
 				}
 
 				memberWords += memberLen;
 				++count;
 			}
-			outSmolv[countLocation] = count;
+			outSmolv[countLocation] = uint8_t(count);
 			words = memberWords;
 			continue;
 		}
@@ -1419,7 +1419,7 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 		if (op == SpvOpVectorShuffleCompact)
 		{
 			// compact vector shuffle, just write out single swizzle byte
-			outSmolv.push_back(swizzle);
+			outSmolv.push_back(uint8_t(swizzle));
 			ioffs = instrLen;
 		}
 		else if (smolv_OpVarRest(op))
@@ -1576,7 +1576,7 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuf
 				}
 				else
 				{
-					for (int i = 4; i < memberLen; ++i)
+					for (uint32_t i = 4; i < memberLen; ++i)
 					{
 						if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
 						smolv_Write4(outSpirv, val);
@@ -1779,7 +1779,7 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 				}
 				else
 					memberLen = 4 + knownExtraOps;
-				for (int i = 4; i < memberLen; ++i)
+				for (uint32_t i = 4; i < memberLen; ++i)
 				{
 					if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
 				}
