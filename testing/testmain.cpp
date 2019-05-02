@@ -14,6 +14,7 @@
 #include "external/sokol_time.h"
 #include <stdio.h>
 #include <string>
+#include <string.h>
 
 
 typedef std::vector<uint8_t> ByteArray;
