@@ -2,6 +2,11 @@
 
 For an overview, see [readme](README.md).
 
+## 2019 05 02
+
+* Better handling of invalid SPIR-V inputs.
+
+
 ## 2018 10 27
 
 * Added support for SPIR-V 1.2 and 1.3 versions.
