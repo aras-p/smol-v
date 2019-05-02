@@ -91,6 +91,7 @@ int main()
 	#define TEST_DOTA2 1
 	#define TEST_SHADERTOY 1
     #define TEST_DXC 1
+    #define TEST_SYNTHETIC 1
 
 	// files we're testing on
 	const char* kFiles[] =
@@ -460,6 +461,14 @@ int main()
         // Shaders produced by Microsoft's DXC (shader model 6 -> vulkan 1.1)
         "dxc/imgui-vs.spv",
         #endif // #if TEST_DXC
+
+        #if TEST_SYNTHETIC
+        // synthetic SPIR-V files; they are not actually valid -- to check how
+        // well can we handle invalid inputs
+        "synthetic/invalid-op18-too-small-len.spv",
+        "synthetic/invalid-size-not-div4.spv",
+        "synthetic/invalid-optypearray-too-small-len.spv",
+        #endif // #if TEST_SYNTHETIC
 	};
 
 	// all test data lumped together, to check how well it compresses as a whole block
@@ -483,22 +492,34 @@ int main()
 			++errorCount;
 			break;
 		}
+        
+        bool isInvalidInput = strstr(kFiles[i], "invalid-") != NULL;
 
 		// Basic SPIR-V input stats
 		if (!smolv::StatsCalculate(stats, spirv.data(), spirv.size()))
 		{
-			printf("ERROR: failed to calc instruction stats (invalid SPIR-V?) %s\n", kFiles[i]);
-			++errorCount;
-			break;
+            if (isInvalidInput)
+                continue;
+            else
+            {
+                printf("ERROR: failed to calc instruction stats (invalid SPIR-V?) %s\n", kFiles[i]);
+                ++errorCount;
+                break;
+            }
 		}
 
 		// Encode to SMOL-V
 		ByteArray smolv;
 		if (!smolv::Encode(spirv.data(), spirv.size(), smolv, 0))
 		{
-			printf("ERROR: failed to encode (invalid invalid SPIR-V?) %s\n", kFiles[i]);
-			++errorCount;
-			break;
+            if (isInvalidInput)
+                continue;
+            else
+            {
+                printf("ERROR: failed to encode (invalid invalid SPIR-V?) %s\n", kFiles[i]);
+                ++errorCount;
+                break;
+            }
 		}
 
 		// Decode back to SPIR-V
