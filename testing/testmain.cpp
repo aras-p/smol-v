@@ -84,6 +84,11 @@ static size_t CompressMiniz(const void* data, size_t size, int level = MZ_DEFAUL
 
 int main()
 {
+    spv::spirvbin_t::registerErrorHandler([](const std::string& msg)
+    {
+        printf("ERROR: SPIR-V Remapping failed %s\n", msg.c_str());        
+    });
+
 	stm_setup();
 	smolv::Stats* stats = smolv::StatsCreate();
 
@@ -92,6 +97,7 @@ int main()
 	#define TEST_DOTA2 1
 	#define TEST_SHADERTOY 1
     #define TEST_DXC 1
+    #define TEST_GLSLANG 1
     #define TEST_SYNTHETIC 1
 
 	// files we're testing on
@@ -462,6 +468,29 @@ int main()
         // Shaders produced by Microsoft's DXC (shader model 6 -> vulkan 1.1)
         "dxc/imgui-vs.spv",
         #endif // #if TEST_DXC
+        
+        #if TEST_GLSLANG
+        // Shaders produced by Glslang from Glslang tests, using Vulkan versions 1.1-1.2
+        //"glslang/spv.1.3.coopmat.comp.spv", // Glslang SPIR-V Remapper fails on it (unrecognized type OpTypeCooperativeMatrixNV)
+        //"glslang/spv.1.4.LoopControl.frag.spv", // Glslang SPIR-V remapper asserts on it (unrecognized operand class OperandOptionalLiteral)
+        "glslang/spv.1.4.NonWritable.frag.spv",
+        "glslang/spv.1.4.OpCopyLogical.comp.spv",
+        "glslang/spv.1.4.OpCopyLogicalBool.comp.spv",
+        "glslang/spv.1.4.sparseTexture.frag.spv",
+        "glslang/spv.320.meshShaderUserDefined.mesh.spv",
+        "glslang/spv.AnyHitShader.rahit.spv",
+        "glslang/spv.meshShaderPerViewUserDefined.mesh.spv",
+        "glslang/spv.meshShaderRedeclPerViewBuiltins.mesh.spv",
+        "glslang/spv.meshShaderTaskMem.mesh.spv",
+        "glslang/spv.meshShaderTaskMem.mesh.spv",
+        "glslang/spv.perprimitiveNV.frag.spv",
+        "glslang/spv.subgroup.frag.spv",
+        "glslang/spv.subgroupClustered.comp.spv",
+        "glslang/spv.subgroupExtendedTypesShuffleRelative.comp.spv",
+        "glslang/spv.subgroupQuad.comp.spv",
+        "glslang/spv.subgroupVote.comp.spv",
+        "glslang/spv.vulkan110.int16.frag.spv",
+        #endif // #if TEST_GLSLANG
 
         #if TEST_SYNTHETIC
         // synthetic SPIR-V files; they are not actually valid -- to check how
