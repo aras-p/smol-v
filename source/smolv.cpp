@@ -326,8 +326,44 @@ enum SpvOp
 	SpvOpNamedBarrierInitialize = 328,
 	SpvOpMemoryNamedBarrier = 329,
 	SpvOpModuleProcessed = 330,
+    SpvOpExecutionModeId = 331,
+    SpvOpDecorateId = 332,
+    SpvOpGroupNonUniformElect = 333,
+    SpvOpGroupNonUniformAll = 334,
+    SpvOpGroupNonUniformAny = 335,
+    SpvOpGroupNonUniformAllEqual = 336,
+    SpvOpGroupNonUniformBroadcast = 337,
+    SpvOpGroupNonUniformBroadcastFirst = 338,
+    SpvOpGroupNonUniformBallot = 339,
+    SpvOpGroupNonUniformInverseBallot = 340,
+    SpvOpGroupNonUniformBallotBitExtract = 341,
+    SpvOpGroupNonUniformBallotBitCount = 342,
+    SpvOpGroupNonUniformBallotFindLSB = 343,
+    SpvOpGroupNonUniformBallotFindMSB = 344,
+    SpvOpGroupNonUniformShuffle = 345,
+    SpvOpGroupNonUniformShuffleXor = 346,
+    SpvOpGroupNonUniformShuffleUp = 347,
+    SpvOpGroupNonUniformShuffleDown = 348,
+    SpvOpGroupNonUniformIAdd = 349,
+    SpvOpGroupNonUniformFAdd = 350,
+    SpvOpGroupNonUniformIMul = 351,
+    SpvOpGroupNonUniformFMul = 352,
+    SpvOpGroupNonUniformSMin = 353,
+    SpvOpGroupNonUniformUMin = 354,
+    SpvOpGroupNonUniformFMin = 355,
+    SpvOpGroupNonUniformSMax = 356,
+    SpvOpGroupNonUniformUMax = 357,
+    SpvOpGroupNonUniformFMax = 358,
+    SpvOpGroupNonUniformBitwiseAnd = 359,
+    SpvOpGroupNonUniformBitwiseOr = 360,
+    SpvOpGroupNonUniformBitwiseXor = 361,
+    SpvOpGroupNonUniformLogicalAnd = 362,
+    SpvOpGroupNonUniformLogicalOr = 363,
+    SpvOpGroupNonUniformLogicalXor = 364,
+    SpvOpGroupNonUniformQuadBroadcast = 365,
+    SpvOpGroupNonUniformQuadSwap = 366,
 };
-static const int kKnownOpsCount = SpvOpModuleProcessed+1;
+static const int kKnownOpsCount = SpvOpGroupNonUniformQuadSwap+1;
 
 
 static const char* kSpirvOpNames[] =
@@ -663,6 +699,42 @@ static const char* kSpirvOpNames[] =
 	"NamedBarrierInitialize",
 	"MemoryNamedBarrier",
 	"ModuleProcessed",
+    "ExecutionModeId",
+    "DecorateId",
+    "GroupNonUniformElect",
+    "GroupNonUniformAll",
+    "GroupNonUniformAny",
+    "GroupNonUniformAllEqual",
+    "GroupNonUniformBroadcast",
+    "GroupNonUniformBroadcastFirst",
+    "GroupNonUniformBallot",
+    "GroupNonUniformInverseBallot",
+    "GroupNonUniformBallotBitExtract",
+    "GroupNonUniformBallotBitCount",
+    "GroupNonUniformBallotFindLSB",
+    "GroupNonUniformBallotFindMSB",
+    "GroupNonUniformShuffle",
+    "GroupNonUniformShuffleXor",
+    "GroupNonUniformShuffleUp",
+    "GroupNonUniformShuffleDown",
+    "GroupNonUniformIAdd",
+    "GroupNonUniformFAdd",
+    "GroupNonUniformIMul",
+    "GroupNonUniformFMul",
+    "GroupNonUniformSMin",
+    "GroupNonUniformUMin",
+    "GroupNonUniformFMin",
+    "GroupNonUniformSMax",
+    "GroupNonUniformUMax",
+    "GroupNonUniformFMax",
+    "GroupNonUniformBitwiseAnd",
+    "GroupNonUniformBitwiseOr",
+    "GroupNonUniformBitwiseXor",
+    "GroupNonUniformLogicalAnd",
+    "GroupNonUniformLogicalOr",
+    "GroupNonUniformLogicalXor",
+    "GroupNonUniformQuadBroadcast",
+    "GroupNonUniformQuadSwap",
 };
 static_assert(_SMOLV_ARRAY_SIZE(kSpirvOpNames) == kKnownOpsCount, "kSpirvOpNames table mismatch with known SpvOps");
 
@@ -1007,6 +1079,42 @@ static const OpData kSpirvOpData[] =
 	{1, 1, 0, 1}, // NamedBarrierInitialize
 	{0, 0, 2, 1}, // MemoryNamedBarrier
 	{1, 1, 0, 0}, // ModuleProcessed
+    {0, 0, 0, 1}, // ExecutionModeId
+    {0, 0, 0, 1}, // DecorateId
+    {1, 1, 1, 1}, // GroupNonUniformElect
+    {1, 1, 1, 1}, // GroupNonUniformAll
+    {1, 1, 1, 1}, // GroupNonUniformAny
+    {1, 1, 1, 1}, // GroupNonUniformAllEqual
+    {1, 1, 1, 1}, // GroupNonUniformBroadcast
+    {1, 1, 1, 1}, // GroupNonUniformBroadcastFirst
+    {1, 1, 1, 1}, // GroupNonUniformBallot
+    {1, 1, 1, 1}, // GroupNonUniformInverseBallot
+    {1, 1, 1, 1}, // GroupNonUniformBallotBitExtract
+    {1, 1, 1, 1}, // GroupNonUniformBallotBitCount
+    {1, 1, 1, 1}, // GroupNonUniformBallotFindLSB
+    {1, 1, 1, 1}, // GroupNonUniformBallotFindMSB
+    {1, 1, 1, 1}, // GroupNonUniformShuffle
+    {1, 1, 1, 1}, // GroupNonUniformShuffleXor
+    {1, 1, 1, 1}, // GroupNonUniformShuffleUp
+    {1, 1, 1, 1}, // GroupNonUniformShuffleDown
+    {1, 1, 1, 1}, // GroupNonUniformIAdd
+    {1, 1, 1, 1}, // GroupNonUniformFAdd
+    {1, 1, 1, 1}, // GroupNonUniformIMul
+    {1, 1, 1, 1}, // GroupNonUniformFMul
+    {1, 1, 1, 1}, // GroupNonUniformSMin
+    {1, 1, 1, 1}, // GroupNonUniformUMin
+    {1, 1, 1, 1}, // GroupNonUniformFMin
+    {1, 1, 1, 1}, // GroupNonUniformSMax
+    {1, 1, 1, 1}, // GroupNonUniformUMax
+    {1, 1, 1, 1}, // GroupNonUniformFMax
+    {1, 1, 1, 1}, // GroupNonUniformBitwiseAnd
+    {1, 1, 1, 1}, // GroupNonUniformBitwiseOr
+    {1, 1, 1, 1}, // GroupNonUniformBitwiseXor
+    {1, 1, 1, 1}, // GroupNonUniformLogicalAnd
+    {1, 1, 1, 1}, // GroupNonUniformLogicalOr
+    {1, 1, 1, 1}, // GroupNonUniformLogicalXor
+    {1, 1, 1, 1}, // GroupNonUniformQuadBroadcast
+    {1, 1, 1, 1}, // GroupNonUniformQuadSwap
 };
 static_assert(_SMOLV_ARRAY_SIZE(kSpirvOpData) == kKnownOpsCount, "kSpirvOpData table mismatch with known SpvOps");
 
@@ -1078,8 +1186,8 @@ static bool smolv_CheckGenericHeader(const uint32_t* words, size_t wordCount, ui
 	if (headerMagic != expectedMagic)
 		return false;
 	uint32_t headerVersion = words[1];
-	if (headerVersion < 0x00010000 || headerVersion > 0x00010300)
-		return false; // only support 1.0 through 1.3
+	if (headerVersion < 0x00010000 || headerVersion > 0x00010500)
+		return false; // only support 1.0 through 1.5
 	
 	return true;
 }
