@@ -14,9 +14,11 @@ jobs:
     - name: Windows VS2017
       run: |
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat" && msbuild.exe projects/visualstudio2015/smolv.sln /p:Configuration=Debug /p:CL_MPCount=2
+        if %errorlevel% neq 0 exit /b %errorlevel%
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat" && msbuild.exe projects/visualstudio2015/smolv.sln /p:Configuration=Release /p:CL_MPCount=2
+        if %errorlevel% neq 0 exit /b %errorlevel%
         projects\visualstudio2015\build\x64\Release\smolv.exe
-      shell: bash
+      shell: cmd
 
   mac:
     runs-on: macOS-latest
