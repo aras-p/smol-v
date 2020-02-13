@@ -16,7 +16,7 @@ jobs:
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat" && msbuild.exe projects/visualstudio2015/smolv.sln /p:Configuration=Debug /p:CL_MPCount=2
         call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat" && msbuild.exe projects/visualstudio2015/smolv.sln /p:Configuration=Release /p:CL_MPCount=2
         projects\visualstudio2015\build\x64\Release\smolv.exe
-      shell: cmd
+      shell: bash
 
   mac:
     runs-on: macOS-latest
