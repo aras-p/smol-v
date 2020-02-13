@@ -1,4 +1,4 @@
-# SMOL-V: like Vulkan/Khronos SPIR-V, but smaller. [![Build Status](https://api.travis-ci.org/aras-p/smol-v.svg?branch=master)](https://travis-ci.org/aras-p/smol-v)
+# SMOL-V: like Vulkan/Khronos SPIR-V, but smaller. ![Build Status](https://github.com/aras-p/smol-v/workflows/build_and_test/badge.svg)
 
 ## Overview
 
