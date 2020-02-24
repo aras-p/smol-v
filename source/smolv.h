@@ -33,7 +33,7 @@
 // ### USAGE:
 //
 // Add source/smolv.h and source/smolv.cpp to your C++ project build.
-// Currently it might require C++11 or somesuch; I only tested with Visual Studio 2010, 2015 and Mac Xcode 7.3.
+// Currently it might require C++11 or somesuch; I only tested with Visual Studio 2017/2019, Mac Xcode 11 and Gcc 5.4.
 //
 // smolv::Encode and smolv::Decode is the basic functionality.
 //
