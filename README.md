@@ -26,16 +26,16 @@ to improve this:
 
 A somewhat similar utility is [spirv-remap from glslang](https://github.com/KhronosGroup/glslang/blob/master/README-spirv-remap.txt).
 
-See [this blog post](http://aras-p.info/blog/2016/09/01/SPIR-V-Compression/) for more information about
+See [this blog post](https://aras-p.info/blog/2016/09/01/SPIR-V-Compression/) for more information about
 how I did SMOL-V.
 
 
 ## Usage
 
 Add [`source/smolv.h`](source/smolv.h) and [`source/smolv.cpp`](source/smolv.cpp) to your C++ project build.
-It might require C++11 or somesuch; I only tested with Visual Studio 2017 and Mac Xcode 9.4. There's
-a [Travis-CI](https://travis-ci.org/aras-p/smol-v) set up for this project, that builds on Windows (VS2017),
-Mac (Xcode 10.1) and Linux (gcc 4.8).
+It might require C++11 or somesuch; I only tested with Visual Studio 2017 and Mac Xcode 9.4. There are
+[Github Actions](https://github.com/aras-p/smol-v/actions) set up for this project, that build on Windows (VS2017),
+macOS (Xcode 11.1) and Linux (Ubuntu 16 / gcc 5.4).
 
 `smolv::Encode` and `smolv::Decode` is the basic functionality. See [smolv.h](source/smolv.h).
 
