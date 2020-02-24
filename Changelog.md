@@ -2,6 +2,13 @@
 
 For an overview, see [readme](README.md).
 
+## 2020 02 24
+
+* Added mechanism for "versioning" SMOL-V encodings.
+  Note: files produced by SMOL-V 2020-02-13 version that happened
+  to contain ExecutionModeId..GroupNonUniformQuadSwap opcodes
+  will not decode properly; please re-encode them.
+
 ## 2020 02 13
 
 * Added support for SPIR-V 1.4 and 1.5 versions.

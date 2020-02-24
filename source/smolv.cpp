@@ -1118,36 +1118,47 @@ static const OpData kSpirvOpData[] =
 };
 static_assert(_SMOLV_ARRAY_SIZE(kSpirvOpData) == kKnownOpsCount, "kSpirvOpData table mismatch with known SpvOps");
 
-
-static bool smolv_OpHasResult(SpvOp op)
+// Instruction encoding depends on the table that describes the various SPIR-V opcodes.
+// Whenever we change or expand the table, we need to bump up the SMOL-V version, and make
+// sure that we can still decode files encoded by an older version.
+static int smolv_GetKnownOpsCount(int version)
 {
-	if (op < 0 || op >= kKnownOpsCount)
+    if (version == 0)
+        return SpvOpModuleProcessed+1;
+    if (version == 1) // 2020 February, version 1 added ExecutionModeId..GroupNonUniformQuadSwap
+        return SpvOpGroupNonUniformQuadSwap+1;
+    return 0;
+}
+
+static bool smolv_OpHasResult(SpvOp op, int opsCount)
+{
+	if (op < 0 || op >= opsCount)
 		return false;
 	return kSpirvOpData[op].hasResult != 0;
 }
 
-static bool smolv_OpHasType(SpvOp op)
+static bool smolv_OpHasType(SpvOp op, int opsCount)
 {
-	if (op < 0 || op >= kKnownOpsCount)
+	if (op < 0 || op >= opsCount)
 		return false;
 	return kSpirvOpData[op].hasType != 0;
 }
 
-static int smolv_OpDeltaFromResult(SpvOp op)
+static int smolv_OpDeltaFromResult(SpvOp op, int opsCount)
 {
-	if (op < 0 || op >= kKnownOpsCount)
+	if (op < 0 || op >= opsCount)
 		return 0;
 	return kSpirvOpData[op].deltaFromResult;
 }
 
-static bool smolv_OpVarRest(SpvOp op)
+static bool smolv_OpVarRest(SpvOp op, int opsCount)
 {
-	if (op < 0 || op >= kKnownOpsCount)
+	if (op < 0 || op >= opsCount)
 		return false;
 	return kSpirvOpData[op].varrest != 0;
 }
 
-static bool smolv_OpDebugInfo(SpvOp op)
+static bool smolv_OpDebugInfo(SpvOp op, int opsCount)
 {
 	return
 		op == SpvOpSourceContinued ||
@@ -1175,7 +1186,7 @@ static int smolv_DecorationExtraOps(int dec)
 // --------------------------------------------------------------------------------------------
 
 
-static bool smolv_CheckGenericHeader(const uint32_t* words, size_t wordCount, uint32_t expectedMagic)
+static bool smolv_CheckGenericHeader(const uint32_t* words, size_t wordCount, uint32_t expectedMagic, uint32_t versionMask)
 {
 	if (!words)
 		return false;
@@ -1185,7 +1196,7 @@ static bool smolv_CheckGenericHeader(const uint32_t* words, size_t wordCount, ui
 	uint32_t headerMagic = words[0];
 	if (headerMagic != expectedMagic)
 		return false;
-	uint32_t headerVersion = words[1];
+	uint32_t headerVersion = words[1] & versionMask;
 	if (headerVersion < 0x00010000 || headerVersion > 0x00010500)
 		return false; // only support 1.0 through 1.5
 	
@@ -1195,18 +1206,24 @@ static bool smolv_CheckGenericHeader(const uint32_t* words, size_t wordCount, ui
 static const int kSpirVHeaderMagic = 0x07230203;
 static const int kSmolHeaderMagic = 0x534D4F4C; // "SMOL"
 
+static const int kSmolCurrEncodingVersion = 1;
+
 static bool smolv_CheckSpirVHeader(const uint32_t* words, size_t wordCount)
 {
 	//@TODO: if SPIR-V header magic was reversed, that means the file got written
 	// in a "big endian" order. Need to byteswap all words then.
-	return smolv_CheckGenericHeader(words, wordCount, kSpirVHeaderMagic);
+	return smolv_CheckGenericHeader(words, wordCount, kSpirVHeaderMagic, 0xFFFFFFFF);
 }
 static bool smolv_CheckSmolHeader(const uint8_t* bytes, size_t byteCount)
 {
-	if (!smolv_CheckGenericHeader((const uint32_t*)bytes, byteCount/4, kSmolHeaderMagic))
+	if (!smolv_CheckGenericHeader((const uint32_t*)bytes, byteCount/4, kSmolHeaderMagic, 0x00FFFFFF))
 		return false;
 	if (byteCount < 24) // one more word past header to store decoded length
 		return false;
+    // SMOL-V version
+    int smolVersion = ((const uint32_t*)bytes)[1] >> 24;
+    if (smolVersion < 0 || smolVersion > kSmolCurrEncodingVersion)
+        return false;
 	return true;
 }
 
@@ -1390,9 +1407,9 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 	// reserve space in output (typical compression is to about 30%; reserve half of input space)
 	outSmolv.reserve(outSmolv.size() + spirvSize/2);
 
-	// header
+	// header (matches SPIR-V one, except different magic)
 	smolv_Write4(outSmolv, kSmolHeaderMagic);
-	smolv_Write4(outSmolv, words[1]); // version
+	smolv_Write4(outSmolv, (words[1] & 0x00FFFFFF) + (kSmolCurrEncodingVersion<<24)); // SPIR-V version (_XXX) + SMOL-V version (X___)
 	smolv_Write4(outSmolv, words[2]); // generator
 	smolv_Write4(outSmolv, words[3]); // bound
 	smolv_Write4(outSmolv, words[4]); // schema
@@ -1403,13 +1420,15 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 	size_t strippedSpirvWordCount = wordCount;
 	uint32_t prevResult = 0;
 	uint32_t prevDecorate = 0;
+    
+    const int knownOpsCount = smolv_GetKnownOpsCount(kSmolCurrEncodingVersion);
 
 	words += 5;
 	while (words < wordsEnd)
 	{
 		_SMOLV_READ_OP(instrLen, words, op);
 
-		if ((flags & kEncodeFlagStripDebugInfo) && smolv_OpDebugInfo(op))
+		if ((flags & kEncodeFlagStripDebugInfo) && smolv_OpDebugInfo(op, knownOpsCount))
 		{
 			strippedSpirvWordCount -= instrLen;
 			words += instrLen;
@@ -1439,7 +1458,7 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 
 		size_t ioffs = 1;
 		// write type as varint, if we have it
-		if (smolv_OpHasType(op))
+		if (smolv_OpHasType(op, knownOpsCount))
 		{
             if (ioffs >= instrLen)
                 return false;
@@ -1447,7 +1466,7 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 			ioffs++;
 		}
 		// write result as delta+zig+varint, if we have it
-		if (smolv_OpHasResult(op))
+		if (smolv_OpHasResult(op, knownOpsCount))
 		{
             if (ioffs >= instrLen)
                 return false;
@@ -1530,7 +1549,7 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 		}
 
 		// Write out this many IDs, encoding them relative+zigzag to result ID
-		int relativeCount = smolv_OpDeltaFromResult(op);
+		int relativeCount = smolv_OpDeltaFromResult(op, knownOpsCount);
 		for (int i = 0; i < relativeCount && ioffs < instrLen; ++i, ++ioffs)
 		{
             if (ioffs >= instrLen)
@@ -1547,7 +1566,7 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 			outSmolv.push_back(uint8_t(swizzle));
 			ioffs = instrLen;
 		}
-		else if (smolv_OpVarRest(op))
+		else if (smolv_OpVarRest(op, knownOpsCount))
 		{
 			// write out rest of words with variable encoding (expected to be small integers)
 			for (; ioffs < instrLen; ++ioffs)
@@ -1599,14 +1618,17 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuf
 	uint8_t* outSpirv = (uint8_t*)spirvOutputBuffer;
 	
 	uint32_t val;
+    int smolVersion = 0;
 
 	// header
 	smolv_Write4(outSpirv, kSpirVHeaderMagic); bytes += 4;
-	smolv_Read4(bytes, bytesEnd, val); smolv_Write4(outSpirv, val); // version
+    smolv_Read4(bytes, bytesEnd, val); smolVersion = val >> 24; val &= 0x00FFFFFF; smolv_Write4(outSpirv, val); // version
 	smolv_Read4(bytes, bytesEnd, val); smolv_Write4(outSpirv, val); // generator
 	smolv_Read4(bytes, bytesEnd, val); smolv_Write4(outSpirv, val); // bound
 	smolv_Read4(bytes, bytesEnd, val); smolv_Write4(outSpirv, val); // schema
 	bytes += 4; // decode buffer size
+    
+    const int knownOpsCount = smolv_GetKnownOpsCount(smolVersion);
 
 	uint32_t prevResult = 0;
 	uint32_t prevDecorate = 0;
@@ -1626,14 +1648,14 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuf
 		size_t ioffs = 1;
 
 		// read type as varint, if we have it
-		if (smolv_OpHasType(op))
+		if (smolv_OpHasType(op, knownOpsCount))
 		{
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
 			smolv_Write4(outSpirv, val);
 			ioffs++;
 		}
 		// read result as delta+varint, if we have it
-		if (smolv_OpHasResult(op))
+		if (smolv_OpHasResult(op, knownOpsCount))
 		{
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
 			val = prevResult + smolv_ZigDecode(val);
@@ -1712,7 +1734,7 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuf
 		}
 
 		// Read this many IDs, that are relative to result ID
-		int relativeCount = smolv_OpDeltaFromResult(op);
+		int relativeCount = smolv_OpDeltaFromResult(op, knownOpsCount);
 		for (int i = 0; i < relativeCount && ioffs < instrLen; ++i, ++ioffs)
 		{
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
@@ -1728,7 +1750,7 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuf
 			if (instrLen > 7) smolv_Write4(outSpirv, (swizzle >> 2) & 3);
 			if (instrLen > 8) smolv_Write4(outSpirv, swizzle & 3);
 		}
-		else if (smolv_OpVarRest(op))
+		else if (smolv_OpVarRest(op, knownOpsCount))
 		{
 			// read rest of words with variable encoding
 			for (; ioffs < instrLen; ++ioffs)
@@ -1843,11 +1865,16 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 	const uint8_t* bytesEnd = bytes + smolvSize;
 	if (!smolv_CheckSmolHeader(bytes, smolvSize))
 		return false;
-	bytes += 24;
+
+    uint32_t val;
+    int smolVersion;
+    bytes += 4;
+    smolv_Read4(bytes, bytesEnd, val); smolVersion = val >> 24;
+    const int knownOpsCount = smolv_GetKnownOpsCount(smolVersion);
+    bytes += 16;
 	
 	stats->totalSizeSmol += smolvSize;
 	
-	uint32_t val;
 	while (bytes < bytesEnd)
 	{
 		const uint8_t* instrBegin = bytes;
@@ -1865,14 +1892,14 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 		stats->varintCountsOp[bytes-varBegin]++;
 		
 		size_t ioffs = 1;
-		if (smolv_OpHasType(op))
+		if (smolv_OpHasType(op, knownOpsCount))
 		{
 			varBegin = bytes;
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
 			stats->varintCountsType[bytes-varBegin]++;
 			ioffs++;
 		}
-		if (smolv_OpHasResult(op))
+		if (smolv_OpHasResult(op, knownOpsCount))
 		{
 			varBegin = bytes;
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
@@ -1916,7 +1943,7 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 			continue;
 		}
 
-		int relativeCount = smolv_OpDeltaFromResult(op);
+		int relativeCount = smolv_OpDeltaFromResult(op, knownOpsCount);
 		for (int i = 0; i < relativeCount && ioffs < instrLen; ++i, ++ioffs)
 		{
 			varBegin = bytes;
@@ -1928,7 +1955,7 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 		{
 			bytes++;
 		}
-		else if (smolv_OpVarRest(op))
+		else if (smolv_OpVarRest(op, knownOpsCount))
 		{
 			for (; ioffs < instrLen; ++ioffs)
 			{
