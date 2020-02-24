@@ -82,6 +82,100 @@ static size_t CompressMiniz(const void* data, size_t size, int level = MZ_DEFAUL
 	return (size_t)resSize;
 }
 
+static bool TestDecodingExistingSmolvFiles()
+{
+    const char* kFiles[] =
+    {
+        // files produced by 2020-02-13 version (SPIR-V 1.4 & 1.5 added, encoding version 1 with new instructions)
+        "2020-02-13/glslang_spv.1.4.NonWritable.frag.smolv",
+        "2020-02-13/glslang_spv.1.4.OpCopyLogical.comp.smolv",
+        "2020-02-13/glslang_spv.1.4.OpCopyLogicalBool.comp.smolv",
+        "2020-02-13/glslang_spv.1.4.sparseTexture.frag.smolv",
+        "2020-02-13/glslang_spv.320.meshShaderUserDefined.mesh.smolv",
+        "2020-02-13/glslang_spv.AnyHitShader.rahit.smolv",
+        "2020-02-13/glslang_spv.meshShaderPerViewUserDefined.mesh.smolv",
+        "2020-02-13/glslang_spv.meshShaderRedeclPerViewBuiltins.mesh.smolv",
+        "2020-02-13/glslang_spv.meshShaderTaskMem.mesh.smolv",
+        "2020-02-13/glslang_spv.perprimitiveNV.frag.smolv",
+        "2020-02-13/glslang_spv.subgroup.frag.smolv",
+        "2020-02-13/glslang_spv.subgroupClustered.comp.smolv",
+        "2020-02-13/glslang_spv.subgroupExtendedTypesShuffleRelative.comp.smolv",
+        "2020-02-13/glslang_spv.subgroupQuad.comp.smolv",
+        "2020-02-13/glslang_spv.subgroupVote.comp.smolv",
+        "2020-02-13/glslang_spv.vulkan110.int16.frag.smolv",
+        
+        // files produced by 2018-10-27 version (have subgroup ops without "efficient" encoding of them)
+        "2019-05-02/glslang_spv.subgroup.frag.smolv",
+        "2019-05-02/glslang_spv.subgroupClustered.comp.smolv",
+        "2019-05-02/glslang_spv.subgroupExtendedTypesShuffleRelative.comp.smolv",
+        "2019-05-02/glslang_spv.subgroupQuad.comp.smolv",
+        "2019-05-02/glslang_spv.subgroupVote.comp.smolv",
+
+        // files produced by 2018-10-27 version (SPIR-V 1.2 & 1.3 added)
+        "2018-10-27/dxc_imgui-vs.smolv",
+
+        // files produced by 2016-09-07 version (initial)
+        "2016-09-07/dota2_14074.smolv",
+        "2016-09-07/dota2_15212.smolv",
+        "2016-09-07/dota2_20451.smolv",
+        "2016-09-07/dota2_367079.smolv",
+        "2016-09-07/dota2_824933.smolv",
+        "2016-09-07/shadertoy_st-ld3Gz2.smolv",
+        "2016-09-07/shadertoy_st-lsSXzD.smolv",
+        "2016-09-07/shadertoy_st-Ms2SD1.smolv",
+        "2016-09-07/shadertoy_st-Xds3zN.smolv",
+        "2016-09-07/talos_0A38A8F3.smolv",
+        "2016-09-07/talos_0C958994.smolv",
+        "2016-09-07/talos_1AFB24CF.smolv",
+        "2016-09-07/talos_7A632EA9.smolv",
+        "2016-09-07/unity_s0-0001-32333750.smolv",
+        "2016-09-07/unity_s0-0007-3454fc86.smolv",
+        "2016-09-07/unity_s0-0012-fba002b2.smolv",
+        "2016-09-07/unity_s1-0000-5ca04fe4.smolv",
+        "2016-09-07/unity_s1-0002-8d2ed6da.smolv",
+        "2016-09-07/unity_s1-0017-6c18345b.smolv",
+        "2016-09-07/unity_s1-0084-ffb8278d.smolv",
+        "2016-09-07/unity_s2-0031-412ed89d.smolv",
+        "2016-09-07/unity_s3-0028-e081a509.smolv",
+        "2016-09-07/unity_s4-0004-6ec33743.smolv",
+        "2016-09-07/unity_s4-0006-a5e06270.smolv",
+    };
+
+    int errorCount = 0;
+    size_t fileCount = sizeof(kFiles)/sizeof(kFiles[0]);
+    printf("Check decoding %zi existing SMOL-V files...\n", fileCount);
+    for (size_t i = 0; i < fileCount; ++i)
+    {
+        // Read
+        ByteArray smolv;
+        ReadFile((std::string("tests/smolv-dumps/") + kFiles[i]).c_str(), smolv);
+        if (smolv.empty())
+        {
+            printf("ERROR: failed to read %s\n", kFiles[i]);
+            ++errorCount;
+            break;
+        }
+        
+        // Decode to SPIR-V
+        size_t spirvDecodedSize = smolv::GetDecodedBufferSize(smolv.data(), smolv.size());
+        ByteArray spirvDecoded;
+        spirvDecoded.resize(spirvDecodedSize);
+        if (!smolv::Decode(smolv.data(), smolv.size(), spirvDecoded.data(), spirvDecodedSize))
+        {
+            printf("ERROR: failed to decode smol-v on %s\n", kFiles[i]);
+            ++errorCount;
+            break;
+        }
+    }
+    
+    if (errorCount != 0)
+    {
+        printf("Got SMOL-V decoding ERRORS: %i\n", errorCount);
+        return false;
+    }
+    return true;
+}
+
 int main()
 {
     spv::spirvbin_t::registerErrorHandler([](const std::string& msg)
@@ -501,6 +595,11 @@ int main()
         #endif // #if TEST_SYNTHETIC
 	};
 
+    if (!TestDecodingExistingSmolvFiles())
+    {
+        return 1;
+    }
+
 	// all test data lumped together, to check how well it compresses as a whole block
 	ByteArray spirvAll;
 	ByteArray spirvRemapAll[2];
@@ -513,7 +612,7 @@ int main()
 	for (size_t i = 0; i < sizeof(kFiles)/sizeof(kFiles[0]); ++i)
 	{
 		// Read
-		printf("Reading %s\n", kFiles[i]);
+		//printf("Reading %s\n", kFiles[i]);
 		ByteArray spirv;
 		ReadFile((std::string("tests/spirv-dumps/") + kFiles[i]).c_str(), spirv);
 		if (spirv.empty())
@@ -532,9 +631,9 @@ int main()
                 continue;
             else
             {
-                printf("ERROR: failed to calc instruction stats (invalid SPIR-V?) %s\n", kFiles[i]);
-                ++errorCount;
-                break;
+                printf("WARN: failed to calc instruction stats (invalid SPIR-V?) %s\n", kFiles[i]);
+                //++errorCount;
+                //break;
             }
 		}
 
@@ -551,6 +650,23 @@ int main()
                 break;
             }
 		}
+        
+        // Dump SMOL-V output to file
+        /*
+        {
+            std::string outname = kFiles[i];
+            for (auto& c : outname)
+                if (c == '/')
+                    c = '_';
+            size_t extPos = outname.find_last_of('.');
+            if (extPos != std::string::npos)
+                outname = outname.substr(0, extPos) + ".smolv";
+            outname ="tests/smolv-dumps/" + outname;
+            FILE* fout = fopen(outname.c_str(), "wb");
+            fwrite(smolv.data(), smolv.size(), 1, fout);
+            fclose(fout);
+        }
+         */
 
 		// Decode back to SPIR-V
 		size_t spirvDecodedSize = smolv::GetDecodedBufferSize(smolv.data(), smolv.size());
