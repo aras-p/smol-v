@@ -33,7 +33,7 @@ how I did SMOL-V.
 ## Usage
 
 Add [`source/smolv.h`](source/smolv.h) and [`source/smolv.cpp`](source/smolv.cpp) to your C++ project build.
-It might require C++11 or somesuch; I only tested with Visual Studio 2017 and Mac Xcode 9.4. There are
+It might require C++11 or somesuch. There are 
 [Github Actions](https://github.com/aras-p/smol-v/actions) set up for this project, that build on Windows (VS2017),
 macOS (Xcode 11.1) and Linux (Ubuntu 16 / gcc 5.4).
 
@@ -87,34 +87,36 @@ used for SMOL-V testing". Details on them:
 
 ## Results
 
-As of 2018 October 29, results on 342 shaders (under `tests/spirv-dumps`) are:
+As of 2020 May 25 29, results on 372 shaders (under `tests/spirv-dumps`) are:
 
 ```
 Compressed with <none>:
-Raw        4869.9KB 100.0%
-Remapper   4541.4KB  93.3%
-SmolV      1629.5KB  33.5%
+Raw        5188.9KB 100.0%
+Remapper   5089.0KB  98.1%
+SmolV      1934.2KB  37.3%
 
 Compressed with zlib:
-Raw        1213.3KB  24.9%
-Remapper   1079.7KB  22.2%
-SmolV       602.1KB  12.4%
+Raw        1301.3KB  25.1%
+Remapper   1230.5KB  23.7%
+SmolV       696.6KB  13.4%
 
 Compressed with LZ4 HC:
-Raw        1343.4KB  27.6%
-Remapper   1148.1KB  23.6%
-SmolV       606.3KB  12.5%
+Raw        1448.7KB  27.9%
+Remapper   1303.9KB  25.1%
+SmolV       711.3KB  13.7%
 
 Compressed with Zstandard:
-Raw         899.3KB  18.5%
-Remapper    742.1KB  15.2%
-SmolV       445.6KB   9.1%
+Raw         983.4KB  19.0%
+Remapper    870.8KB  16.8%
+SmolV       541.3KB  10.4%
 
 Compressed with Zstandard 20:
-Raw         589.7KB  12.1%
-Remapper    508.9KB  10.5%
-SmolV       348.0KB   7.1%
+Raw         649.6KB  12.5%
+Remapper    599.1KB  11.5%
+SmolV       419.7KB   8.1%
 ```
+
+Decoding these 372 shaders from SMOL-V back into SPIR-V takes 10.2ms (VS2017, x64 Release, AMD ThreadRipper 1950X 3.4GHz, one thread).
 
 * "Raw" is just raw SPIR-V, with no extra processing.
 * "Remapper" is spirv-remap from glslang, with debug info stripping.
