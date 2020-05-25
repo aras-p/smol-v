@@ -139,7 +139,25 @@ static bool TestDecodingExistingSmolvFiles()
         "2016-09-07/unity_s3-0028-e081a509.smolv",
         "2016-09-07/unity_s4-0004-6ec33743.smolv",
         "2016-09-07/unity_s4-0006-a5e06270.smolv",
-    };
+
+		// files produced by 2016-08-31 version (used in Unity 2016-2020)
+		"2016-08-31/unity-errorshader-vs.smolv",
+		"2016-08-31/unity-504-184-1.smolv",
+		"2016-08-31/unity-2456-738-1.smolv",
+		"2016-08-31/unity-2956-827-0.smolv",
+		"2016-08-31/unity-4920-1375-0.smolv",
+		"2016-08-31/unity-7580-2194-1.smolv",
+		"2016-08-31/unity-8032-2236-0.smolv",
+		"2016-08-31/unity-11976-3300-0.smolv",
+		"2016-08-31/unity-16380-4619-1.smolv",
+		"2016-08-31/unity-28620-7815-1.smolv",
+		"2016-08-31/unity-29792-8418-1.smolv",
+		"2016-08-31/unity-30600-8635-1.smolv",
+		"2016-08-31/unity-31280-8849-1.smolv",
+		"2016-08-31/unity-34040-9620-1.smolv",
+		"2016-08-31/unity-36140-10246-1.smolv",
+		"2016-08-31/unity-38388-10935-1.smolv",
+	};
 
     int errorCount = 0;
     size_t fileCount = sizeof(kFiles)/sizeof(kFiles[0]);
@@ -159,7 +177,7 @@ static bool TestDecodingExistingSmolvFiles()
         
         // Decode to SPIR-V
 		bool beforeZeroVersion = strstr(kFiles[i], "2016-08-31/") != 0;
-		smolv::DecodeFlags flags = beforeZeroVersion ? smolv::kDecodeFlagForceVersionBeforeZero : smolv::kDecodeFlagNone;
+		smolv::DecodeFlags flags = beforeZeroVersion ? smolv::kDecodeFlagUse20160831AsZeroVersion : smolv::kDecodeFlagNone;
         size_t spirvDecodedSize = smolv::GetDecodedBufferSize(smolv.data(), smolv.size());
         ByteArray spirvDecoded;
         spirvDecoded.resize(spirvDecodedSize);
