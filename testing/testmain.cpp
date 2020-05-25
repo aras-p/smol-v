@@ -103,8 +103,8 @@ static bool TestDecodingExistingSmolvFiles()
         "2020-02-13/glslang_spv.subgroupQuad.comp.smolv",
         "2020-02-13/glslang_spv.subgroupVote.comp.smolv",
         "2020-02-13/glslang_spv.vulkan110.int16.frag.smolv",
-        
-        // files produced by 2018-10-27 version (have subgroup ops without "efficient" encoding of them)
+
+        // files produced by 2019-05-02 version (have subgroup ops without "efficient" encoding of them)
         "2019-05-02/glslang_spv.subgroup.frag.smolv",
         "2019-05-02/glslang_spv.subgroupClustered.comp.smolv",
         "2019-05-02/glslang_spv.subgroupExtendedTypesShuffleRelative.comp.smolv",
@@ -114,7 +114,7 @@ static bool TestDecodingExistingSmolvFiles()
         // files produced by 2018-10-27 version (SPIR-V 1.2 & 1.3 added)
         "2018-10-27/dxc_imgui-vs.smolv",
 
-        // files produced by 2016-09-07 version (initial)
+        // files produced by 2016-09-07 version (initial public release)
         "2016-09-07/dota2_14074.smolv",
         "2016-09-07/dota2_15212.smolv",
         "2016-09-07/dota2_20451.smolv",
@@ -148,25 +148,64 @@ static bool TestDecodingExistingSmolvFiles()
     {
         // Read
         ByteArray smolv;
-        ReadFile((std::string("tests/smolv-dumps/") + kFiles[i]).c_str(), smolv);
+		std::string inFilePath = std::string("tests/smolv-dumps/") + kFiles[i];
+        ReadFile(inFilePath.c_str(), smolv);
         if (smolv.empty())
         {
             printf("ERROR: failed to read %s\n", kFiles[i]);
             ++errorCount;
-            break;
+            continue;
         }
         
         // Decode to SPIR-V
+		bool beforeZeroVersion = strstr(kFiles[i], "2016-08-31/") != 0;
+		smolv::DecodeFlags flags = beforeZeroVersion ? smolv::kDecodeFlagForceVersionBeforeZero : smolv::kDecodeFlagNone;
         size_t spirvDecodedSize = smolv::GetDecodedBufferSize(smolv.data(), smolv.size());
         ByteArray spirvDecoded;
         spirvDecoded.resize(spirvDecodedSize);
-        if (!smolv::Decode(smolv.data(), smolv.size(), spirvDecoded.data(), spirvDecodedSize))
+        if (!smolv::Decode(smolv.data(), smolv.size(), spirvDecoded.data(), spirvDecodedSize, flags))
         {
             printf("ERROR: failed to decode smol-v on %s\n", kFiles[i]);
             ++errorCount;
-            break;
+			continue;
         }
-    }
+
+		// Dump decoded SPIR-V into a file
+		{
+			std::string outFilePath = inFilePath;
+			size_t extPos = outFilePath.find_last_of('.');
+			if (extPos != std::string::npos)
+				outFilePath = outFilePath.substr(0, extPos);
+			outFilePath += "-got.spirv";
+			FILE* fout = fopen(outFilePath.c_str(), "wb");
+			fwrite(spirvDecoded.data(), spirvDecoded.size(), 1, fout);
+			fclose(fout);
+		}
+
+		// Read expected decoded SPIR-V
+		{
+			std::string expFilePath = inFilePath;
+			size_t extPos = expFilePath.find_last_of('.');
+			if (extPos != std::string::npos)
+				expFilePath = expFilePath.substr(0, extPos);
+			expFilePath += "-exp.spirv";
+
+			ByteArray spirvExpected;
+			ReadFile(expFilePath.c_str(), spirvExpected);
+			if (spirvExpected.empty())
+			{
+				printf("ERROR: failed to read expected spir-v output %s\n", expFilePath.c_str());
+				++errorCount;
+				continue;
+			}
+			if (!spirvExpected.empty() && spirvExpected != spirvDecoded)
+			{
+				printf("ERROR: decoded does not match expected for %s\n", kFiles[i]);
+				++errorCount;
+				continue;
+			}
+		}
+	}
     
     if (errorCount != 0)
     {
