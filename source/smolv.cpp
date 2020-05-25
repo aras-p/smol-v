@@ -1601,7 +1601,7 @@ size_t smolv::GetDecodedBufferSize(const void* smolvData, size_t smolvSize)
 }
 
 
-bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuffer, size_t spirvOutputBufferSize)
+bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuffer, size_t spirvOutputBufferSize, uint32_t flags)
 {
 	// check header, and whether we have enough output buffer space
 	const size_t neededBufferSize = GetDecodedBufferSize(smolvData, smolvSize);
@@ -1619,6 +1619,10 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuf
 	
 	uint32_t val;
     int smolVersion = 0;
+	// there are two SMOL-V encoding versions, both not indicating anything in their header version field:
+	// one that is called "before zero" here (2016-08-31 code). Support decoding that one only by presence
+	// of this special flag.
+	const bool beforeZeroVersion = (flags & kDecodeFlagUse20160831AsZeroVersion) != 0;
 
 	// header
 	smolv_Write4(outSpirv, kSpirVHeaderMagic); bytes += 4;
@@ -1668,14 +1672,15 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuf
 		if (op == SpvOpDecorate || op == SpvOpMemberDecorate)
 		{
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
-			val = prevDecorate + smolv_ZigDecode(val);
+			// "before zero" version did not use zig encoding for the value
+			val = prevDecorate + (beforeZeroVersion ? val : smolv_ZigDecode(val));
 			smolv_Write4(outSpirv, val);
 			prevDecorate = val;
 			ioffs++;
 		}
 
 		// MemberDecorate special decoding
-		if (op == SpvOpMemberDecorate)
+		if (op == SpvOpMemberDecorate && !beforeZeroVersion)
 		{
 			if (bytes >= bytesEnd)
 				return false; // broken input
@@ -1735,10 +1740,19 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuf
 
 		// Read this many IDs, that are relative to result ID
 		int relativeCount = smolv_OpDeltaFromResult(op, knownOpsCount);
+		// "before zero" version only used zig encoding for IDs of several ops; after
+		// that ops got zig encoding for their IDs
+		bool zigDecodeVals = true;
+		if (beforeZeroVersion)
+		{
+			if (op != SpvOpControlBarrier && op != SpvOpMemoryBarrier && op != SpvOpLoopMerge && op != SpvOpSelectionMerge && op != SpvOpBranch && op != SpvOpBranchConditional && op != SpvOpMemoryNamedBarrier)
+				zigDecodeVals = false;
+		}
 		for (int i = 0; i < relativeCount && ioffs < instrLen; ++i, ++ioffs)
 		{
 			if (!smolv_ReadVarint(bytes, bytesEnd, val)) return false;
-			val = smolv_ZigDecode(val);
+			if (zigDecodeVals)
+				val = smolv_ZigDecode(val);
 			smolv_Write4(outSpirv, prevResult - val);
 		}
 

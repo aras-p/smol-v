@@ -64,7 +64,13 @@ namespace smolv
 
 	enum EncodeFlags
 	{
+		kEncodeFlagNone = 0,
 		kEncodeFlagStripDebugInfo = (1<<0), // Strip all optional SPIR-V instructions (debug names etc.)
+	};
+	enum DecodeFlags
+	{
+		kDecodeFlagNone = 0,
+		kDecodeFlagUse20160831AsZeroVersion = (1 << 0), // For "version zero" of SMOL-V encoding, use 2016 08 31 code path (this is what happens to be used by Unity 2017-2020)
 	};
 
 
@@ -79,7 +85,7 @@ namespace smolv
 	//
 	// Returns false on malformed SPIR-V input; if that happens the output array might get
 	// partial/broken SMOL-V program.
-	bool Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv, uint32_t flags);
+	bool Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv, uint32_t flags = kEncodeFlagNone);
 
 
 	// Decode SMOL-V into SPIR-V.
@@ -87,11 +93,13 @@ namespace smolv
 	// Resulting data is written into the passed buffer. Get required buffer space with
 	// GetDecodeBufferSize; this is the size of decoded SPIR-V program.
 	//
+	// flags is bitset of DecodeFlags values.
+
 	// Decoding does no memory allocations.
 	//
 	// Returns false on malformed input; if that happens the output buffer might be only partially
 	// written to.
-	bool Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuffer, size_t spirvOutputBufferSize);
+	bool Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuffer, size_t spirvOutputBufferSize, uint32_t flags = kDecodeFlagNone);
 
 
 	// Given a SMOL-V program, get size of the decoded SPIR-V program.
