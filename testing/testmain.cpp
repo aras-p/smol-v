@@ -1,5 +1,5 @@
 // smol-v - tests code - public domain - https://github.com/aras-p/smol-v
-// authored on 2016-2018 by Aras Pranckevicius
+// authored on 2016-2020 by Aras Pranckevicius
 // no warranty implied; use at your own risk
 
 #define _CRT_SECURE_NO_WARNINGS // yes MSVC, I want to use fopen
