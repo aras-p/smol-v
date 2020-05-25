@@ -1622,10 +1622,6 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuf
 	
 	uint32_t val;
     int smolVersion = 0;
-	// there are two SMOL-V encoding versions, both not indicating anything in their header version field:
-	// one that is called "before zero" here (2016-08-31 code). Support decoding that one only by presence
-	// of this special flag.
-	const bool beforeZeroVersion = (flags & kDecodeFlagUse20160831AsZeroVersion) != 0;
 
 	// header
 	smolv_Write4(outSpirv, kSpirVHeaderMagic); bytes += 4;
@@ -1635,7 +1631,12 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuf
 	smolv_Read4(bytes, bytesEnd, val); smolv_Write4(outSpirv, val); // schema
 	bytes += 4; // decode buffer size
     
-    const int knownOpsCount = smolv_GetKnownOpsCount(smolVersion);
+	// there are two SMOL-V encoding versions, both not indicating anything in their header version field:
+	// one that is called "before zero" here (2016-08-31 code). Support decoding that one only by presence
+	// of this special flag.
+	const bool beforeZeroVersion = smolVersion == 0 && (flags & kDecodeFlagUse20160831AsZeroVersion) != 0;
+
+	const int knownOpsCount = smolv_GetKnownOpsCount(smolVersion);
 
 	uint32_t prevResult = 0;
 	uint32_t prevDecorate = 0;

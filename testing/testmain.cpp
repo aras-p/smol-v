@@ -176,7 +176,7 @@ static bool TestDecodingExistingSmolvFiles()
         }
         
         // Decode to SPIR-V
-		bool beforeZeroVersion = strstr(kFiles[i], "2016-08-31/") != 0;
+		bool beforeZeroVersion = strstr(kFiles[i], "2016-09-07/") == 0 && strstr(kFiles[i], "2018-10-27/") == 0 && strstr(kFiles[i], "2019-05-02/") == 0;
 		smolv::DecodeFlags flags = beforeZeroVersion ? smolv::kDecodeFlagUse20160831AsZeroVersion : smolv::kDecodeFlagNone;
         size_t spirvDecodedSize = smolv::GetDecodedBufferSize(smolv.data(), smolv.size());
         ByteArray spirvDecoded;
