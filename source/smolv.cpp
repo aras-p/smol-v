@@ -1394,7 +1394,7 @@ static bool smolv_ReadLengthOp(const uint8_t*& data, const uint8_t* dataEnd, uin
 	SpvOp op = (SpvOp)(words[0] & 0xFFFF)
 
 
-bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv, uint32_t flags)
+bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv, uint32_t flags, StripOpNameFilterFunc stripFilter)
 {
 	const size_t wordCount = spirvSize / 4;
     if (wordCount * 4 != spirvSize)
@@ -1430,9 +1430,12 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 
 		if ((flags & kEncodeFlagStripDebugInfo) && smolv_OpDebugInfo(op, knownOpsCount))
 		{
-			strippedSpirvWordCount -= instrLen;
-			words += instrLen;
-			continue;
+			if (!stripFilter || op != SpvOpName || !stripFilter(reinterpret_cast<const char*>(&words[2])))
+			{
+				strippedSpirvWordCount -= instrLen;
+				words += instrLen;
+				continue;
+			}
 		}
 
 		// A usual case of vector shuffle, with less than 4 components, each with a value

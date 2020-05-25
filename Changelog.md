@@ -4,6 +4,7 @@ For an overview, see [readme](README.md).
 
 ## 2020 05 25
 
+* Added option to strip only some of debug names via `StripOpNameFilterFunc`.
 * Added support for decoding SMOL-V files encoded by Unity 2017-2020
   versions (which used code as it was on 2016-08-31), via
   `kDecodeFlagUse20160831AsZeroVersion` flag.

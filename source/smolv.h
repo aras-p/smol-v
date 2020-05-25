@@ -73,6 +73,10 @@ namespace smolv
 		kDecodeFlagUse20160831AsZeroVersion = (1 << 0), // For "version zero" of SMOL-V encoding, use 2016 08 31 code path (this is what happens to be used by Unity 2017-2020)
 	};
 
+	// Preserve *some* OpName debug names.
+	// Return true to preserve, false to strip.
+	// This is really only used to implement a workaround for problems with some Vulkan drivers.
+	typedef bool(*StripOpNameFilterFunc)(const char* name);
 
 	// -------------------------------------------------------------------
 	// Encoding / Decoding
@@ -85,7 +89,7 @@ namespace smolv
 	//
 	// Returns false on malformed SPIR-V input; if that happens the output array might get
 	// partial/broken SMOL-V program.
-	bool Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv, uint32_t flags = kEncodeFlagNone);
+	bool Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv, uint32_t flags = kEncodeFlagNone, StripOpNameFilterFunc stripFilter = 0);
 
 
 	// Decode SMOL-V into SPIR-V.
