@@ -326,42 +326,42 @@ enum SpvOp
 	SpvOpNamedBarrierInitialize = 328,
 	SpvOpMemoryNamedBarrier = 329,
 	SpvOpModuleProcessed = 330,
-    SpvOpExecutionModeId = 331,
-    SpvOpDecorateId = 332,
-    SpvOpGroupNonUniformElect = 333,
-    SpvOpGroupNonUniformAll = 334,
-    SpvOpGroupNonUniformAny = 335,
-    SpvOpGroupNonUniformAllEqual = 336,
-    SpvOpGroupNonUniformBroadcast = 337,
-    SpvOpGroupNonUniformBroadcastFirst = 338,
-    SpvOpGroupNonUniformBallot = 339,
-    SpvOpGroupNonUniformInverseBallot = 340,
-    SpvOpGroupNonUniformBallotBitExtract = 341,
-    SpvOpGroupNonUniformBallotBitCount = 342,
-    SpvOpGroupNonUniformBallotFindLSB = 343,
-    SpvOpGroupNonUniformBallotFindMSB = 344,
-    SpvOpGroupNonUniformShuffle = 345,
-    SpvOpGroupNonUniformShuffleXor = 346,
-    SpvOpGroupNonUniformShuffleUp = 347,
-    SpvOpGroupNonUniformShuffleDown = 348,
-    SpvOpGroupNonUniformIAdd = 349,
-    SpvOpGroupNonUniformFAdd = 350,
-    SpvOpGroupNonUniformIMul = 351,
-    SpvOpGroupNonUniformFMul = 352,
-    SpvOpGroupNonUniformSMin = 353,
-    SpvOpGroupNonUniformUMin = 354,
-    SpvOpGroupNonUniformFMin = 355,
-    SpvOpGroupNonUniformSMax = 356,
-    SpvOpGroupNonUniformUMax = 357,
-    SpvOpGroupNonUniformFMax = 358,
-    SpvOpGroupNonUniformBitwiseAnd = 359,
-    SpvOpGroupNonUniformBitwiseOr = 360,
-    SpvOpGroupNonUniformBitwiseXor = 361,
-    SpvOpGroupNonUniformLogicalAnd = 362,
-    SpvOpGroupNonUniformLogicalOr = 363,
-    SpvOpGroupNonUniformLogicalXor = 364,
-    SpvOpGroupNonUniformQuadBroadcast = 365,
-    SpvOpGroupNonUniformQuadSwap = 366,
+	SpvOpExecutionModeId = 331,
+	SpvOpDecorateId = 332,
+	SpvOpGroupNonUniformElect = 333,
+	SpvOpGroupNonUniformAll = 334,
+	SpvOpGroupNonUniformAny = 335,
+	SpvOpGroupNonUniformAllEqual = 336,
+	SpvOpGroupNonUniformBroadcast = 337,
+	SpvOpGroupNonUniformBroadcastFirst = 338,
+	SpvOpGroupNonUniformBallot = 339,
+	SpvOpGroupNonUniformInverseBallot = 340,
+	SpvOpGroupNonUniformBallotBitExtract = 341,
+	SpvOpGroupNonUniformBallotBitCount = 342,
+	SpvOpGroupNonUniformBallotFindLSB = 343,
+	SpvOpGroupNonUniformBallotFindMSB = 344,
+	SpvOpGroupNonUniformShuffle = 345,
+	SpvOpGroupNonUniformShuffleXor = 346,
+	SpvOpGroupNonUniformShuffleUp = 347,
+	SpvOpGroupNonUniformShuffleDown = 348,
+	SpvOpGroupNonUniformIAdd = 349,
+	SpvOpGroupNonUniformFAdd = 350,
+	SpvOpGroupNonUniformIMul = 351,
+	SpvOpGroupNonUniformFMul = 352,
+	SpvOpGroupNonUniformSMin = 353,
+	SpvOpGroupNonUniformUMin = 354,
+	SpvOpGroupNonUniformFMin = 355,
+	SpvOpGroupNonUniformSMax = 356,
+	SpvOpGroupNonUniformUMax = 357,
+	SpvOpGroupNonUniformFMax = 358,
+	SpvOpGroupNonUniformBitwiseAnd = 359,
+	SpvOpGroupNonUniformBitwiseOr = 360,
+	SpvOpGroupNonUniformBitwiseXor = 361,
+	SpvOpGroupNonUniformLogicalAnd = 362,
+	SpvOpGroupNonUniformLogicalOr = 363,
+	SpvOpGroupNonUniformLogicalXor = 364,
+	SpvOpGroupNonUniformQuadBroadcast = 365,
+	SpvOpGroupNonUniformQuadSwap = 366,
 };
 static const int kKnownOpsCount = SpvOpGroupNonUniformQuadSwap+1;
 
@@ -699,42 +699,42 @@ static const char* kSpirvOpNames[] =
 	"NamedBarrierInitialize",
 	"MemoryNamedBarrier",
 	"ModuleProcessed",
-    "ExecutionModeId",
-    "DecorateId",
-    "GroupNonUniformElect",
-    "GroupNonUniformAll",
-    "GroupNonUniformAny",
-    "GroupNonUniformAllEqual",
-    "GroupNonUniformBroadcast",
-    "GroupNonUniformBroadcastFirst",
-    "GroupNonUniformBallot",
-    "GroupNonUniformInverseBallot",
-    "GroupNonUniformBallotBitExtract",
-    "GroupNonUniformBallotBitCount",
-    "GroupNonUniformBallotFindLSB",
-    "GroupNonUniformBallotFindMSB",
-    "GroupNonUniformShuffle",
-    "GroupNonUniformShuffleXor",
-    "GroupNonUniformShuffleUp",
-    "GroupNonUniformShuffleDown",
-    "GroupNonUniformIAdd",
-    "GroupNonUniformFAdd",
-    "GroupNonUniformIMul",
-    "GroupNonUniformFMul",
-    "GroupNonUniformSMin",
-    "GroupNonUniformUMin",
-    "GroupNonUniformFMin",
-    "GroupNonUniformSMax",
-    "GroupNonUniformUMax",
-    "GroupNonUniformFMax",
-    "GroupNonUniformBitwiseAnd",
-    "GroupNonUniformBitwiseOr",
-    "GroupNonUniformBitwiseXor",
-    "GroupNonUniformLogicalAnd",
-    "GroupNonUniformLogicalOr",
-    "GroupNonUniformLogicalXor",
-    "GroupNonUniformQuadBroadcast",
-    "GroupNonUniformQuadSwap",
+	"ExecutionModeId",
+	"DecorateId",
+	"GroupNonUniformElect",
+	"GroupNonUniformAll",
+	"GroupNonUniformAny",
+	"GroupNonUniformAllEqual",
+	"GroupNonUniformBroadcast",
+	"GroupNonUniformBroadcastFirst",
+	"GroupNonUniformBallot",
+	"GroupNonUniformInverseBallot",
+	"GroupNonUniformBallotBitExtract",
+	"GroupNonUniformBallotBitCount",
+	"GroupNonUniformBallotFindLSB",
+	"GroupNonUniformBallotFindMSB",
+	"GroupNonUniformShuffle",
+	"GroupNonUniformShuffleXor",
+	"GroupNonUniformShuffleUp",
+	"GroupNonUniformShuffleDown",
+	"GroupNonUniformIAdd",
+	"GroupNonUniformFAdd",
+	"GroupNonUniformIMul",
+	"GroupNonUniformFMul",
+	"GroupNonUniformSMin",
+	"GroupNonUniformUMin",
+	"GroupNonUniformFMin",
+	"GroupNonUniformSMax",
+	"GroupNonUniformUMax",
+	"GroupNonUniformFMax",
+	"GroupNonUniformBitwiseAnd",
+	"GroupNonUniformBitwiseOr",
+	"GroupNonUniformBitwiseXor",
+	"GroupNonUniformLogicalAnd",
+	"GroupNonUniformLogicalOr",
+	"GroupNonUniformLogicalXor",
+	"GroupNonUniformQuadBroadcast",
+	"GroupNonUniformQuadSwap",
 };
 static_assert(_SMOLV_ARRAY_SIZE(kSpirvOpNames) == kKnownOpsCount, "kSpirvOpNames table mismatch with known SpvOps");
 
@@ -1079,42 +1079,42 @@ static const OpData kSpirvOpData[] =
 	{1, 1, 0, 1}, // NamedBarrierInitialize
 	{0, 0, 2, 1}, // MemoryNamedBarrier
 	{1, 1, 0, 0}, // ModuleProcessed
-    {0, 0, 0, 1}, // ExecutionModeId
-    {0, 0, 0, 1}, // DecorateId
-    {1, 1, 1, 1}, // GroupNonUniformElect
-    {1, 1, 1, 1}, // GroupNonUniformAll
-    {1, 1, 1, 1}, // GroupNonUniformAny
-    {1, 1, 1, 1}, // GroupNonUniformAllEqual
-    {1, 1, 1, 1}, // GroupNonUniformBroadcast
-    {1, 1, 1, 1}, // GroupNonUniformBroadcastFirst
-    {1, 1, 1, 1}, // GroupNonUniformBallot
-    {1, 1, 1, 1}, // GroupNonUniformInverseBallot
-    {1, 1, 1, 1}, // GroupNonUniformBallotBitExtract
-    {1, 1, 1, 1}, // GroupNonUniformBallotBitCount
-    {1, 1, 1, 1}, // GroupNonUniformBallotFindLSB
-    {1, 1, 1, 1}, // GroupNonUniformBallotFindMSB
-    {1, 1, 1, 1}, // GroupNonUniformShuffle
-    {1, 1, 1, 1}, // GroupNonUniformShuffleXor
-    {1, 1, 1, 1}, // GroupNonUniformShuffleUp
-    {1, 1, 1, 1}, // GroupNonUniformShuffleDown
-    {1, 1, 1, 1}, // GroupNonUniformIAdd
-    {1, 1, 1, 1}, // GroupNonUniformFAdd
-    {1, 1, 1, 1}, // GroupNonUniformIMul
-    {1, 1, 1, 1}, // GroupNonUniformFMul
-    {1, 1, 1, 1}, // GroupNonUniformSMin
-    {1, 1, 1, 1}, // GroupNonUniformUMin
-    {1, 1, 1, 1}, // GroupNonUniformFMin
-    {1, 1, 1, 1}, // GroupNonUniformSMax
-    {1, 1, 1, 1}, // GroupNonUniformUMax
-    {1, 1, 1, 1}, // GroupNonUniformFMax
-    {1, 1, 1, 1}, // GroupNonUniformBitwiseAnd
-    {1, 1, 1, 1}, // GroupNonUniformBitwiseOr
-    {1, 1, 1, 1}, // GroupNonUniformBitwiseXor
-    {1, 1, 1, 1}, // GroupNonUniformLogicalAnd
-    {1, 1, 1, 1}, // GroupNonUniformLogicalOr
-    {1, 1, 1, 1}, // GroupNonUniformLogicalXor
-    {1, 1, 1, 1}, // GroupNonUniformQuadBroadcast
-    {1, 1, 1, 1}, // GroupNonUniformQuadSwap
+	{0, 0, 0, 1}, // ExecutionModeId
+	{0, 0, 0, 1}, // DecorateId
+	{1, 1, 1, 1}, // GroupNonUniformElect
+	{1, 1, 1, 1}, // GroupNonUniformAll
+	{1, 1, 1, 1}, // GroupNonUniformAny
+	{1, 1, 1, 1}, // GroupNonUniformAllEqual
+	{1, 1, 1, 1}, // GroupNonUniformBroadcast
+	{1, 1, 1, 1}, // GroupNonUniformBroadcastFirst
+	{1, 1, 1, 1}, // GroupNonUniformBallot
+	{1, 1, 1, 1}, // GroupNonUniformInverseBallot
+	{1, 1, 1, 1}, // GroupNonUniformBallotBitExtract
+	{1, 1, 1, 1}, // GroupNonUniformBallotBitCount
+	{1, 1, 1, 1}, // GroupNonUniformBallotFindLSB
+	{1, 1, 1, 1}, // GroupNonUniformBallotFindMSB
+	{1, 1, 1, 1}, // GroupNonUniformShuffle
+	{1, 1, 1, 1}, // GroupNonUniformShuffleXor
+	{1, 1, 1, 1}, // GroupNonUniformShuffleUp
+	{1, 1, 1, 1}, // GroupNonUniformShuffleDown
+	{1, 1, 1, 1}, // GroupNonUniformIAdd
+	{1, 1, 1, 1}, // GroupNonUniformFAdd
+	{1, 1, 1, 1}, // GroupNonUniformIMul
+	{1, 1, 1, 1}, // GroupNonUniformFMul
+	{1, 1, 1, 1}, // GroupNonUniformSMin
+	{1, 1, 1, 1}, // GroupNonUniformUMin
+	{1, 1, 1, 1}, // GroupNonUniformFMin
+	{1, 1, 1, 1}, // GroupNonUniformSMax
+	{1, 1, 1, 1}, // GroupNonUniformUMax
+	{1, 1, 1, 1}, // GroupNonUniformFMax
+	{1, 1, 1, 1}, // GroupNonUniformBitwiseAnd
+	{1, 1, 1, 1}, // GroupNonUniformBitwiseOr
+	{1, 1, 1, 1}, // GroupNonUniformBitwiseXor
+	{1, 1, 1, 1}, // GroupNonUniformLogicalAnd
+	{1, 1, 1, 1}, // GroupNonUniformLogicalOr
+	{1, 1, 1, 1}, // GroupNonUniformLogicalXor
+	{1, 1, 1, 1}, // GroupNonUniformQuadBroadcast
+	{1, 1, 1, 1}, // GroupNonUniformQuadSwap
 };
 static_assert(_SMOLV_ARRAY_SIZE(kSpirvOpData) == kKnownOpsCount, "kSpirvOpData table mismatch with known SpvOps");
 
@@ -1123,11 +1123,11 @@ static_assert(_SMOLV_ARRAY_SIZE(kSpirvOpData) == kKnownOpsCount, "kSpirvOpData t
 // sure that we can still decode files encoded by an older version.
 static int smolv_GetKnownOpsCount(int version)
 {
-    if (version == 0)
-        return SpvOpModuleProcessed+1;
-    if (version == 1) // 2020 February, version 1 added ExecutionModeId..GroupNonUniformQuadSwap
-        return SpvOpGroupNonUniformQuadSwap+1;
-    return 0;
+	if (version == 0)
+		return SpvOpModuleProcessed+1;
+	if (version == 1) // 2020 February, version 1 added ExecutionModeId..GroupNonUniformQuadSwap
+		return SpvOpGroupNonUniformQuadSwap+1;
+	return 0;
 }
 
 static bool smolv_OpHasResult(SpvOp op, int opsCount)
@@ -1220,10 +1220,10 @@ static bool smolv_CheckSmolHeader(const uint8_t* bytes, size_t byteCount)
 		return false;
 	if (byteCount < 24) // one more word past header to store decoded length
 		return false;
-    // SMOL-V version
-    int smolVersion = ((const uint32_t*)bytes)[1] >> 24;
-    if (smolVersion < 0 || smolVersion > kSmolCurrEncodingVersion)
-        return false;
+	// SMOL-V version
+	int smolVersion = ((const uint32_t*)bytes)[1] >> 24;
+	if (smolVersion < 0 || smolVersion > kSmolCurrEncodingVersion)
+		return false;
 	return true;
 }
 
@@ -1361,15 +1361,15 @@ static uint32_t smolv_DecodeLen(SpvOp op, uint32_t len)
 static bool smolv_WriteLengthOp(smolv::ByteArray& arr, uint32_t len, SpvOp op)
 {
 	len = smolv_EncodeLen(op, len);
-    // SPIR-V length field is 16 bits; if we get a larger value that means something
-    // was wrong, e.g. a vector shuffle instruction with less than 4 words (and our
-    // adjustment to common lengths in smolv_EncodeLen wrapped around)
-    if (len > 0xFFFF)
-        return false;
+	// SPIR-V length field is 16 bits; if we get a larger value that means something
+	// was wrong, e.g. a vector shuffle instruction with less than 4 words (and our
+	// adjustment to common lengths in smolv_EncodeLen wrapped around)
+	if (len > 0xFFFF)
+		return false;
 	op = smolv_RemapOp(op);
 	uint32_t oplen = ((len >> 4) << 20) | ((op >> 4) << 8) | ((len & 0xF) << 4) | (op & 0xF);
 	smolv_WriteVarint(arr, oplen);
-    return true;
+	return true;
 }
 
 static bool smolv_ReadLengthOp(const uint8_t*& data, const uint8_t* dataEnd, uint32_t& outLen, SpvOp& outOp)
@@ -1397,8 +1397,8 @@ static bool smolv_ReadLengthOp(const uint8_t*& data, const uint8_t* dataEnd, uin
 bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv, uint32_t flags, StripOpNameFilterFunc stripFilter)
 {
 	const size_t wordCount = spirvSize / 4;
-    if (wordCount * 4 != spirvSize)
-        return false;
+	if (wordCount * 4 != spirvSize)
+		return false;
 	const uint32_t* words = (const uint32_t*)spirvData;
 	const uint32_t* wordsEnd = words + wordCount;
 	if (!smolv_CheckSpirVHeader(words, wordCount))
@@ -1420,8 +1420,8 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 	size_t strippedSpirvWordCount = wordCount;
 	uint32_t prevResult = 0;
 	uint32_t prevDecorate = 0;
-    
-    const int knownOpsCount = smolv_GetKnownOpsCount(kSmolCurrEncodingVersion);
+	
+	const int knownOpsCount = smolv_GetKnownOpsCount(kSmolCurrEncodingVersion);
 
 	words += 5;
 	while (words < wordsEnd)
@@ -1457,22 +1457,22 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 
 		// length + opcode
 		if (!smolv_WriteLengthOp(outSmolv, instrLen, op))
-            return false;
+			return false;
 
 		size_t ioffs = 1;
 		// write type as varint, if we have it
 		if (smolv_OpHasType(op, knownOpsCount))
 		{
-            if (ioffs >= instrLen)
-                return false;
+			if (ioffs >= instrLen)
+				return false;
 			smolv_WriteVarint(outSmolv, words[ioffs]);
 			ioffs++;
 		}
 		// write result as delta+zig+varint, if we have it
 		if (smolv_OpHasResult(op, knownOpsCount))
 		{
-            if (ioffs >= instrLen)
-                return false;
+			if (ioffs >= instrLen)
+				return false;
 			uint32_t v = words[ioffs];
 			smolv_WriteVarint(outSmolv, smolv_ZigEncode(v - prevResult)); // some deltas are negative, use zig
 			prevResult = v;
@@ -1482,8 +1482,8 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 		// Decorate & MemberDecorate: IDs relative to previous decorate
 		if (op == SpvOpDecorate || op == SpvOpMemberDecorate)
 		{
-            if (ioffs >= instrLen)
-                return false;
+			if (ioffs >= instrLen)
+				return false;
 			uint32_t v = words[ioffs];
 			smolv_WriteVarint(outSmolv, smolv_ZigEncode(v - prevDecorate)); // spirv-remapped deltas often negative, use zig
 			prevDecorate = v;
@@ -1555,8 +1555,8 @@ bool smolv::Encode(const void* spirvData, size_t spirvSize, ByteArray& outSmolv,
 		int relativeCount = smolv_OpDeltaFromResult(op, knownOpsCount);
 		for (int i = 0; i < relativeCount && ioffs < instrLen; ++i, ++ioffs)
 		{
-            if (ioffs >= instrLen)
-                return false;
+			if (ioffs >= instrLen)
+				return false;
 			uint32_t delta = prevResult - words[ioffs];
 			// some deltas are negative (often on branches, or if program was processed by spirv-remap),
 			// so use zig encoding
@@ -1621,16 +1621,16 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuf
 	uint8_t* outSpirv = (uint8_t*)spirvOutputBuffer;
 	
 	uint32_t val;
-    int smolVersion = 0;
+	int smolVersion = 0;
 
 	// header
 	smolv_Write4(outSpirv, kSpirVHeaderMagic); bytes += 4;
-    smolv_Read4(bytes, bytesEnd, val); smolVersion = val >> 24; val &= 0x00FFFFFF; smolv_Write4(outSpirv, val); // version
+	smolv_Read4(bytes, bytesEnd, val); smolVersion = val >> 24; val &= 0x00FFFFFF; smolv_Write4(outSpirv, val); // version
 	smolv_Read4(bytes, bytesEnd, val); smolv_Write4(outSpirv, val); // generator
 	smolv_Read4(bytes, bytesEnd, val); smolv_Write4(outSpirv, val); // bound
 	smolv_Read4(bytes, bytesEnd, val); smolv_Write4(outSpirv, val); // schema
 	bytes += 4; // decode buffer size
-    
+	
 	// there are two SMOL-V encoding versions, both not indicating anything in their header version field:
 	// one that is called "before zero" here (2016-08-31 code). Support decoding that one only by presence
 	// of this special flag.
@@ -1834,8 +1834,8 @@ bool smolv::StatsCalculate(smolv::Stats* stats, const void* spirvData, size_t sp
 		return false;
 
 	const size_t wordCount = spirvSize / 4;
-    if (wordCount * 4 != spirvSize)
-        return false;
+	if (wordCount * 4 != spirvSize)
+		return false;
 	const uint32_t* words = (const uint32_t*)spirvData;
 	const uint32_t* wordsEnd = words + wordCount;
 	if (!smolv_CheckSpirVHeader(words, wordCount))
@@ -1884,12 +1884,12 @@ bool smolv::StatsCalculateSmol(smolv::Stats* stats, const void* smolvData, size_
 	if (!smolv_CheckSmolHeader(bytes, smolvSize))
 		return false;
 
-    uint32_t val;
-    int smolVersion;
-    bytes += 4;
-    smolv_Read4(bytes, bytesEnd, val); smolVersion = val >> 24;
-    const int knownOpsCount = smolv_GetKnownOpsCount(smolVersion);
-    bytes += 16;
+	uint32_t val;
+	int smolVersion;
+	bytes += 4;
+	smolv_Read4(bytes, bytesEnd, val); smolVersion = val >> 24;
+	const int knownOpsCount = smolv_GetKnownOpsCount(smolVersion);
+	bytes += 16;
 	
 	stats->totalSizeSmol += smolvSize;
 	

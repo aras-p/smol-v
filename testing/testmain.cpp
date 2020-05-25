@@ -84,61 +84,61 @@ static size_t CompressMiniz(const void* data, size_t size, int level = MZ_DEFAUL
 
 static bool TestDecodingExistingSmolvFiles()
 {
-    const char* kFiles[] =
-    {
-        // files produced by 2020-02-13 version (SPIR-V 1.4 & 1.5 added, encoding version 1 with new instructions)
-        "2020-02-13/glslang_spv.1.4.NonWritable.frag.smolv",
-        "2020-02-13/glslang_spv.1.4.OpCopyLogical.comp.smolv",
-        "2020-02-13/glslang_spv.1.4.OpCopyLogicalBool.comp.smolv",
-        "2020-02-13/glslang_spv.1.4.sparseTexture.frag.smolv",
-        "2020-02-13/glslang_spv.320.meshShaderUserDefined.mesh.smolv",
-        "2020-02-13/glslang_spv.AnyHitShader.rahit.smolv",
-        "2020-02-13/glslang_spv.meshShaderPerViewUserDefined.mesh.smolv",
-        "2020-02-13/glslang_spv.meshShaderRedeclPerViewBuiltins.mesh.smolv",
-        "2020-02-13/glslang_spv.meshShaderTaskMem.mesh.smolv",
-        "2020-02-13/glslang_spv.perprimitiveNV.frag.smolv",
-        "2020-02-13/glslang_spv.subgroup.frag.smolv",
-        "2020-02-13/glslang_spv.subgroupClustered.comp.smolv",
-        "2020-02-13/glslang_spv.subgroupExtendedTypesShuffleRelative.comp.smolv",
-        "2020-02-13/glslang_spv.subgroupQuad.comp.smolv",
-        "2020-02-13/glslang_spv.subgroupVote.comp.smolv",
-        "2020-02-13/glslang_spv.vulkan110.int16.frag.smolv",
+	const char* kFiles[] =
+	{
+		// files produced by 2020-02-13 version (SPIR-V 1.4 & 1.5 added, encoding version 1 with new instructions)
+		"2020-02-13/glslang_spv.1.4.NonWritable.frag.smolv",
+		"2020-02-13/glslang_spv.1.4.OpCopyLogical.comp.smolv",
+		"2020-02-13/glslang_spv.1.4.OpCopyLogicalBool.comp.smolv",
+		"2020-02-13/glslang_spv.1.4.sparseTexture.frag.smolv",
+		"2020-02-13/glslang_spv.320.meshShaderUserDefined.mesh.smolv",
+		"2020-02-13/glslang_spv.AnyHitShader.rahit.smolv",
+		"2020-02-13/glslang_spv.meshShaderPerViewUserDefined.mesh.smolv",
+		"2020-02-13/glslang_spv.meshShaderRedeclPerViewBuiltins.mesh.smolv",
+		"2020-02-13/glslang_spv.meshShaderTaskMem.mesh.smolv",
+		"2020-02-13/glslang_spv.perprimitiveNV.frag.smolv",
+		"2020-02-13/glslang_spv.subgroup.frag.smolv",
+		"2020-02-13/glslang_spv.subgroupClustered.comp.smolv",
+		"2020-02-13/glslang_spv.subgroupExtendedTypesShuffleRelative.comp.smolv",
+		"2020-02-13/glslang_spv.subgroupQuad.comp.smolv",
+		"2020-02-13/glslang_spv.subgroupVote.comp.smolv",
+		"2020-02-13/glslang_spv.vulkan110.int16.frag.smolv",
 
-        // files produced by 2019-05-02 version (have subgroup ops without "efficient" encoding of them)
-        "2019-05-02/glslang_spv.subgroup.frag.smolv",
-        "2019-05-02/glslang_spv.subgroupClustered.comp.smolv",
-        "2019-05-02/glslang_spv.subgroupExtendedTypesShuffleRelative.comp.smolv",
-        "2019-05-02/glslang_spv.subgroupQuad.comp.smolv",
-        "2019-05-02/glslang_spv.subgroupVote.comp.smolv",
+		// files produced by 2019-05-02 version (have subgroup ops without "efficient" encoding of them)
+		"2019-05-02/glslang_spv.subgroup.frag.smolv",
+		"2019-05-02/glslang_spv.subgroupClustered.comp.smolv",
+		"2019-05-02/glslang_spv.subgroupExtendedTypesShuffleRelative.comp.smolv",
+		"2019-05-02/glslang_spv.subgroupQuad.comp.smolv",
+		"2019-05-02/glslang_spv.subgroupVote.comp.smolv",
 
-        // files produced by 2018-10-27 version (SPIR-V 1.2 & 1.3 added)
-        "2018-10-27/dxc_imgui-vs.smolv",
+		// files produced by 2018-10-27 version (SPIR-V 1.2 & 1.3 added)
+		"2018-10-27/dxc_imgui-vs.smolv",
 
-        // files produced by 2016-09-07 version (initial public release)
-        "2016-09-07/dota2_14074.smolv",
-        "2016-09-07/dota2_15212.smolv",
-        "2016-09-07/dota2_20451.smolv",
-        "2016-09-07/dota2_367079.smolv",
-        "2016-09-07/dota2_824933.smolv",
-        "2016-09-07/shadertoy_st-ld3Gz2.smolv",
-        "2016-09-07/shadertoy_st-lsSXzD.smolv",
-        "2016-09-07/shadertoy_st-Ms2SD1.smolv",
-        "2016-09-07/shadertoy_st-Xds3zN.smolv",
-        "2016-09-07/talos_0A38A8F3.smolv",
-        "2016-09-07/talos_0C958994.smolv",
-        "2016-09-07/talos_1AFB24CF.smolv",
-        "2016-09-07/talos_7A632EA9.smolv",
-        "2016-09-07/unity_s0-0001-32333750.smolv",
-        "2016-09-07/unity_s0-0007-3454fc86.smolv",
-        "2016-09-07/unity_s0-0012-fba002b2.smolv",
-        "2016-09-07/unity_s1-0000-5ca04fe4.smolv",
-        "2016-09-07/unity_s1-0002-8d2ed6da.smolv",
-        "2016-09-07/unity_s1-0017-6c18345b.smolv",
-        "2016-09-07/unity_s1-0084-ffb8278d.smolv",
-        "2016-09-07/unity_s2-0031-412ed89d.smolv",
-        "2016-09-07/unity_s3-0028-e081a509.smolv",
-        "2016-09-07/unity_s4-0004-6ec33743.smolv",
-        "2016-09-07/unity_s4-0006-a5e06270.smolv",
+		// files produced by 2016-09-07 version (initial public release)
+		"2016-09-07/dota2_14074.smolv",
+		"2016-09-07/dota2_15212.smolv",
+		"2016-09-07/dota2_20451.smolv",
+		"2016-09-07/dota2_367079.smolv",
+		"2016-09-07/dota2_824933.smolv",
+		"2016-09-07/shadertoy_st-ld3Gz2.smolv",
+		"2016-09-07/shadertoy_st-lsSXzD.smolv",
+		"2016-09-07/shadertoy_st-Ms2SD1.smolv",
+		"2016-09-07/shadertoy_st-Xds3zN.smolv",
+		"2016-09-07/talos_0A38A8F3.smolv",
+		"2016-09-07/talos_0C958994.smolv",
+		"2016-09-07/talos_1AFB24CF.smolv",
+		"2016-09-07/talos_7A632EA9.smolv",
+		"2016-09-07/unity_s0-0001-32333750.smolv",
+		"2016-09-07/unity_s0-0007-3454fc86.smolv",
+		"2016-09-07/unity_s0-0012-fba002b2.smolv",
+		"2016-09-07/unity_s1-0000-5ca04fe4.smolv",
+		"2016-09-07/unity_s1-0002-8d2ed6da.smolv",
+		"2016-09-07/unity_s1-0017-6c18345b.smolv",
+		"2016-09-07/unity_s1-0084-ffb8278d.smolv",
+		"2016-09-07/unity_s2-0031-412ed89d.smolv",
+		"2016-09-07/unity_s3-0028-e081a509.smolv",
+		"2016-09-07/unity_s4-0004-6ec33743.smolv",
+		"2016-09-07/unity_s4-0006-a5e06270.smolv",
 
 		// files produced by 2016-08-31 version (used in Unity 2016-2020)
 		"2016-08-31/unity-errorshader-vs.smolv",
@@ -159,34 +159,34 @@ static bool TestDecodingExistingSmolvFiles()
 		"2016-08-31/unity-38388-10935-1.smolv",
 	};
 
-    int errorCount = 0;
-    size_t fileCount = sizeof(kFiles)/sizeof(kFiles[0]);
-    printf("Check decoding %zi existing SMOL-V files...\n", fileCount);
-    for (size_t i = 0; i < fileCount; ++i)
-    {
-        // Read
-        ByteArray smolv;
+	int errorCount = 0;
+	size_t fileCount = sizeof(kFiles)/sizeof(kFiles[0]);
+	printf("Check decoding %zi existing SMOL-V files...\n", fileCount);
+	for (size_t i = 0; i < fileCount; ++i)
+	{
+		// Read
+		ByteArray smolv;
 		std::string inFilePath = std::string("tests/smolv-dumps/") + kFiles[i];
-        ReadFile(inFilePath.c_str(), smolv);
-        if (smolv.empty())
-        {
-            printf("ERROR: failed to read %s\n", kFiles[i]);
-            ++errorCount;
-            continue;
-        }
-        
-        // Decode to SPIR-V
+		ReadFile(inFilePath.c_str(), smolv);
+		if (smolv.empty())
+		{
+			printf("ERROR: failed to read %s\n", kFiles[i]);
+			++errorCount;
+			continue;
+		}
+		
+		// Decode to SPIR-V
 		bool beforeZeroVersion = strstr(kFiles[i], "2016-09-07/") == 0 && strstr(kFiles[i], "2018-10-27/") == 0 && strstr(kFiles[i], "2019-05-02/") == 0;
 		smolv::DecodeFlags flags = beforeZeroVersion ? smolv::kDecodeFlagUse20160831AsZeroVersion : smolv::kDecodeFlagNone;
-        size_t spirvDecodedSize = smolv::GetDecodedBufferSize(smolv.data(), smolv.size());
-        ByteArray spirvDecoded;
-        spirvDecoded.resize(spirvDecodedSize);
-        if (!smolv::Decode(smolv.data(), smolv.size(), spirvDecoded.data(), spirvDecodedSize, flags))
-        {
-            printf("ERROR: failed to decode smol-v on %s\n", kFiles[i]);
-            ++errorCount;
+		size_t spirvDecodedSize = smolv::GetDecodedBufferSize(smolv.data(), smolv.size());
+		ByteArray spirvDecoded;
+		spirvDecoded.resize(spirvDecodedSize);
+		if (!smolv::Decode(smolv.data(), smolv.size(), spirvDecoded.data(), spirvDecodedSize, flags))
+		{
+			printf("ERROR: failed to decode smol-v on %s\n", kFiles[i]);
+			++errorCount;
 			continue;
-        }
+		}
 
 		// Dump decoded SPIR-V into a file
 		{
@@ -224,21 +224,21 @@ static bool TestDecodingExistingSmolvFiles()
 			}
 		}
 	}
-    
-    if (errorCount != 0)
-    {
-        printf("Got SMOL-V decoding ERRORS: %i\n", errorCount);
-        return false;
-    }
-    return true;
+	
+	if (errorCount != 0)
+	{
+		printf("Got SMOL-V decoding ERRORS: %i\n", errorCount);
+		return false;
+	}
+	return true;
 }
 
 int main()
 {
-    spv::spirvbin_t::registerErrorHandler([](const std::string& msg)
-    {
-        printf("ERROR: SPIR-V Remapping failed %s\n", msg.c_str());        
-    });
+	spv::spirvbin_t::registerErrorHandler([](const std::string& msg)
+	{
+		printf("ERROR: SPIR-V Remapping failed %s\n", msg.c_str());        
+	});
 
 	stm_setup();
 	smolv::Stats* stats = smolv::StatsCreate();
@@ -247,9 +247,9 @@ int main()
 	#define TEST_TALOS 1
 	#define TEST_DOTA2 1
 	#define TEST_SHADERTOY 1
-    #define TEST_DXC 1
-    #define TEST_GLSLANG 1
-    #define TEST_SYNTHETIC 1
+	#define TEST_DXC 1
+	#define TEST_GLSLANG 1
+	#define TEST_SYNTHETIC 1
 
 	// files we're testing on
 	const char* kFiles[] =
@@ -625,48 +625,48 @@ int main()
 		"shadertoy/st-ld3Gz2.spv",
 		"shadertoy/st-lsSXzD.spv",
 		#endif // #if TEST_SHADERTOY
-        
-        #if TEST_DXC
-        // Shaders produced by Microsoft's DXC (shader model 6 -> vulkan 1.1)
-        "dxc/imgui-vs.spv",
-        #endif // #if TEST_DXC
-        
-        #if TEST_GLSLANG
-        // Shaders produced by Glslang from Glslang tests, using Vulkan versions 1.1-1.2
-        //"glslang/spv.1.3.coopmat.comp.spv", // Glslang SPIR-V Remapper fails on it (unrecognized type OpTypeCooperativeMatrixNV)
-        //"glslang/spv.1.4.LoopControl.frag.spv", // Glslang SPIR-V remapper asserts on it (unrecognized operand class OperandOptionalLiteral)
-        "glslang/spv.1.4.NonWritable.frag.spv",
-        "glslang/spv.1.4.OpCopyLogical.comp.spv",
-        "glslang/spv.1.4.OpCopyLogicalBool.comp.spv",
-        "glslang/spv.1.4.sparseTexture.frag.spv",
-        "glslang/spv.320.meshShaderUserDefined.mesh.spv",
-        "glslang/spv.AnyHitShader.rahit.spv",
-        "glslang/spv.meshShaderPerViewUserDefined.mesh.spv",
-        "glslang/spv.meshShaderRedeclPerViewBuiltins.mesh.spv",
-        "glslang/spv.meshShaderTaskMem.mesh.spv",
-        "glslang/spv.meshShaderTaskMem.mesh.spv",
-        "glslang/spv.perprimitiveNV.frag.spv",
-        "glslang/spv.subgroup.frag.spv",
-        "glslang/spv.subgroupClustered.comp.spv",
-        "glslang/spv.subgroupExtendedTypesShuffleRelative.comp.spv",
-        "glslang/spv.subgroupQuad.comp.spv",
-        "glslang/spv.subgroupVote.comp.spv",
-        "glslang/spv.vulkan110.int16.frag.spv",
-        #endif // #if TEST_GLSLANG
+		
+		#if TEST_DXC
+		// Shaders produced by Microsoft's DXC (shader model 6 -> vulkan 1.1)
+		"dxc/imgui-vs.spv",
+		#endif // #if TEST_DXC
+		
+		#if TEST_GLSLANG
+		// Shaders produced by Glslang from Glslang tests, using Vulkan versions 1.1-1.2
+		//"glslang/spv.1.3.coopmat.comp.spv", // Glslang SPIR-V Remapper fails on it (unrecognized type OpTypeCooperativeMatrixNV)
+		//"glslang/spv.1.4.LoopControl.frag.spv", // Glslang SPIR-V remapper asserts on it (unrecognized operand class OperandOptionalLiteral)
+		"glslang/spv.1.4.NonWritable.frag.spv",
+		"glslang/spv.1.4.OpCopyLogical.comp.spv",
+		"glslang/spv.1.4.OpCopyLogicalBool.comp.spv",
+		"glslang/spv.1.4.sparseTexture.frag.spv",
+		"glslang/spv.320.meshShaderUserDefined.mesh.spv",
+		"glslang/spv.AnyHitShader.rahit.spv",
+		"glslang/spv.meshShaderPerViewUserDefined.mesh.spv",
+		"glslang/spv.meshShaderRedeclPerViewBuiltins.mesh.spv",
+		"glslang/spv.meshShaderTaskMem.mesh.spv",
+		"glslang/spv.meshShaderTaskMem.mesh.spv",
+		"glslang/spv.perprimitiveNV.frag.spv",
+		"glslang/spv.subgroup.frag.spv",
+		"glslang/spv.subgroupClustered.comp.spv",
+		"glslang/spv.subgroupExtendedTypesShuffleRelative.comp.spv",
+		"glslang/spv.subgroupQuad.comp.spv",
+		"glslang/spv.subgroupVote.comp.spv",
+		"glslang/spv.vulkan110.int16.frag.spv",
+		#endif // #if TEST_GLSLANG
 
-        #if TEST_SYNTHETIC
-        // synthetic SPIR-V files; they are not actually valid -- to check how
-        // well can we handle invalid inputs
-        "synthetic/invalid-op18-too-small-len.spv",
-        "synthetic/invalid-size-not-div4.spv",
-        "synthetic/invalid-optypearray-too-small-len.spv",
-        #endif // #if TEST_SYNTHETIC
+		#if TEST_SYNTHETIC
+		// synthetic SPIR-V files; they are not actually valid -- to check how
+		// well can we handle invalid inputs
+		"synthetic/invalid-op18-too-small-len.spv",
+		"synthetic/invalid-size-not-div4.spv",
+		"synthetic/invalid-optypearray-too-small-len.spv",
+		#endif // #if TEST_SYNTHETIC
 	};
 
-    if (!TestDecodingExistingSmolvFiles())
-    {
-        return 1;
-    }
+	if (!TestDecodingExistingSmolvFiles())
+	{
+		return 1;
+	}
 
 	// all test data lumped together, to check how well it compresses as a whole block
 	ByteArray spirvAll;
@@ -689,52 +689,52 @@ int main()
 			++errorCount;
 			break;
 		}
-        
-        bool isInvalidInput = strstr(kFiles[i], "invalid-") != NULL;
+		
+		bool isInvalidInput = strstr(kFiles[i], "invalid-") != NULL;
 
 		// Basic SPIR-V input stats
 		if (!smolv::StatsCalculate(stats, spirv.data(), spirv.size()))
 		{
-            if (isInvalidInput)
-                continue;
-            else
-            {
-                printf("WARN: failed to calc instruction stats (invalid SPIR-V?) %s\n", kFiles[i]);
-                //++errorCount;
-                //break;
-            }
+			if (isInvalidInput)
+				continue;
+			else
+			{
+				printf("WARN: failed to calc instruction stats (invalid SPIR-V?) %s\n", kFiles[i]);
+				//++errorCount;
+				//break;
+			}
 		}
 
 		// Encode to SMOL-V
 		ByteArray smolv;
 		if (!smolv::Encode(spirv.data(), spirv.size(), smolv, 0))
 		{
-            if (isInvalidInput)
-                continue;
-            else
-            {
-                printf("ERROR: failed to encode (invalid invalid SPIR-V?) %s\n", kFiles[i]);
-                ++errorCount;
-                break;
-            }
+			if (isInvalidInput)
+				continue;
+			else
+			{
+				printf("ERROR: failed to encode (invalid invalid SPIR-V?) %s\n", kFiles[i]);
+				++errorCount;
+				break;
+			}
 		}
-        
-        // Dump SMOL-V output to file
-        /*
-        {
-            std::string outname = kFiles[i];
-            for (auto& c : outname)
-                if (c == '/')
-                    c = '_';
-            size_t extPos = outname.find_last_of('.');
-            if (extPos != std::string::npos)
-                outname = outname.substr(0, extPos) + ".smolv";
-            outname ="tests/smolv-dumps/" + outname;
-            FILE* fout = fopen(outname.c_str(), "wb");
-            fwrite(smolv.data(), smolv.size(), 1, fout);
-            fclose(fout);
-        }
-         */
+		
+		// Dump SMOL-V output to file
+		/*
+		{
+			std::string outname = kFiles[i];
+			for (auto& c : outname)
+				if (c == '/')
+					c = '_';
+			size_t extPos = outname.find_last_of('.');
+			if (extPos != std::string::npos)
+				outname = outname.substr(0, extPos) + ".smolv";
+			outname ="tests/smolv-dumps/" + outname;
+			FILE* fout = fopen(outname.c_str(), "wb");
+			fwrite(smolv.data(), smolv.size(), 1, fout);
+			fclose(fout);
+		}
+		 */
 
 		// Decode back to SPIR-V
 		size_t spirvDecodedSize = smolv::GetDecodedBufferSize(smolv.data(), smolv.size());
