@@ -103,8 +103,8 @@ static bool TestDecodingExistingSmolvFiles()
         "2020-02-13/glslang_spv.subgroupQuad.comp.smolv",
         "2020-02-13/glslang_spv.subgroupVote.comp.smolv",
         "2020-02-13/glslang_spv.vulkan110.int16.frag.smolv",
-        
-        // files produced by 2018-10-27 version (have subgroup ops without "efficient" encoding of them)
+
+        // files produced by 2019-05-02 version (have subgroup ops without "efficient" encoding of them)
         "2019-05-02/glslang_spv.subgroup.frag.smolv",
         "2019-05-02/glslang_spv.subgroupClustered.comp.smolv",
         "2019-05-02/glslang_spv.subgroupExtendedTypesShuffleRelative.comp.smolv",
@@ -114,7 +114,7 @@ static bool TestDecodingExistingSmolvFiles()
         // files produced by 2018-10-27 version (SPIR-V 1.2 & 1.3 added)
         "2018-10-27/dxc_imgui-vs.smolv",
 
-        // files produced by 2016-09-07 version (initial)
+        // files produced by 2016-09-07 version (initial public release)
         "2016-09-07/dota2_14074.smolv",
         "2016-09-07/dota2_15212.smolv",
         "2016-09-07/dota2_20451.smolv",
@@ -139,7 +139,25 @@ static bool TestDecodingExistingSmolvFiles()
         "2016-09-07/unity_s3-0028-e081a509.smolv",
         "2016-09-07/unity_s4-0004-6ec33743.smolv",
         "2016-09-07/unity_s4-0006-a5e06270.smolv",
-    };
+
+		// files produced by 2016-08-31 version (used in Unity 2016-2020)
+		"2016-08-31/unity-errorshader-vs.smolv",
+		"2016-08-31/unity-504-184-1.smolv",
+		"2016-08-31/unity-2456-738-1.smolv",
+		"2016-08-31/unity-2956-827-0.smolv",
+		"2016-08-31/unity-4920-1375-0.smolv",
+		"2016-08-31/unity-7580-2194-1.smolv",
+		"2016-08-31/unity-8032-2236-0.smolv",
+		"2016-08-31/unity-11976-3300-0.smolv",
+		"2016-08-31/unity-16380-4619-1.smolv",
+		"2016-08-31/unity-28620-7815-1.smolv",
+		"2016-08-31/unity-29792-8418-1.smolv",
+		"2016-08-31/unity-30600-8635-1.smolv",
+		"2016-08-31/unity-31280-8849-1.smolv",
+		"2016-08-31/unity-34040-9620-1.smolv",
+		"2016-08-31/unity-36140-10246-1.smolv",
+		"2016-08-31/unity-38388-10935-1.smolv",
+	};
 
     int errorCount = 0;
     size_t fileCount = sizeof(kFiles)/sizeof(kFiles[0]);
@@ -148,25 +166,64 @@ static bool TestDecodingExistingSmolvFiles()
     {
         // Read
         ByteArray smolv;
-        ReadFile((std::string("tests/smolv-dumps/") + kFiles[i]).c_str(), smolv);
+		std::string inFilePath = std::string("tests/smolv-dumps/") + kFiles[i];
+        ReadFile(inFilePath.c_str(), smolv);
         if (smolv.empty())
         {
             printf("ERROR: failed to read %s\n", kFiles[i]);
             ++errorCount;
-            break;
+            continue;
         }
         
         // Decode to SPIR-V
+		bool beforeZeroVersion = strstr(kFiles[i], "2016-08-31/") != 0;
+		smolv::DecodeFlags flags = beforeZeroVersion ? smolv::kDecodeFlagUse20160831AsZeroVersion : smolv::kDecodeFlagNone;
         size_t spirvDecodedSize = smolv::GetDecodedBufferSize(smolv.data(), smolv.size());
         ByteArray spirvDecoded;
         spirvDecoded.resize(spirvDecodedSize);
-        if (!smolv::Decode(smolv.data(), smolv.size(), spirvDecoded.data(), spirvDecodedSize))
+        if (!smolv::Decode(smolv.data(), smolv.size(), spirvDecoded.data(), spirvDecodedSize, flags))
         {
             printf("ERROR: failed to decode smol-v on %s\n", kFiles[i]);
             ++errorCount;
-            break;
+			continue;
         }
-    }
+
+		// Dump decoded SPIR-V into a file
+		{
+			std::string outFilePath = inFilePath;
+			size_t extPos = outFilePath.find_last_of('.');
+			if (extPos != std::string::npos)
+				outFilePath = outFilePath.substr(0, extPos);
+			outFilePath += "-got.spirv";
+			FILE* fout = fopen(outFilePath.c_str(), "wb");
+			fwrite(spirvDecoded.data(), spirvDecoded.size(), 1, fout);
+			fclose(fout);
+		}
+
+		// Read expected decoded SPIR-V
+		{
+			std::string expFilePath = inFilePath;
+			size_t extPos = expFilePath.find_last_of('.');
+			if (extPos != std::string::npos)
+				expFilePath = expFilePath.substr(0, extPos);
+			expFilePath += "-exp.spirv";
+
+			ByteArray spirvExpected;
+			ReadFile(expFilePath.c_str(), spirvExpected);
+			if (spirvExpected.empty())
+			{
+				printf("ERROR: failed to read expected spir-v output %s\n", expFilePath.c_str());
+				++errorCount;
+				continue;
+			}
+			if (!spirvExpected.empty() && spirvExpected != spirvDecoded)
+			{
+				printf("ERROR: decoded does not match expected for %s\n", kFiles[i]);
+				++errorCount;
+				continue;
+			}
+		}
+	}
     
     if (errorCount != 0)
     {
@@ -240,6 +297,9 @@ int main()
 		"unity/s0-0034-5c3d45dc.spirv",
 		"unity/s0-0045-f2078956.spirv",
 		"unity/s0-0046-0b926d9c.spirv",
+		"unity/runtime-src-13068-dst-3560-0.spirv",
+		"unity/runtime-src-17012-dst-4567-0.spirv",
+		"unity/runtime-src-19860-dst-5708-0.spirv",
 		// fragment shaders
 		"unity/s1-0000-5ca04fe4.spirv",
 		"unity/s1-0000-cf9fe2e0.spirv",
@@ -303,6 +363,14 @@ int main()
 		"unity/s1-0070-7595e017.spirv",
 		"unity/s1-0074-e4935128.spirv",
 		"unity/s1-0084-ffb8278d.spirv",
+		"unity/runtime-src-8332-dst-2465-1.spirv",
+		"unity/runtime-src-12620-dst-3608-1.spirv",
+		"unity/runtime-src-17316-dst-4925-1.spirv",
+		"unity/runtime-src-19884-dst-5598-1.spirv",
+		"unity/runtime-src-29736-dst-8472-1.spirv",
+		"unity/runtime-src-31280-dst-8849-1.spirv",
+		"unity/runtime-src-36140-dst-10246-1.spirv",
+		"unity/runtime-src-38388-dst-10935-1.spirv",
 		// hull shaders
 		"unity/s2-0004-76b9ef38.spirv",
 		"unity/s2-0006-655ac983.spirv",
