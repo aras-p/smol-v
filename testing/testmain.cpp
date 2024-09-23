@@ -242,6 +242,7 @@ int main()
 	stm_setup();
 	smolv::Stats* stats = smolv::StatsCreate();
 
+	#define TEST_BLENDER 1
 	#define TEST_UNITY 1
 	#define TEST_TALOS 1
 	#define TEST_DOTA2 1
@@ -253,6 +254,15 @@ int main()
 	// files we're testing on
 	const char* kFiles[] =
 	{
+		#if TEST_BLENDER
+		// Some shaders used by Blender 4.3 alpha (SPV 1.5)
+		"blender/43_eevee_deferred_capture_eval_frag.spv",
+		"blender/43_eevee_deferred_light_triple_frag.spv",
+		"blender/43_eevee_deferred_thickness_amend_frag.spv",
+		"blender/43_eevee_film_comp_comp.spv",
+		"blender/43_eevee_ray_trace_screen_comp.spv",
+		"blender/43_eevee_surfel_light_comp.spv",
+		#endif
 		#if TEST_UNITY
 		// Shaders produced by Unity's pipeline (HLSL -> DX11 bytecode -> HLSLcc -> glslang):
 		// vertex shaders
