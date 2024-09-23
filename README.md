@@ -39,6 +39,8 @@ macOS (Xcode 15) and Linux (Ubuntu 22 / gcc 11).
 
 `smolv::Encode` and `smolv::Decode` is the basic functionality. See [smolv.h](source/smolv.h).
 
+SPIR-V versions up to and including 1.6 are supported currently.
+
 Other functions are for development/statistics purposes, to figure out frequencies and
 distributions of the instructions.
 
@@ -87,36 +89,32 @@ used for SMOL-V testing". Details on them:
 
 ## Results
 
-As of 2024 Sep 23, results on 378 shaders (under `tests/spirv-dumps`) are:
+As of 2024 Sep 23, results on 380 shaders (under `tests/spirv-dumps`) are:
 
 ```
 Compressed with <none>:
-Raw        5810.0KB 100.0%
-Remapper   5710.1KB  98.3%
-SmolV      2182.7KB  37.6%
-
+Raw        5905.3KB 100.0%
+Remapper   5805.5KB  98.3%
+SmolV      2217.6KB  37.6%
 Compressed with zlib:
-Raw        1506.2KB  25.9%
-Remapper   1440.9KB  24.8%
-SmolV       822.8KB  14.2%
-
+Raw        1537.4KB  26.0%
+Remapper   1472.7KB  24.9%
+SmolV       840.2KB  14.2%
 Compressed with LZ4 HC:
-Raw        1714.5KB  29.5%
-Remapper   1561.7KB  26.9%
-SmolV       853.6KB  14.7%
-
+Raw        1755.2KB  29.7%
+Remapper   1601.5KB  27.1%
+SmolV       873.8KB  14.8%
 Compressed with Zstandard:
-Raw        1190.0KB  20.5%
-Remapper   1027.7KB  17.7%
-SmolV       665.7KB  11.5%
-
+Raw        1223.5KB  20.7%
+Remapper   1045.7KB  17.7%
+SmolV       682.1KB  11.6%
 Compressed with Zstandard 20:
-Raw         812.7KB  14.0%
-Remapper    699.3KB  12.0%
-SmolV       521.3KB   9.0%
+Raw         837.1KB  14.2%
+Remapper    711.2KB  12.0%
+SmolV       535.0KB   9.1%
 ```
 
-Decoding these 378 shaders from SMOL-V back into SPIR-V takes 10.1ms (VS2022, x64 Release, AMD Ryzen 5950X, one thread).
+Decoding these 380 shaders from SMOL-V back into SPIR-V takes 10.1ms (VS2022, x64 Release, AMD Ryzen 5950X, one thread).
 
 * "Raw" is just raw SPIR-V, with no extra processing.
 * "Remapper" is spirv-remap from glslang, with debug info stripping.

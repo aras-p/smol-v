@@ -1197,8 +1197,8 @@ static bool smolv_CheckGenericHeader(const uint32_t* words, size_t wordCount, ui
 	if (headerMagic != expectedMagic)
 		return false;
 	uint32_t headerVersion = words[1] & versionMask;
-	if (headerVersion < 0x00010000 || headerVersion > 0x00010500)
-		return false; // only support 1.0 through 1.5
+	if (headerVersion < 0x00010000 || headerVersion > 0x00010600)
+		return false; // only support 1.0 through 1.6
 	
 	return true;
 }
