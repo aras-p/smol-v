@@ -2,6 +2,12 @@
 
 For an overview, see [readme](README.md).
 
+## 2024 Sep 23
+
+* Added support for SPIR-V 1.6 version.
+* Build: switched the benchmark/test application
+  to CMake, away from manually maintained VS/Xcode/make files.
+
 ## 2020 05 25
 
 * Added option to strip only some of debug names via `StripOpNameFilterFunc`.

@@ -236,7 +236,7 @@ int main()
 {
 	spv::spirvbin_t::registerErrorHandler([](const std::string& msg)
 	{
-		printf("ERROR: SPIR-V Remapping failed %s\n", msg.c_str());        
+		printf("ERROR: SPIR-V Remapping failed %s\n", msg.c_str());
 	});
 
 	stm_setup();
@@ -255,13 +255,16 @@ int main()
 	const char* kFiles[] =
 	{
 		#if TEST_BLENDER
-		// Some shaders used by Blender 4.3 alpha (SPV 1.5)
+		// Some shaders used by Blender 4.3 alpha (SPV 1.5 and 1.6)
 		"blender/43_eevee_deferred_capture_eval_frag.spv",
 		"blender/43_eevee_deferred_light_triple_frag.spv",
 		"blender/43_eevee_deferred_thickness_amend_frag.spv",
 		"blender/43_eevee_film_comp_comp.spv",
 		"blender/43_eevee_ray_trace_screen_comp.spv",
 		"blender/43_eevee_surfel_light_comp.spv",
+		"blender/43_spv16_eevee_film_frag_frag.spv",
+		// "blender/43_spv16_eevee_ray_denoise_bilateral_comp.spv", // Glslang SPIR-V Remapper fails on it (fails to find ops related to ExecutionModeId)
+		"blender/43_spv16_overlay_edit_mesh_edge_next_vert.spv",
 		#endif
 		#if TEST_UNITY
 		// Shaders produced by Unity's pipeline (HLSL -> DX11 bytecode -> HLSLcc -> glslang):
