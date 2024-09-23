@@ -263,7 +263,7 @@ int main()
 		"blender/43_eevee_ray_trace_screen_comp.spv",
 		"blender/43_eevee_surfel_light_comp.spv",
 		"blender/43_spv16_eevee_film_frag_frag.spv",
-		// "blender/43_spv16_eevee_ray_denoise_bilateral_comp.spv", // Glslang SPIR-V Remapper fails on it (fails to find ops related to ExecutionModeId)
+		"blender/43_spv16_eevee_ray_denoise_bilateral_comp.spv",
 		"blender/43_spv16_overlay_edit_mesh_edge_next_vert.spv",
 		#endif
 		#if TEST_UNITY
@@ -645,8 +645,8 @@ int main()
 		
 		#if TEST_GLSLANG
 		// Shaders produced by Glslang from Glslang tests, using Vulkan versions 1.1-1.2
-		//"glslang/spv.1.3.coopmat.comp.spv", // Glslang SPIR-V Remapper fails on it (unrecognized type OpTypeCooperativeMatrixNV)
-		//"glslang/spv.1.4.LoopControl.frag.spv", // Glslang SPIR-V remapper asserts on it (unrecognized operand class OperandOptionalLiteral)
+		"glslang/spv.1.3.coopmat.comp.spv",
+		"glslang/spv.1.4.LoopControl.frag.spv",
 		"glslang/spv.1.4.NonWritable.frag.spv",
 		"glslang/spv.1.4.OpCopyLogical.comp.spv",
 		"glslang/spv.1.4.OpCopyLogicalBool.comp.spv",

@@ -1,5 +1,7 @@
 /*
-** Copyright (c) 2014-2016 The Khronos Group Inc.
+** Copyright (c) 2014-2020 The Khronos Group Inc.
+** Copyright (C) 2022-2024 Arm Limited.
+** Modifications Copyright (C) 2020 Advanced Micro Devices, Inc. All rights reserved.
 **
 ** Permission is hereby granted, free of charge, to any person obtaining a copy
 ** of this software and/or associated documentation files (the "Materials"),
@@ -28,7 +30,7 @@
 #define GLSLextKHR_H
 
 static const int GLSLextKHRVersion = 100;
-static const int GLSLextKHRRevision = 2;
+static const int GLSLextKHRRevision = 3;
 
 static const char* const E_SPV_KHR_shader_ballot                = "SPV_KHR_shader_ballot";
 static const char* const E_SPV_KHR_subgroup_vote                = "SPV_KHR_subgroup_vote";
@@ -44,5 +46,22 @@ static const char* const E_SPV_EXT_physical_storage_buffer      = "SPV_EXT_physi
 static const char* const E_SPV_KHR_physical_storage_buffer      = "SPV_KHR_physical_storage_buffer";
 static const char* const E_SPV_EXT_fragment_shader_interlock    = "SPV_EXT_fragment_shader_interlock";
 static const char* const E_SPV_KHR_shader_clock                 = "SPV_KHR_shader_clock";
+static const char* const E_SPV_KHR_non_semantic_info            = "SPV_KHR_non_semantic_info";
+static const char* const E_SPV_KHR_ray_tracing                  = "SPV_KHR_ray_tracing";
+static const char* const E_SPV_KHR_ray_query                    = "SPV_KHR_ray_query";
+static const char* const E_SPV_KHR_fragment_shading_rate        = "SPV_KHR_fragment_shading_rate";
+static const char* const E_SPV_KHR_terminate_invocation         = "SPV_KHR_terminate_invocation";
+static const char* const E_SPV_KHR_workgroup_memory_explicit_layout = "SPV_KHR_workgroup_memory_explicit_layout";
+static const char* const E_SPV_KHR_subgroup_uniform_control_flow = "SPV_KHR_subgroup_uniform_control_flow";
+static const char* const E_SPV_KHR_fragment_shader_barycentric = "SPV_KHR_fragment_shader_barycentric";
+static const char* const E_SPV_KHR_quad_control                = "SPV_KHR_quad_control";
+static const char* const E_SPV_AMD_shader_early_and_late_fragment_tests = "SPV_AMD_shader_early_and_late_fragment_tests";
+static const char* const E_SPV_KHR_ray_tracing_position_fetch   = "SPV_KHR_ray_tracing_position_fetch";
+static const char* const E_SPV_KHR_cooperative_matrix           = "SPV_KHR_cooperative_matrix";
+static const char* const E_SPV_KHR_maximal_reconvergence        = "SPV_KHR_maximal_reconvergence";
+static const char* const E_SPV_KHR_subgroup_rotate              = "SPV_KHR_subgroup_rotate";
+static const char* const E_SPV_KHR_expect_assume                = "SPV_KHR_expect_assume";
+static const char* const E_SPV_EXT_replicated_composites        = "SPV_EXT_replicated_composites";
+static const char* const E_SPV_KHR_relaxed_extended_instruction = "SPV_KHR_relaxed_extended_instruction";
 
 #endif  // #ifndef GLSLextKHR_H

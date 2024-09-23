@@ -24,7 +24,7 @@ to improve this:
 - Encoding several instructions in a more compact form, e.g. the "typical <=4 component swizzle"
   shape of a VectorShuffle instruction, or sequences of MemberDecorate instructions.
 
-A somewhat similar utility is [spirv-remap from glslang](https://github.com/KhronosGroup/glslang/blob/master/README-spirv-remap.txt).
+A somewhat similar utility is [spirv-remap from glslang](https://github.com/KhronosGroup/glslang/blob/main/README-spirv-remap.txt).
 
 See [this blog post](https://aras-p.info/blog/2016/09/01/SPIR-V-Compression/) for more information about
 how I did SMOL-V.
@@ -45,7 +45,7 @@ Other functions are for development/statistics purposes, to figure out frequenci
 distributions of the instructions.
 
 There's a test + compression benchmarking suite in `testing/testmain.cpp`, using that needs adding
-other files under testing/external to the build too (3rd party code: glslang remapper, Zstd, LZ4, miniz).
+other files under testing/external to the build too (3rd party code: glslang remapper 14.3.0, Zstd, LZ4, miniz).
 
 ## Changelog
 
@@ -89,32 +89,32 @@ used for SMOL-V testing". Details on them:
 
 ## Results
 
-As of 2024 Sep 23, results on 380 shaders (under `tests/spirv-dumps`) are:
+As of 2024 Sep 23, results on 383 shaders (under `tests/spirv-dumps`) are:
 
 ```
 Compressed with <none>:
-Raw        5905.3KB 100.0%
-Remapper   5805.5KB  98.3%
-SmolV      2217.6KB  37.6%
+Raw        5948.7KB 100.0%
+Remapper   5848.8KB  98.3%
+SmolV      2237.2KB  37.6%
 Compressed with zlib:
-Raw        1537.4KB  26.0%
-Remapper   1472.7KB  24.9%
-SmolV       840.2KB  14.2%
+Raw        1550.6KB  26.1%
+Remapper   1486.3KB  25.0%
+SmolV       848.2KB  14.3%
 Compressed with LZ4 HC:
-Raw        1755.2KB  29.7%
-Remapper   1601.5KB  27.1%
-SmolV       873.8KB  14.8%
+Raw        1773.1KB  29.8%
+Remapper   1618.6KB  27.2%
+SmolV       884.5KB  14.9%
 Compressed with Zstandard:
-Raw        1223.5KB  20.7%
-Remapper   1045.7KB  17.7%
-SmolV       682.1KB  11.6%
+Raw        1234.8KB  20.8%
+Remapper   1056.6KB  17.8%
+SmolV       690.9KB  11.6%
 Compressed with Zstandard 20:
-Raw         837.1KB  14.2%
-Remapper    711.2KB  12.0%
-SmolV       535.0KB   9.1%
+Raw         845.3KB  14.2%
+Remapper    717.1KB  12.1%
+SmolV       542.3KB   9.1%
 ```
 
-Decoding these 380 shaders from SMOL-V back into SPIR-V takes 10.1ms (VS2022, x64 Release, AMD Ryzen 5950X, one thread).
+Decoding these 383 shaders from SMOL-V back into SPIR-V takes 10.1ms (VS2022, x64 Release, AMD Ryzen 5950X, one thread).
 
 * "Raw" is just raw SPIR-V, with no extra processing.
 * "Remapper" is spirv-remap from glslang, with debug info stripping.
