@@ -34,8 +34,8 @@ how I did SMOL-V.
 
 Add [`source/smolv.h`](source/smolv.h) and [`source/smolv.cpp`](source/smolv.cpp) to your C++ project build.
 It might require C++11 or somesuch. There are 
-[Github Actions](https://github.com/aras-p/smol-v/actions) set up for this project, that build on Windows (VS2017),
-macOS (Xcode 11.1) and Linux (Ubuntu 16 / gcc 5.4).
+[Github Actions](https://github.com/aras-p/smol-v/actions) set up for this project, that build on Windows (VS2022),
+macOS (Xcode 15) and Linux (Ubuntu 22 / gcc 11).
 
 `smolv::Encode` and `smolv::Decode` is the basic functionality. See [smolv.h](source/smolv.h).
 
@@ -87,36 +87,36 @@ used for SMOL-V testing". Details on them:
 
 ## Results
 
-As of 2024 Sep 23, results on 372 shaders (under `tests/spirv-dumps`) are:
+As of 2024 Sep 23, results on 378 shaders (under `tests/spirv-dumps`) are:
 
 ```
 Compressed with <none>:
-Raw        5188.9KB 100.0%
-Remapper   5089.0KB  98.1%
-SmolV      1934.2KB  37.3%
+Raw        5810.0KB 100.0%
+Remapper   5710.1KB  98.3%
+SmolV      2182.7KB  37.6%
 
 Compressed with zlib:
-Raw        1301.3KB  25.1%
-Remapper   1230.5KB  23.7%
-SmolV       696.6KB  13.4%
+Raw        1506.2KB  25.9%
+Remapper   1440.9KB  24.8%
+SmolV       822.8KB  14.2%
 
 Compressed with LZ4 HC:
-Raw        1448.7KB  27.9%
-Remapper   1303.9KB  25.1%
-SmolV       711.3KB  13.7%
+Raw        1714.5KB  29.5%
+Remapper   1561.7KB  26.9%
+SmolV       853.6KB  14.7%
 
 Compressed with Zstandard:
-Raw         983.4KB  19.0%
-Remapper    870.8KB  16.8%
-SmolV       541.3KB  10.4%
+Raw        1190.0KB  20.5%
+Remapper   1027.7KB  17.7%
+SmolV       665.7KB  11.5%
 
 Compressed with Zstandard 20:
-Raw         649.6KB  12.5%
-Remapper    599.1KB  11.5%
-SmolV       419.7KB   8.1%
+Raw         812.7KB  14.0%
+Remapper    699.3KB  12.0%
+SmolV       521.3KB   9.0%
 ```
 
-Decoding these 372 shaders from SMOL-V back into SPIR-V takes 9.0ms (VS2022, x64 Release, AMD Ryzen 5950X, one thread).
+Decoding these 378 shaders from SMOL-V back into SPIR-V takes 10.1ms (VS2022, x64 Release, AMD Ryzen 5950X, one thread).
 
 * "Raw" is just raw SPIR-V, with no extra processing.
 * "Remapper" is spirv-remap from glslang, with debug info stripping.
