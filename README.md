@@ -94,24 +94,24 @@ As of 2024 Sep 23, results on 383 shaders (under `tests/spirv-dumps`) are:
 ```
 Compressed with <none>:
 Raw        5948.7KB 100.0%
-Remapper   5848.8KB  98.3%
-SmolV      2237.2KB  37.6%
+Remapper   5602.9KB  94.2%
+SmolV      2020.9KB  34.0%
 Compressed with zlib:
 Raw        1550.6KB  26.1%
-Remapper   1486.3KB  25.0%
-SmolV       848.2KB  14.3%
+Remapper   1419.2KB  23.9%
+SmolV       790.6KB  13.3%
 Compressed with LZ4 HC:
 Raw        1769.6KB  29.7%
-Remapper   1615.9KB  27.2%
-SmolV       884.4KB  14.9%
+Remapper   1551.1KB  26.1%
+SmolV       823.1KB  13.8%
 Compressed with Zstandard:
 Raw        1125.5KB  18.9%
-Remapper    933.4KB  15.7%
-SmolV       623.1KB  10.5%
+Remapper    887.4KB  14.9%
+SmolV       573.1KB   9.6%
 Compressed with Zstandard 20:
 Raw         834.5KB  14.0%
-Remapper    700.3KB  11.8%
-SmolV       537.5KB   9.0%
+Remapper    666.7KB  11.2%
+SmolV       497.4KB   8.4%
 ```
 
 Decoding these 383 shaders from SMOL-V back into SPIR-V takes 10.1ms (VS2022, x64 Release, AMD Ryzen 5950X, one thread).
