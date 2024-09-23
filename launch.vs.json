@@ -1,0 +1,15 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+    {
+      "type": "default",
+      "project": "CMakeLists.txt",
+      "projectTarget": "smol-v-test.exe",
+      "name": "smol-v-test.exe",
+      "currentDir": "${workspaceRoot}",
+      "args": [
+      ]
+    }
+  ]
+}
