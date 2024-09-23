@@ -15,13 +15,22 @@ target_sources(smol-v-test PRIVATE
 	testing/external/lz4/lz4hc.c
 	testing/external/miniz/miniz.c
 	testing/external/zstd/common/entropy_common.c
+	testing/external/zstd/common/error_private.c
 	testing/external/zstd/common/fse_decompress.c
 	testing/external/zstd/common/xxhash.c
 	testing/external/zstd/common/zstd_common.c
 	testing/external/zstd/compress/fse_compress.c
+	testing/external/zstd/compress/hist.c
 	testing/external/zstd/compress/huf_compress.c
-	testing/external/zstd/compress/zbuff_compress.c
 	testing/external/zstd/compress/zstd_compress.c
+	testing/external/zstd/compress/zstd_compress_literals.c
+	testing/external/zstd/compress/zstd_compress_sequences.c
+	testing/external/zstd/compress/zstd_compress_superblock.c
+	testing/external/zstd/compress/zstd_double_fast.c
+	testing/external/zstd/compress/zstd_fast.c
+	testing/external/zstd/compress/zstd_lazy.c
+	testing/external/zstd/compress/zstd_ldm.c
+	testing/external/zstd/compress/zstd_opt.c
 )
 target_include_directories(smol-v-test PRIVATE
 	testing/external/zstd
