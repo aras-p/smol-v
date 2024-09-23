@@ -87,7 +87,7 @@ used for SMOL-V testing". Details on them:
 
 ## Results
 
-As of 2020 May 25 29, results on 372 shaders (under `tests/spirv-dumps`) are:
+As of 2024 Sep 23, results on 372 shaders (under `tests/spirv-dumps`) are:
 
 ```
 Compressed with <none>:
@@ -116,7 +116,7 @@ Remapper    599.1KB  11.5%
 SmolV       419.7KB   8.1%
 ```
 
-Decoding these 372 shaders from SMOL-V back into SPIR-V takes 10.2ms (VS2017, x64 Release, AMD ThreadRipper 1950X 3.4GHz, one thread).
+Decoding these 372 shaders from SMOL-V back into SPIR-V takes 9.0ms (VS2022, x64 Release, AMD Ryzen 5950X, one thread).
 
 * "Raw" is just raw SPIR-V, with no extra processing.
 * "Remapper" is spirv-remap from glslang, with debug info stripping.
