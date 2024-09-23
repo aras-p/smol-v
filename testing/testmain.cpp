@@ -2,7 +2,6 @@
 // authored on 2016-2024 by Aras Pranckevicius
 // no warranty implied; use at your own risk
 
-#define _CRT_SECURE_NO_WARNINGS // yes MSVC, I want to use fopen
 #include "../source/smolv.h"
 #include "external/lz4/lz4.h"
 #include "external/lz4/lz4hc.h"
@@ -72,10 +71,10 @@ static size_t CompressMiniz(const void* data, size_t size, int level = MZ_DEFAUL
 {
 	if (size == 0)
 		return 0;
-	size_t bufferSize = mz_compressBound(size);
+	size_t bufferSize = mz_compressBound((mz_ulong)size);
 	unsigned char* buffer = new unsigned char[bufferSize];
-	mz_ulong resSize = bufferSize;
-	int res = mz_compress2(buffer, &resSize, (const unsigned char*)data, size, level);
+	mz_ulong resSize = (mz_ulong)bufferSize;
+	int res = mz_compress2(buffer, &resSize, (const unsigned char*)data, (mz_ulong)size, level);
 	delete[] buffer;
 	if (res != MZ_OK)
 		return -1;

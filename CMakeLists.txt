@@ -3,6 +3,7 @@ cmake_minimum_required (VERSION 3.8)
 project ("smol-v-test")
 
 add_executable (smol-v-test)
+target_compile_features(smol-v-test PRIVATE cxx_std_11)
 target_compile_definitions(smol-v-test PRIVATE _CRT_SECURE_NO_WARNINGS)
 target_sources(smol-v-test PRIVATE
 	source/smolv.cpp
