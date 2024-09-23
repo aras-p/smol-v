@@ -6,18 +6,18 @@ on:
 
 jobs:
   windows:
-    runs-on: windows-2016
+    runs-on: windows-2022
     strategy:
       fail-fast: false
     steps:
     - uses: actions/checkout@v1
-    - name: Windows VS2017
+    - name: Windows VS2022
       run: |
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat" && msbuild.exe projects/visualstudio2015/smolv.sln /p:Configuration=Debug /p:CL_MPCount=2
-        if %errorlevel% neq 0 exit /b %errorlevel%
-        call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvars64.bat" && msbuild.exe projects/visualstudio2015/smolv.sln /p:Configuration=Release /p:CL_MPCount=2
-        if %errorlevel% neq 0 exit /b %errorlevel%
-        projects\visualstudio2015\build\x64\Release\smolv.exe
+        mkdir out && cd out
+        cmake -DCMAKE_BUILD_TYPE=Release ..
+        cd ..
+        cmake --build out --config Release
+        "out/Release/smol-v-test.exe"
       shell: cmd
 
   mac:
@@ -26,20 +26,25 @@ jobs:
       fail-fast: false
     steps:
     - uses: actions/checkout@v1
-    - name: macOS Xcode 11.1
+    - name: macOS Xcode 15
       run: |
-        xcodebuild -project projects/smolv.xcodeproj -configuration Debug build
-        xcodebuild -project projects/smolv.xcodeproj -configuration Release build
-        projects/build/Release/smolv
+        mkdir out && cd out
+        cmake -DCMAKE_BUILD_TYPE=Release ..
+        cd ..
+        cmake --build out --config Release
+        "out/Release/smol-v-test"
 
   linux:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
     steps:
     - uses: actions/checkout@v1
-    - name: Ubuntu 16
+    - name: Ubuntu22 Gcc11
       run: |
-        make -f projects/Makefile -j 4
-        ./smolv
+        mkdir out && cd out
+        cmake -DCMAKE_BUILD_TYPE=Release ..
+        cd ..
+        cmake --build out --config Release
+        "out/smol-v-test"
 
