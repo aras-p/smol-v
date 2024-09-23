@@ -1,35 +1,13 @@
-/* ******************************************************************
-   Error codes and messages
-   Copyright (C) 2013-2016, Yann Collet
+/*
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ * All rights reserved.
+ *
+ * This source code is licensed under both the BSD-style license (found in the
+ * LICENSE file in the root directory of this source tree) and the GPLv2 (found
+ * in the COPYING file in the root directory of this source tree).
+ * You may select, at your option, one of the above-listed licenses.
+ */
 
-   BSD 2-Clause License (http://www.opensource.org/licenses/bsd-license.php)
-
-   Redistribution and use in source and binary forms, with or without
-   modification, are permitted provided that the following conditions are
-   met:
-
-       * Redistributions of source code must retain the above copyright
-   notice, this list of conditions and the following disclaimer.
-       * Redistributions in binary form must reproduce the above
-   copyright notice, this list of conditions and the following disclaimer
-   in the documentation and/or other materials provided with the
-   distribution.
-
-   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-   A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-   OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-   LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-   DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-   THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-   You can contact the author at :
-   - Homepage : http://www.zstd.net
-****************************************************************** */
 /* Note : this module is expected to remain private, do not expose it */
 
 #ifndef ERROR_H_MODULE
@@ -43,8 +21,10 @@ extern "C" {
 /* ****************************************
 *  Dependencies
 ******************************************/
-#include <stddef.h>        /* size_t */
-#include "error_public.h"  /* enum list */
+#include "../zstd_errors.h"  /* enum list */
+#include "compiler.h"
+#include "debug.h"
+#include "zstd_deps.h"       /* size_t */
 
 
 /* ****************************************
@@ -71,52 +51,115 @@ typedef ZSTD_ErrorCode ERR_enum;
 /*-****************************************
 *  Error codes handling
 ******************************************/
-#ifdef ERROR
-#  undef ERROR   /* reported already defined on VS 2015 (Rich Geldreich) */
-#endif
-#define ERROR(name) ((size_t)-PREFIX(name))
+#undef ERROR   /* already defined on Visual Studio */
+#define ERROR(name) ZSTD_ERROR(name)
+#define ZSTD_ERROR(name) ((size_t)-PREFIX(name))
 
 ERR_STATIC unsigned ERR_isError(size_t code) { return (code > ERROR(maxCode)); }
 
 ERR_STATIC ERR_enum ERR_getErrorCode(size_t code) { if (!ERR_isError(code)) return (ERR_enum)0; return (ERR_enum) (0-code); }
+
+/* check and forward error code */
+#define CHECK_V_F(e, f)     \
+    size_t const e = f;     \
+    do {                    \
+        if (ERR_isError(e)) \
+            return e;       \
+    } while (0)
+#define CHECK_F(f)   do { CHECK_V_F(_var_err__, f); } while (0)
 
 
 /*-****************************************
 *  Error Strings
 ******************************************/
 
-ERR_STATIC const char* ERR_getErrorString(ERR_enum code)
-{
-    static const char* notErrorCode = "Unspecified error code";
-    switch( code )
-    {
-    case PREFIX(no_error): return "No error detected";
-    case PREFIX(GENERIC):  return "Error (generic)";
-    case PREFIX(prefix_unknown): return "Unknown frame descriptor";
-    case PREFIX(frameParameter_unsupported): return "Unsupported frame parameter";
-    case PREFIX(frameParameter_unsupportedBy32bits): return "Frame parameter unsupported in 32-bits mode";
-    case PREFIX(compressionParameter_unsupported): return "Compression parameter is out of bound";
-    case PREFIX(init_missing): return "Context should be init first";
-    case PREFIX(memory_allocation): return "Allocation error : not enough memory";
-    case PREFIX(stage_wrong): return "Operation not authorized at current processing stage";
-    case PREFIX(dstSize_tooSmall): return "Destination buffer is too small";
-    case PREFIX(srcSize_wrong): return "Src size incorrect";
-    case PREFIX(corruption_detected): return "Corrupted block detected";
-    case PREFIX(checksum_wrong): return "Restored data doesn't match checksum";
-    case PREFIX(tableLog_tooLarge): return "tableLog requires too much memory : unsupported";
-    case PREFIX(maxSymbolValue_tooLarge): return "Unsupported max Symbol Value : too large";
-    case PREFIX(maxSymbolValue_tooSmall): return "Specified maxSymbolValue is too small";
-    case PREFIX(dictionary_corrupted): return "Dictionary is corrupted";
-    case PREFIX(dictionary_wrong): return "Dictionary mismatch";
-    case PREFIX(maxCode):
-    default: return notErrorCode;
-    }
-}
+const char* ERR_getErrorString(ERR_enum code);   /* error_private.c */
 
 ERR_STATIC const char* ERR_getErrorName(size_t code)
 {
     return ERR_getErrorString(ERR_getErrorCode(code));
 }
+
+/**
+ * Ignore: this is an internal helper.
+ *
+ * This is a helper function to help force C99-correctness during compilation.
+ * Under strict compilation modes, variadic macro arguments can't be empty.
+ * However, variadic function arguments can be. Using a function therefore lets
+ * us statically check that at least one (string) argument was passed,
+ * independent of the compilation flags.
+ */
+static INLINE_KEYWORD UNUSED_ATTR
+void _force_has_format_string(const char *format, ...) {
+  (void)format;
+}
+
+/**
+ * Ignore: this is an internal helper.
+ *
+ * We want to force this function invocation to be syntactically correct, but
+ * we don't want to force runtime evaluation of its arguments.
+ */
+#define _FORCE_HAS_FORMAT_STRING(...)              \
+    do {                                           \
+        if (0) {                                   \
+            _force_has_format_string(__VA_ARGS__); \
+        }                                          \
+    } while (0)
+
+#define ERR_QUOTE(str) #str
+
+/**
+ * Return the specified error if the condition evaluates to true.
+ *
+ * In debug modes, prints additional information.
+ * In order to do that (particularly, printing the conditional that failed),
+ * this can't just wrap RETURN_ERROR().
+ */
+#define RETURN_ERROR_IF(cond, err, ...)                                        \
+    do {                                                                       \
+        if (cond) {                                                            \
+            RAWLOG(3, "%s:%d: ERROR!: check %s failed, returning %s",          \
+                  __FILE__, __LINE__, ERR_QUOTE(cond), ERR_QUOTE(ERROR(err))); \
+            _FORCE_HAS_FORMAT_STRING(__VA_ARGS__);                             \
+            RAWLOG(3, ": " __VA_ARGS__);                                       \
+            RAWLOG(3, "\n");                                                   \
+            return ERROR(err);                                                 \
+        }                                                                      \
+    } while (0)
+
+/**
+ * Unconditionally return the specified error.
+ *
+ * In debug modes, prints additional information.
+ */
+#define RETURN_ERROR(err, ...)                                               \
+    do {                                                                     \
+        RAWLOG(3, "%s:%d: ERROR!: unconditional check failed, returning %s", \
+              __FILE__, __LINE__, ERR_QUOTE(ERROR(err)));                    \
+        _FORCE_HAS_FORMAT_STRING(__VA_ARGS__);                               \
+        RAWLOG(3, ": " __VA_ARGS__);                                         \
+        RAWLOG(3, "\n");                                                     \
+        return ERROR(err);                                                   \
+    } while(0)
+
+/**
+ * If the provided expression evaluates to an error code, returns that error code.
+ *
+ * In debug modes, prints additional information.
+ */
+#define FORWARD_IF_ERROR(err, ...)                                                 \
+    do {                                                                           \
+        size_t const err_code = (err);                                             \
+        if (ERR_isError(err_code)) {                                               \
+            RAWLOG(3, "%s:%d: ERROR!: forwarding error in %s: %s",                 \
+                  __FILE__, __LINE__, ERR_QUOTE(err), ERR_getErrorName(err_code)); \
+            _FORCE_HAS_FORMAT_STRING(__VA_ARGS__);                                 \
+            RAWLOG(3, ": " __VA_ARGS__);                                           \
+            RAWLOG(3, "\n");                                                       \
+            return err_code;                                                       \
+        }                                                                          \
+    } while(0)
 
 #if defined (__cplusplus)
 }

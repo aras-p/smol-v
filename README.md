@@ -45,7 +45,7 @@ Other functions are for development/statistics purposes, to figure out frequenci
 distributions of the instructions.
 
 There's a test + compression benchmarking suite in `testing/testmain.cpp`, using that needs adding
-other files under testing/external to the build too (3rd party code: glslang remapper 14.3.0, Zstd, LZ4, miniz).
+other files under testing/external to the build too (3rd party code: glslang remapper 14.3.0, Zstd 1.5.6, LZ4 1.10, miniz).
 
 ## Changelog
 
@@ -101,17 +101,17 @@ Raw        1550.6KB  26.1%
 Remapper   1486.3KB  25.0%
 SmolV       848.2KB  14.3%
 Compressed with LZ4 HC:
-Raw        1773.1KB  29.8%
-Remapper   1618.6KB  27.2%
-SmolV       884.5KB  14.9%
+Raw        1769.6KB  29.7%
+Remapper   1615.9KB  27.2%
+SmolV       884.4KB  14.9%
 Compressed with Zstandard:
-Raw        1234.8KB  20.8%
-Remapper   1056.6KB  17.8%
-SmolV       690.9KB  11.6%
+Raw        1125.5KB  18.9%
+Remapper    933.4KB  15.7%
+SmolV       623.1KB  10.5%
 Compressed with Zstandard 20:
-Raw         845.3KB  14.2%
-Remapper    717.1KB  12.1%
-SmolV       542.3KB   9.1%
+Raw         834.5KB  14.0%
+Remapper    700.3KB  11.8%
+SmolV       537.5KB   9.0%
 ```
 
 Decoding these 383 shaders from SMOL-V back into SPIR-V takes 10.1ms (VS2022, x64 Release, AMD Ryzen 5950X, one thread).
