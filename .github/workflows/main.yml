@@ -32,7 +32,7 @@ jobs:
         cmake -DCMAKE_BUILD_TYPE=Release ..
         cd ..
         cmake --build out --config Release
-        "out/Release/smol-v-test"
+        "out/smol-v-test"
 
   linux:
     runs-on: ubuntu-22.04
