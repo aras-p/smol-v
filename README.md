@@ -1,7 +1,9 @@
 # SMOL-V: like Vulkan/Khronos SPIR-V, but smaller. ![Build Status](https://github.com/aras-p/smol-v/workflows/build_and_test/badge.svg)
 
 TL;DR: makes your SPIR-V shaders about 3x smaller, and decodes very fast. If you like to compress them with regular compressor like zlib/lz4/zstd,
-then smol-v before the compression can still make them almost 2x smaller.
+then smol-v before the compression can still make them 2x smaller.
+
+![](/size_chart.png)
 
 ## Overview
 
