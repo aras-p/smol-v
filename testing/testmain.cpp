@@ -361,6 +361,7 @@ int main()
 	#define TEST_DXC 1
 	#define TEST_GLSLANG 1
 	#define TEST_SYNTHETIC 1
+	#define TEST_GODOT 1
 
 	// files we're testing on
 	const char* kFiles[] =
@@ -376,6 +377,28 @@ int main()
 		"blender/43_spv16_eevee_film_frag_frag.spv",
 		"blender/43_spv16_eevee_ray_denoise_bilateral_comp.spv",
 		"blender/43_spv16_overlay_edit_mesh_edge_next_vert.spv",
+		// Some shaders from Blender 5.3 alpha
+		"blender/53-comp-2d_update_mipmaps.spv",
+		"blender/53-comp-film_comp_panoramic.spv",
+		"blender/53-comp-light_culling_tile.spv",
+		"blender/53-comp-ray_trace_screen.spv",
+		"blender/53-comp-shadow_page_mask.spv",
+		"blender/53-comp-shadow_tag_usage_vol.spv",
+		"blender/53-comp-subdiv_patch_evaluate.spv",
+		"blender/53-comp-subsurface_convolve.spv",
+		"blender/53-comp-volume_integration.spv",
+		"blender/53-comp-volume_scatter_lit.spv",
+		"blender/53-frag-coat_anisotropic_def.spv",
+		"blender/53-frag-gpencil_geometry.spv",
+		"blender/53-frag-subsurface_sheen_def.spv",
+		"blender/53-frag-transmission_deferred.spv",
+		"blender/53-frag-volume_noise.spv",
+		"blender/53-frag-volume_noise_occupancy.spv",
+		"blender/53-vert-gpencil_geometry.spv",
+		"blender/53-vert-overlay_edit_curves.spv",
+		"blender/53-vert-overlay_edit_mesh_ed.spv",
+		"blender/53-vert-overlay_outline_prep.spv",
+		"blender/53-vert-volume_noise.spv",
 		#endif
 		#if TEST_UNITY
 		// Shaders produced by Unity's pipeline (HLSL -> DX11 bytecode -> HLSLcc -> glslang):
@@ -508,7 +531,35 @@ int main()
 		// geometry shaders
 		"unity/s4-0004-6ec33743.spirv",
 		"unity/s4-0006-a5e06270.spirv",
+		// shaders captured from 6000.7 alpha HDRP test scene
+		"unity/67-comp-bloom_ca_grading.spv",
+		"unity/67-comp-color_grading_lut_gen.spv",
+		"unity/67-comp-deferred_light.spv",
+		"unity/67-comp-dof_near_far_composite.spv",
+		"unity/67-comp-dof_tiled_gather.spv",
+		"unity/67-comp-gtao.spv",
+		"unity/67-comp-volumetric_buffer_lighting.spv",
+		"unity/67-frag-hdrp_axf_shared.spv",
+		"unity/67-frag-hdrp_layered_lit.spv",
+		"unity/67-frag-hdrp_lit.spv",
+		"unity/67-tesc-hdrp_lit_tess.spv",
+		"unity/67-tese-hdrp_lit_tess.spv",
+		"unity/67-vert-hdrp_lit.spv",
+		"unity/67-vert-probe_volume_voxelization.spv",
 		#endif // #if TEST_UNITY
+
+		#if TEST_GODOT
+		// Some shaders used by Godot 4.8 dev 6
+		"godot/48-comp-dof_bokeh.spv",
+		"godot/48-comp-forward_plus.spv",
+		"godot/48-comp-particle_sim.spv",
+		"godot/48-comp-sdfgi.spv",
+		"godot/48-comp-ssao.spv",
+		"godot/48-comp-ssil.spv",
+		"godot/48-comp-volumetric_fog.spv",
+		"godot/48-frag-forward_plus.spv",
+		"godot/48-vert-forward_plus.spv",
+		#endif // TEST_GODOT
 
 		#if TEST_TALOS
 		// Shaders from The Talos Principle by Croteam:

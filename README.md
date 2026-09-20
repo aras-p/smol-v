@@ -89,37 +89,39 @@ used for SMOL-V testing". Details on them:
   Copyright (c) 2002-2016 Croteam All rights reserved.
 * `tests/spirv-dumps/unity` - various [Unity](https://unity3d.com/) shaders, produced
   through a HLSL -> DX11 bytecode -> HLSLcc -> glslang toolchain.
+* `tests/spirv-dumps/blender` - various [Blender](https://www.blender.org/) shaders.
+* `tests/spirv-dumps/godot` - various [Godot](https://godotengine.org/) shaders.
 
 
 
 ## Results
 
-As of 2026 Sep 20, results on 383 shaders (under `tests/spirv-dumps`) are:
+As of 2026 Sep 20, results on 427 shaders (under `tests/spirv-dumps`) are:
 
 ```
 Compressed with <none>:
-Raw        5948.7KB 100.0%
-Remapper   5602.9KB  94.2%
-SmolV      2020.9KB  34.0%
+Raw       11000.3KB 100.0%
+Remapper  10536.3KB  95.8%
+SmolV      3586.9KB  32.6%
 Compressed with zlib:
-Raw        1550.6KB  26.1%
-Remapper   1419.2KB  23.9%
-SmolV       790.6KB  13.3%
+Raw        3062.7KB  27.8%
+Remapper   2943.0KB  26.8%
+SmolV      1419.1KB  12.9%
 Compressed with LZ4 HC:
-Raw        1769.6KB  29.7%
-Remapper   1551.1KB  26.1%
-SmolV       823.1KB  13.8%
+Raw        3741.6KB  34.0%
+Remapper   3479.6KB  31.6%
+SmolV      1564.5KB  14.2%
 Compressed with Zstandard:
-Raw        1123.2KB  18.9%
-Remapper    884.6KB  14.9%
-SmolV       572.4KB   9.6%
+Raw        2587.8KB  23.5%
+Remapper   2153.8KB  19.6%
+SmolV      1179.1KB  10.7%
 Compressed with Zstandard 20:
-Raw         835.1KB  14.0%
-Remapper    666.7KB  11.2%
-SmolV       497.2KB   8.4%
+Raw        1937.8KB  17.6%
+Remapper   1609.7KB  14.6%
+SmolV      1026.8KB   9.3%
 ```
 
-Decoding these 383 shaders from SMOL-V back into SPIR-V takes 10.1ms (VS2022, x64 Release, AMD Ryzen 5950X, one thread).
+Decoding these 427 shaders from SMOL-V back into SPIR-V takes 18.7ms (VS2022, x64 Release, AMD Ryzen 5950X, one thread).
 
 * "Raw" is just raw SPIR-V, with no extra processing.
 * "Remapper" is spirv-remap from glslang, with debug info stripping.
