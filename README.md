@@ -29,7 +29,8 @@ to improve this:
 - Encoding several instructions in a more compact form, e.g. the "typical <=4 component swizzle"
   shape of a VectorShuffle instruction, or sequences of MemberDecorate instructions.
 
-A somewhat similar utility is [spirv-remap from glslang](https://github.com/KhronosGroup/glslang/blob/main/README-spirv-remap.txt).
+A somewhat similar utility is spirv-remap that used to be [part of glslang](https://github.com/KhronosGroup/glslang/blob/38282114e/README-spirv-remap.txt)
+(removed in 2025), and these days is the [`--canonicalize-ids` pass of spirv-opt](https://github.com/KhronosGroup/SPIRV-Tools/pull/6174).
 
 See [this blog post](https://aras-p.info/blog/2016/09/01/SPIR-V-Compression/) for more information about
 how I did SMOL-V.
@@ -123,7 +124,7 @@ SmolV      1026.8KB   9.3%
 Decoding these 427 shaders from SMOL-V back into SPIR-V takes 18.7ms (VS2022, x64 Release, AMD Ryzen 5950X, one thread).
 
 * "Raw" is just raw SPIR-V, with no extra processing.
-* "Remapper" is spirv-remap from glslang, with debug info stripping.
+* "Remapper" is spirv-remap from glslang, with debug info stripping. Nowadays the same thing lives in spirv-opt as `--canonicalize-ids`.
 * SmolV is what you're looking at, with debug info stripping too.
 * zlib, LZ4HC and Zstd are general compression algorithms at default settings (Zstd20 is Zstd compression with almost max setting of 20).
 * Compression is done on the whole blob of all the test programs (not individually for each program).
