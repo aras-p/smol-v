@@ -2,6 +2,11 @@
 
 For an overview, see [readme](README.md).
 
+## 2026 Sep 09
+
+* Improved handling of invalid input files, when the shader instruction
+  steam is actually longer than the decoded size declared in the header (#16).
+
 ## 2024 Sep 23
 
 * Added support for SPIR-V 1.6 version.
