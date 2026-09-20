@@ -232,6 +232,87 @@ static bool TestDecodingExistingSmolvFiles()
 	return true;
 }
 
+
+// Decoding must not write past the decoded data size declared in the header, even
+// if input instruction stream extends past that.
+static bool TestDecodeOutputBufferBounds()
+{
+	printf("Check SMOL-V decoding output buffer bounds...\n");
+	const char* kFile = "tests/smolv-dumps/2020-02-13/glslang_spv.subgroup.frag.smolv";
+	ByteArray smolv;
+	ReadFile(kFile, smolv);
+	if (smolv.size() < 24)
+	{
+		printf("ERROR: failed to read %s\n", kFile);
+		return false;
+	}
+	const size_t realSize = smolv::GetDecodedBufferSize(smolv.data(), smolv.size());
+	if (realSize == 0)
+	{
+		printf("ERROR: could not get decoded size of %s\n", kFile);
+		return false;
+	}
+
+	const uint8_t kGuard = 0xCD;
+	const size_t kGuardSize = 64;
+	int errorCount = 0;
+
+	// Input is valid, and we pass buffer that is larger than needed: the decoder must
+	// not write into the unused buffer part.
+	{
+		ByteArray buffer(realSize + kGuardSize, kGuard);
+		if (!smolv::Decode(smolv.data(), smolv.size(), buffer.data(), buffer.size()))
+		{
+			printf("ERROR: failed to decode %s\n", kFile);
+			++errorCount;
+		}
+		for (size_t i = realSize; i < buffer.size(); ++i)
+		{
+			if (buffer[i] != kGuard)
+			{
+				printf("ERROR: decoding wrote past declared decoded size (byte #%zi)\n", i);
+				++errorCount;
+				break;
+			}
+		}
+	}
+
+	// Input is "broken" in this way: it declares that decoded size is smaller than what it actually is.
+	// Decoding must fail, and output should not be written past the declared (too small) size.
+	const size_t kDeclaredSizes[] = { 4, 20, 24, realSize / 2, realSize - 4, realSize + 4, realSize * 2 };
+	for (size_t t = 0; t < sizeof(kDeclaredSizes) / sizeof(kDeclaredSizes[0]); ++t)
+	{
+		const size_t declaredSize = kDeclaredSizes[t];
+		ByteArray broken(smolv);
+		const uint32_t sizeWord = (uint32_t)declaredSize;
+		memcpy(broken.data() + 20, &sizeWord, 4); // word #5 of the header is decoded data size
+
+		ByteArray buffer(declaredSize + kGuardSize, kGuard);
+		if (smolv::Decode(broken.data(), broken.size(), buffer.data(), buffer.size()))
+		{
+			printf("ERROR: decoded input declaring wrong size %zi (should have failed)\n", declaredSize);
+			++errorCount;
+		}
+		for (size_t i = declaredSize; i < buffer.size(); ++i)
+		{
+			if (buffer[i] != kGuard)
+			{
+				printf("ERROR: decoding input declaring size %zi wrote past it (byte #%zi)\n", declaredSize, i);
+				++errorCount;
+				break;
+			}
+		}
+	}
+
+	if (errorCount != 0)
+	{
+		printf("Got SMOL-V output buffer bounds ERRORS: %i\n", errorCount);
+		return false;
+	}
+	return true;
+}
+
+
 int main()
 {
 	spv::spirvbin_t::registerErrorHandler([](const std::string& msg)
@@ -676,6 +757,11 @@ int main()
 	};
 
 	if (!TestDecodingExistingSmolvFiles())
+	{
+		return 1;
+	}
+
+	if (!TestDecodeOutputBufferBounds())
 	{
 		return 1;
 	}

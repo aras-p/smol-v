@@ -1244,7 +1244,7 @@ static void smolv_Write4(uint8_t*& buf, uint32_t v)
 
 static bool smolv_Write4Safe(uint8_t*& buf, const uint8_t* bufEnd, uint32_t v)
 {
-	if (buf + 4 > bufEnd)
+	if (bufEnd - buf < 4)
 		return false;
 	memcpy(buf, &v, 4);
 	buf += 4;
@@ -1628,7 +1628,9 @@ bool smolv::Decode(const void* smolvData, size_t smolvSize, void* spirvOutputBuf
 	const uint8_t* bytesEnd = bytes + smolvSize;
 
 	uint8_t* outSpirv = (uint8_t*)spirvOutputBuffer;
-	const uint8_t* outSpirvEnd = (const uint8_t*)spirvOutputBuffer + spirvOutputBufferSize;
+	// bound writes by neededBufferSize bytes; if passed buffer was smaller
+	// then we already return above.
+	const uint8_t* outSpirvEnd = (const uint8_t*)spirvOutputBuffer + neededBufferSize;
 
 	uint32_t val;
 	int smolVersion = 0;
