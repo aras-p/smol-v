@@ -31,6 +31,7 @@ target_sources(smol-v-test PRIVATE
 	testing/external/zstd/compress/zstd_lazy.c
 	testing/external/zstd/compress/zstd_ldm.c
 	testing/external/zstd/compress/zstd_opt.c
+	testing/external/zstd/compress/zstd_preSplit.c
 )
 target_include_directories(smol-v-test PRIVATE
 	testing/external/zstd

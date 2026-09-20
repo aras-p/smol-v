@@ -50,7 +50,7 @@ Other functions are for development/statistics purposes, to figure out frequenci
 distributions of the instructions.
 
 There's a test + compression benchmarking suite in `testing/testmain.cpp`, using that needs adding
-other files under testing/external to the build too (3rd party code: glslang remapper 14.3.0, Zstd 1.5.6, LZ4 1.10, miniz).
+other files under testing/external to the build too (3rd party code: glslang remapper 14.3.0, Zstd 1.5.7, LZ4 1.10, miniz).
 
 ## Changelog
 
@@ -94,7 +94,7 @@ used for SMOL-V testing". Details on them:
 
 ## Results
 
-As of 2024 Sep 23, results on 383 shaders (under `tests/spirv-dumps`) are:
+As of 2026 Sep 20, results on 383 shaders (under `tests/spirv-dumps`) are:
 
 ```
 Compressed with <none>:
@@ -110,13 +110,13 @@ Raw        1769.6KB  29.7%
 Remapper   1551.1KB  26.1%
 SmolV       823.1KB  13.8%
 Compressed with Zstandard:
-Raw        1125.5KB  18.9%
-Remapper    887.4KB  14.9%
-SmolV       573.1KB   9.6%
+Raw        1123.2KB  18.9%
+Remapper    884.6KB  14.9%
+SmolV       572.4KB   9.6%
 Compressed with Zstandard 20:
-Raw         834.5KB  14.0%
+Raw         835.1KB  14.0%
 Remapper    666.7KB  11.2%
-SmolV       497.4KB   8.4%
+SmolV       497.2KB   8.4%
 ```
 
 Decoding these 383 shaders from SMOL-V back into SPIR-V takes 10.1ms (VS2022, x64 Release, AMD Ryzen 5950X, one thread).
