@@ -59,9 +59,8 @@ See [**Changelog**](Changelog.md).
 
 ## Limitations / TODO
 
-- SPIR-V where the words got stored in big-endian layout is not supported yet.
+- SPIR-V where the words got stored in big-endian layout is not supported.
 - The whole thing might not work on Big-Endian CPUs. It might, but I'm not 100% sure.
-- Not much prevention is done against malformed/corrupted inputs, TODO.
 - Out of memory cases are not handled. The code will either throw exception
   or crash, depending on your compilation flags.
 
